@@ -1,4 +1,4 @@
-package com.noveogroup.teamzolotov.iwashere.Util;
+package com.noveogroup.teamzolotov.iwashere.util;
 
 import android.app.Activity;
 import android.graphics.Point;
