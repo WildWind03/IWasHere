@@ -1,4 +1,4 @@
-package com.noveogroup.teamzolotov.iwashere;
+package com.noveogroup.teamzolotov.iwashere.activities;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -11,8 +11,11 @@ import com.mikepenz.materialdrawer.model.DividerDrawerItem;
 import com.mikepenz.materialdrawer.model.PrimaryDrawerItem;
 import com.mikepenz.materialdrawer.model.SecondaryDrawerItem;
 import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
+import com.noveogroup.teamzolotov.iwashere.R;
 
 import java.util.logging.Logger;
+
+import butterknife.BindView;
 
 public class MainActivity extends BaseActivity {
     private final static int MAP_ID = 1;
@@ -22,14 +25,16 @@ public class MainActivity extends BaseActivity {
 
     private final static Logger logger = Logger.getLogger(MainActivity.class.getName());
 
+    @BindView(R.id.toolbar)
+    protected Toolbar toolbar;
+
     @Override
     protected void onPostCreate(@Nullable final Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        final PrimaryDrawerItem mapDrawerItem = new PrimaryDrawerItem();
+        PrimaryDrawerItem mapDrawerItem = new PrimaryDrawerItem();
         mapDrawerItem
                 .withIdentifier(MAP_ID)
                 .withName(R.string.map_string)
@@ -54,7 +59,7 @@ public class MainActivity extends BaseActivity {
                 .withIcon(R.drawable.ic_help_black_24dp);
 
 
-        Drawer drawer = new DrawerBuilder()
+        new DrawerBuilder()
                 .withActivity(this)
                 .withToolbar(toolbar)
                 .withHeader(R.layout.header_view)

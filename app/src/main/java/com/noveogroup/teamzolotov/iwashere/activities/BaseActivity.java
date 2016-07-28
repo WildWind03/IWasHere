@@ -1,4 +1,4 @@
-package com.noveogroup.teamzolotov.iwashere;
+package com.noveogroup.teamzolotov.iwashere.activities;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
