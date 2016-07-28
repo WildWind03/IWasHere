@@ -1,9 +1,13 @@
 package com.noveogroup.teamzolotov.iwashere.activities;
 
 import android.os.Bundle;
+import android.provider.ContactsContract;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.Toolbar;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.ImageView;
+import android.widget.RelativeLayout;
 
 import com.mikepenz.materialdrawer.Drawer;
 import com.mikepenz.materialdrawer.DrawerBuilder;
@@ -12,6 +16,7 @@ import com.mikepenz.materialdrawer.model.PrimaryDrawerItem;
 import com.mikepenz.materialdrawer.model.SecondaryDrawerItem;
 import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
 import com.noveogroup.teamzolotov.iwashere.R;
+import com.noveogroup.teamzolotov.iwashere.Util.ImageUtil;
 
 import java.util.logging.Logger;
 
@@ -28,11 +33,19 @@ public class MainActivity extends BaseActivity {
     @BindView(R.id.toolbar)
     protected Toolbar toolbar;
 
+
     @Override
     protected void onPostCreate(@Nullable final Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
 
         setSupportActionBar(toolbar);
+        toolbar.setTitle(R.string.map_string);
+
+        View headerView = getLayoutInflater().inflate(R.layout.header_view, null);
+        ImageView headerImageView = (ImageView) headerView.findViewById(R.id.header_view_image);
+
+        RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) headerImageView.getLayoutParams();
+        layoutParams.height = ImageUtil.getAppropriateHeight(this);
 
         PrimaryDrawerItem mapDrawerItem = new PrimaryDrawerItem();
         mapDrawerItem
@@ -58,11 +71,10 @@ public class MainActivity extends BaseActivity {
                 .withName(R.string.help_string)
                 .withIcon(R.drawable.ic_help_black_24dp);
 
-
         new DrawerBuilder()
                 .withActivity(this)
                 .withToolbar(toolbar)
-                .withHeader(R.layout.header_view)
+                .withHeader(headerView)
                 .addDrawerItems(mapDrawerItem,
                         listRegionsDrawerItem,
                         new DividerDrawerItem(),
@@ -100,18 +112,18 @@ public class MainActivity extends BaseActivity {
     }
 
     private void onMapItemSelected() {
-
+        toolbar.setTitle(R.string.map_string);
     }
 
     private void onRegionsItemSelected() {
-
+        toolbar.setTitle(R.string.regions_string);
     }
 
     private void onSettingItemSelected() {
-
+        toolbar.setTitle(R.string.settings_string);
     }
 
     private void onHelpItemSelected() {
-
+        toolbar.setTitle(R.string.help_string);
     }
 }
