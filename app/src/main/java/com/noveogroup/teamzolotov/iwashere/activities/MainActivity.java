@@ -10,7 +10,6 @@ import android.widget.RelativeLayout;
 
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.GoogleMapOptions;
-import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.CameraPosition;
@@ -18,6 +17,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.maps.android.geojson.GeoJsonFeature;
 import com.google.maps.android.geojson.GeoJsonLayer;
 import com.google.maps.android.geojson.GeoJsonPolygonStyle;
+import com.j256.ormlite.android.apptools.OpenHelperManager;
 import com.mikepenz.materialdrawer.Drawer;
 import com.mikepenz.materialdrawer.DrawerBuilder;
 import com.mikepenz.materialdrawer.model.DividerDrawerItem;
@@ -25,6 +25,7 @@ import com.mikepenz.materialdrawer.model.PrimaryDrawerItem;
 import com.mikepenz.materialdrawer.model.SecondaryDrawerItem;
 import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
 import com.noveogroup.teamzolotov.iwashere.R;
+import com.noveogroup.teamzolotov.iwashere.database.RegionOrmLiteOpenHelper;
 import com.noveogroup.teamzolotov.iwashere.util.ImageUtil;
 
 import org.json.JSONException;
@@ -45,6 +46,8 @@ public class MainActivity extends BaseActivity implements OnMapReadyCallback {
 
     private final static Logger logger = Logger.getLogger(MainActivity.class.getName());
 
+    private RegionOrmLiteOpenHelper openHelper;
+
     @BindView(R.id.toolbar)
     protected Toolbar toolbar;
 
@@ -52,6 +55,9 @@ public class MainActivity extends BaseActivity implements OnMapReadyCallback {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        openHelper = OpenHelperManager.getHelper(this, RegionOrmLiteOpenHelper.class);
+//        openHelper.getWritableDatabase();
 
         if (savedInstanceState == null) {
             FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
@@ -154,6 +160,12 @@ public class MainActivity extends BaseActivity implements OnMapReadyCallback {
                 })
                 .build();
 
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        OpenHelperManager.releaseHelper();
     }
 
     @Override
