@@ -1,13 +1,20 @@
 package com.noveogroup.teamzolotov.iwashere.activities;
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
+import android.widget.Toast;
 
-import com.firebase.client.Firebase;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.mikepenz.materialdrawer.Drawer;
 import com.mikepenz.materialdrawer.DrawerBuilder;
 import com.mikepenz.materialdrawer.model.DividerDrawerItem;
@@ -15,7 +22,7 @@ import com.mikepenz.materialdrawer.model.PrimaryDrawerItem;
 import com.mikepenz.materialdrawer.model.SecondaryDrawerItem;
 import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
 import com.noveogroup.teamzolotov.iwashere.R;
-import com.noveogroup.teamzolotov.iwashere.Util.ImageUtil;
+import com.noveogroup.teamzolotov.iwashere.util.ImageUtil;
 
 import java.util.logging.Logger;
 
@@ -32,12 +39,29 @@ public class MainActivity extends BaseActivity {
     @BindView(R.id.toolbar)
     protected Toolbar toolbar;
 
+    private FirebaseAuth mAuth;
+
 
     @Override
     protected void onPostCreate(@Nullable final Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
 
-        Firebase.setAndroidContext(this);
+        mAuth = FirebaseAuth.getInstance();
+
+        mAuth.createUserWithEmailAndPassword("usergreat03@gmail.com", "ggg1111ggg")
+                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        Toast.makeText(getApplicationContext(), "createUserWithEmail:onComplete:" + task.isSuccessful(), Toast.LENGTH_SHORT).show();
+                        // If sign in fails, display a message to the user. If sign in succeeds
+                        // the auth state listener will be notified and logic to handle the
+                        // signed in user can be handled in the listener.
+                        if (!task.isSuccessful()) {
+                            Toast.makeText(getApplicationContext(), "Authentication failed." + task.getException(),
+                                    Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
 
         setSupportActionBar(toolbar);
         toolbar.setTitle(R.string.map_string);
@@ -105,6 +129,16 @@ public class MainActivity extends BaseActivity {
                 })
                 .build();
 
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
     }
 
     @Override

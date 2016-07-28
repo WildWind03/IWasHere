@@ -1,6 +1,5 @@
 apply plugin: 'com.android.application'
 apply plugin: 'android-apt'
-apply plugin: 'com.google.gms.google-services'
 
 android {
     compileSdkVersion 24
@@ -31,5 +30,17 @@ dependencies {
         transitive = true
     }
 
-    compile 'com.firebase:firebase-client-android:2.5.2+'
+    compile 'com.google.firebase:firebase-core:9.2.1'
+    compile 'com.google.firebase:firebase-auth:9.2.1'
+    compile 'com.google.firebase:firebase-crash:9.2.1'
+
+    compile 'com.firebaseui:firebase-ui:0.4.3'
+
+    // FirebaseUI Database only
+    compile 'com.firebaseui:firebase-ui-database:0.4.3'
+
+    // FirebaseUI Auth only
+    compile 'com.firebaseui:firebase-ui-auth:0.4.3'
 }
+
+apply plugin: 'com.google.gms.google-services'
