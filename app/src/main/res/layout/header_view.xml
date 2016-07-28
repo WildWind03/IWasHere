@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/header_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <ImageView
+        android:id="@+id/header_view_image"
+        android:layout_width="wrap_content"
+        android:layout_height="@integer/logo_image_height"
+        android:layout_marginBottom="@dimen/image_bottom_margin"
+        android:layout_marginTop="@dimen/image_top_margin"
+        android:contentDescription="@string/app_logo_text"
+        android:scaleType="centerInside"
+        android:src="@drawable/logo_i_was_here_small" />
+
+</RelativeLayout>
