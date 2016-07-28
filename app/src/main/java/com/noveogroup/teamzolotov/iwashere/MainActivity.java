@@ -1,15 +1,18 @@
 package com.noveogroup.teamzolotov.iwashere;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.Toolbar;
 import android.widget.TextView;
 
-import com.mikepenz.materialdrawer.AccountHeader;
-import com.mikepenz.materialdrawer.AccountHeaderBuilder;
 import com.mikepenz.materialdrawer.Drawer;
 import com.mikepenz.materialdrawer.DrawerBuilder;
+import com.mikepenz.materialdrawer.model.DividerDrawerItem;
 import com.mikepenz.materialdrawer.model.PrimaryDrawerItem;
+import com.mikepenz.materialdrawer.model.SecondaryDrawerItem;
+import com.mikepenz.materialdrawer.model.SectionDrawerItem;
 
 public class MainActivity extends BaseActivity {
     @Override
@@ -19,15 +22,37 @@ public class MainActivity extends BaseActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        TextView textView = new TextView(this);
-        textView.setText(R.string.app_name);
+        PrimaryDrawerItem mapDrawerItem = new PrimaryDrawerItem();
+        mapDrawerItem
+                .withName(R.string.map_string)
+                .withIcon(R.drawable.ic_map_black_24dp);
+
+        PrimaryDrawerItem listRegionsDrawerItem = new PrimaryDrawerItem();
+        listRegionsDrawerItem
+                .withName(R.string.regions_string)
+                .withIcon(R.drawable.ic_list_black_24dp);
+
+        SecondaryDrawerItem settingDrawerItem = new SecondaryDrawerItem();
+        settingDrawerItem
+                .withName(R.string.settings_string)
+                .withIcon(R.drawable.ic_settings_black_24dp);
+
+        SecondaryDrawerItem helpDrawerItem = new SecondaryDrawerItem();
+        helpDrawerItem
+                .withName(R.string.help_string)
+                .withIcon(R.drawable.ic_help_black_24dp);
+
+
 
         Drawer drawer = new DrawerBuilder()
                 .withActivity(this)
                 .withToolbar(toolbar)
                 .withHeader(R.layout.header_view)
-                .addDrawerItems(new PrimaryDrawerItem()
-                .withName(R.string.app_name))
+                .addDrawerItems(mapDrawerItem,
+                        listRegionsDrawerItem,
+                        new DividerDrawerItem(),
+                        settingDrawerItem,
+                        helpDrawerItem)
                 .build();
 
     }

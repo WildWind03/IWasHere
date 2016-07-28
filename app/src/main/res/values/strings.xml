@@ -1,4 +1,9 @@
 <resources>
     <string name="app_name">IWasHere</string>
     <string name="content_description">1</string>
+    <string name="app_logo_text">app_logo</string>
+    <string name="map_string">Map</string>
+    <string name="regions_string">Regions</string>
+    <string name="settings_string">Settings</string>
+    <string name="help_string">Help</string>
 </resources>

@@ -1,17 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/colorPrimary">
+    android:orientation="vertical">
 
-    <TextView
+    <ImageView
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="70dp"
-        android:layout_marginBottom="30dp"
-        android:text="@string/app_name"
-        android:textColor="@color/toolbar_text_color"
-        style="@style/TextAppearance.AppCompat.Medium"
-        android:layout_centerHorizontal="true"/>
+        android:layout_height="@integer/logo_image_height"
+        android:layout_marginBottom="@dimen/image_bottom_margin"
+        android:layout_marginTop="@dimen/image_top_margin"
+        android:contentDescription="@string/app_logo_text"
+        android:scaleType="centerInside"
+        android:src="@drawable/logo_i_was_here" />
 
 </RelativeLayout>
