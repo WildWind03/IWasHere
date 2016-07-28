@@ -75,12 +75,16 @@ public class MainActivity extends BaseActivity {
 
                         switch (itemId) {
                             case MAP_ID:
+                                onMapItemSelected();
                                 break;
                             case LIST_REGIONS_ID:
+                                onRegionsItemSelected();
                                 break;
                             case SETTINGS_ID:
+                                onSettingItemSelected();
                                 break;
                             case HELP_ID:
+                                onHelpItemSelected();
                                 break;
                         }
                         return false;
@@ -99,7 +103,7 @@ public class MainActivity extends BaseActivity {
 
     }
 
-    private void onListRegionsSelected() {
+    private void onRegionsItemSelected() {
 
     }
 
