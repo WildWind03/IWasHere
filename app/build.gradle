@@ -1,5 +1,6 @@
 apply plugin: 'com.android.application'
 apply plugin: 'android-apt'
+apply plugin: 'com.google.gms.google-services'
 
 android {
     compileSdkVersion 24
@@ -29,4 +30,6 @@ dependencies {
     compile('com.mikepenz:materialdrawer:5.3.6@aar') {
         transitive = true
     }
+
+    compile 'com.firebase:firebase-client-android:2.5.2+'
 }

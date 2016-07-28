@@ -9,6 +9,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
+import com.firebase.client.Firebase;
 import com.mikepenz.materialdrawer.Drawer;
 import com.mikepenz.materialdrawer.DrawerBuilder;
 import com.mikepenz.materialdrawer.model.DividerDrawerItem;
@@ -37,6 +38,8 @@ public class MainActivity extends BaseActivity {
     @Override
     protected void onPostCreate(@Nullable final Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
+
+        Firebase.setAndroidContext(this);
 
         setSupportActionBar(toolbar);
         toolbar.setTitle(R.string.map_string);
