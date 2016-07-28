@@ -52,13 +52,13 @@ public class MainActivity extends BaseActivity implements OnMapReadyCallback {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
 
         if (savedInstanceState == null) {
             FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
             GoogleMapOptions options = new GoogleMapOptions();
             options.camera(new CameraPosition.Builder().target(new LatLng(55.0415, 82.9346)).build());
             SupportMapFragment mapFragment = SupportMapFragment.newInstance(options);
+            mapFragment.setRetainInstance(true);
             mapFragment.getMapAsync(this);
             transaction.add(R.id.layout_for_showing_fragment, mapFragment, MAP_FRAGMENT_TAG);
             transaction.commit();
@@ -67,6 +67,7 @@ public class MainActivity extends BaseActivity implements OnMapReadyCallback {
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
+        googleMap.getUiSettings().setMapToolbarEnabled(false);
         try {
             GeoJsonLayer layer = new GeoJsonLayer(googleMap, R.raw.adm4_region, this);
             for (GeoJsonFeature feature : layer.getFeatures()) {
@@ -165,7 +166,11 @@ public class MainActivity extends BaseActivity implements OnMapReadyCallback {
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentByTag(MAP_FRAGMENT_TAG);
         if (mapFragment == null) {
             FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-            transaction.replace(R.id.layout_for_showing_fragment, SupportMapFragment.newInstance(), MAP_FRAGMENT_TAG);
+            SupportMapFragment newSupportMapFragment = SupportMapFragment.newInstance();
+            newSupportMapFragment.setRetainInstance(true);
+            newSupportMapFragment.getMapAsync(this);
+            transaction.replace(R.id.layout_for_showing_fragment, newSupportMapFragment, MAP_FRAGMENT_TAG);
+            transaction.commit();
         }
     }
 
