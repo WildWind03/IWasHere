@@ -1,7 +1,8 @@
-package com.noveogroup.teamzolotov.iwashere.fragments;
+package com.noveogroup.teamzolotov.iwashere.dialogfragments;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,7 +11,7 @@ import android.widget.Toast;
 
 import butterknife.ButterKnife;
 
-public abstract class BaseFragment extends Fragment {
+public abstract class BaseDialogFragment extends DialogFragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -33,5 +34,4 @@ public abstract class BaseFragment extends Fragment {
     protected abstract void onPostViewCrated(@Nullable final Bundle savedInstanceState);
 
     protected abstract int getLayout();
-
 }

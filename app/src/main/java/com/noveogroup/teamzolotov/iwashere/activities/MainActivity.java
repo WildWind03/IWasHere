@@ -3,8 +3,8 @@ package com.noveogroup.teamzolotov.iwashere.activities;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.DialogFragment;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
@@ -14,7 +14,6 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.mikepenz.materialdrawer.Drawer;
 import com.mikepenz.materialdrawer.DrawerBuilder;
 import com.mikepenz.materialdrawer.model.DividerDrawerItem;
@@ -22,6 +21,7 @@ import com.mikepenz.materialdrawer.model.PrimaryDrawerItem;
 import com.mikepenz.materialdrawer.model.SecondaryDrawerItem;
 import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
 import com.noveogroup.teamzolotov.iwashere.R;
+import com.noveogroup.teamzolotov.iwashere.dialogfragments.LoginDialog;
 import com.noveogroup.teamzolotov.iwashere.util.ImageUtil;
 
 import java.util.logging.Logger;
@@ -29,6 +29,7 @@ import java.util.logging.Logger;
 import butterknife.BindView;
 
 public class MainActivity extends BaseActivity {
+    private final static int LOGIN_ID = 0;
     private final static int MAP_ID = 1;
     private final static int LIST_REGIONS_ID = 2;
     private final static int SETTINGS_ID = 3;
@@ -46,6 +47,7 @@ public class MainActivity extends BaseActivity {
     protected void onPostCreate(@Nullable final Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
 
+        //LoginDialog.newInstance().show(getSupportFragmentManager(), "dlg1");
         mAuth = FirebaseAuth.getInstance();
 
         mAuth.createUserWithEmailAndPassword("usergreat03@gmail.com", "ggg1111ggg")
@@ -53,9 +55,6 @@ public class MainActivity extends BaseActivity {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         Toast.makeText(getApplicationContext(), "createUserWithEmail:onComplete:" + task.isSuccessful(), Toast.LENGTH_SHORT).show();
-                        // If sign in fails, display a message to the user. If sign in succeeds
-                        // the auth state listener will be notified and logic to handle the
-                        // signed in user can be handled in the listener.
                         if (!task.isSuccessful()) {
                             Toast.makeText(getApplicationContext(), "Authentication failed." + task.getException(),
                                     Toast.LENGTH_SHORT).show();
@@ -71,6 +70,12 @@ public class MainActivity extends BaseActivity {
 
         RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) headerImageView.getLayoutParams();
         layoutParams.height = ImageUtil.getAppropriateHeight(this);
+
+        PrimaryDrawerItem loginDrawerItem = new PrimaryDrawerItem();
+        loginDrawerItem
+                .withIdentifier(LOGIN_ID)
+                .withName(R.string.login_str)
+                .withIcon(R.drawable.ic_person_black_24dp);
 
         PrimaryDrawerItem mapDrawerItem = new PrimaryDrawerItem();
         mapDrawerItem
@@ -100,7 +105,9 @@ public class MainActivity extends BaseActivity {
                 .withActivity(this)
                 .withToolbar(toolbar)
                 .withHeader(headerView)
-                .addDrawerItems(mapDrawerItem,
+                .addDrawerItems(
+                        loginDrawerItem,
+                        mapDrawerItem,
                         listRegionsDrawerItem,
                         new DividerDrawerItem(),
                         settingDrawerItem,
@@ -123,6 +130,8 @@ public class MainActivity extends BaseActivity {
                             case HELP_ID:
                                 onHelpItemSelected();
                                 break;
+                            case LOGIN_ID:
+                                onLoginItemSelected();
                         }
                         return false;
                     }
@@ -160,5 +169,10 @@ public class MainActivity extends BaseActivity {
 
     private void onHelpItemSelected() {
         toolbar.setTitle(R.string.help_string);
+    }
+
+    private void onLoginItemSelected() {
+        toolbar.setTitle(R.string.login_str);
+        getSupportFragmentManager().beginTransaction().add(R.id.layout_for_showing_fragment, LoginDialog.newInstance(), LoginDialog.class.getName()).commit();
     }
 }
