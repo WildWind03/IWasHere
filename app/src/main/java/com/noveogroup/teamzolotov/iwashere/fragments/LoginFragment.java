@@ -1,5 +1,6 @@
 package com.noveogroup.teamzolotov.iwashere.fragments;
 
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -13,7 +14,11 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.noveogroup.teamzolotov.iwashere.R;
+import com.noveogroup.teamzolotov.iwashere.activities.OnLoginSuccessfully;
+import com.noveogroup.teamzolotov.iwashere.activities.Registrable;
 import com.noveogroup.teamzolotov.iwashere.util.EmailValidator;
+
+import java.util.logging.Logger;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -21,12 +26,8 @@ import butterknife.OnClick;
 
 public class LoginFragment extends BaseFragment {
 
-    private enum LoginValidateResult {
-        SHORT_PASSWORD, INVALID_EMAIL, SUCCESS, SHORT_PASSWORD_INVALID_EMAIL
-    }
-
-
     private static final int MIN_LENGTH_OF_PASSWORD = 6;
+    private final static Logger logger = Logger.getLogger(LoginFragment.class.getName());
 
     @BindView(R.id.input_email)
     protected EditText emailText;
@@ -39,7 +40,6 @@ public class LoginFragment extends BaseFragment {
 
     @BindView(R.id.link_signup)
     protected TextView registerLink;
-
 
     private FirebaseAuth mAuth;
 
@@ -73,7 +73,7 @@ public class LoginFragment extends BaseFragment {
             case SUCCESS:
                 loginButton.setEnabled(false);
 
-                final ProgressDialog progressDialog = new ProgressDialog(getContext(), R.style.MaterialTheme_Light);
+                final ProgressDialog progressDialog = new ProgressDialog(getActivity());
                 progressDialog.setIndeterminate(true);
                 progressDialog.setMessage(getResources().getString(R.string.auth_text));
                 progressDialog.show();
@@ -85,6 +85,9 @@ public class LoginFragment extends BaseFragment {
                         .addOnCompleteListener(getActivity(), new OnCompleteListener<AuthResult>() {
                             @Override
                             public void onComplete(@NonNull Task<AuthResult> task) {
+                                progressDialog.dismiss();
+                                loginButton.setEnabled(true);
+
                                 if (!task.isSuccessful()) {
                                     onLoginFailed();
                                 } else {
@@ -98,7 +101,13 @@ public class LoginFragment extends BaseFragment {
 
     @OnClick(R.id.link_signup)
     protected void onRegisterLinkClick() {
-
+        Activity activity = getActivity();
+        if (activity instanceof Registrable) {
+            Registrable registrable = (Registrable) activity;
+            registrable.register();
+        } else {
+            logger.info ("Error! Activity does not implement register interface");
+        }
     }
 
     @Override
@@ -131,6 +140,18 @@ public class LoginFragment extends BaseFragment {
 
     private void onLoginSuccess() {
         showMessage("The authentication was successful!");
+
+        Activity activity = getActivity();
+        if (activity instanceof OnLoginSuccessfully) {
+            OnLoginSuccessfully onLoginSuccessfully = (OnLoginSuccessfully) activity;
+            onLoginSuccessfully.onLoginSuccessfully();
+        } else {
+            logger.info ("Error! Activity does not implement onLoginSuccessfully interface");
+        }
+    }
+
+    private enum LoginValidateResult {
+        SHORT_PASSWORD, INVALID_EMAIL, SUCCESS, SHORT_PASSWORD_INVALID_EMAIL
     }
 
 }
