@@ -125,9 +125,11 @@ public class RegisterFragment extends BaseFragment {
         final String name = nameText.getText().toString();
         final String email = emailText.getText().toString();
 
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference myRef = database.getReference(email);
-        myRef.setValue(name);
+        //Storage
+       // FirebaseDatabase database = FirebaseDatabase.getInstance();
+       // DatabaseReference myRef = database.getReference();
+       // DatabaseReference databaseReference = myRef.child("users");
+        //databaseReference.setValue("tggt")
 
         Activity activity = getActivity();
 
