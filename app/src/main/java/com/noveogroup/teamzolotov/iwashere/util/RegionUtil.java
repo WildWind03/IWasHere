@@ -1,5 +1,6 @@
 package com.noveogroup.teamzolotov.iwashere.util;
 
+import com.noveogroup.teamzolotov.iwashere.R;
 import com.noveogroup.teamzolotov.iwashere.model.Region;
 
 import java.util.ArrayList;
@@ -96,5 +97,187 @@ public class RegionUtil {
         regions.add(new Region(-145195));
 
         return regions;
+    }
+
+    public static int getRegionIconResource(int osmId) {
+        switch (osmId) {
+            case -140290 : return R.drawable.kurgan;
+            case -89331 : return R.drawable.novgorod;
+            case -72192 : return R.drawable.ulyanovsk;
+            case -81993 : return R.drawable.tula;
+            case -72193 : return R.drawable.saratov;
+            case -72223 : return R.drawable.kursk;
+            case -190090 : return R.drawable.krasnoyarsk;
+            case -140337 : return R.drawable.arhangel;
+            case -109878 : return R.drawable.karachaevo_cherkessia;
+            case -109876 : return R.drawable.dagestan;
+            case -108081 : return R.drawable.stavropol;
+            case -2095259 : return R.drawable.tver;
+            case -85617 : return R.drawable.ivanovo;
+            case -115134 : return R.drawable.udmurtia;
+            case -115114 : return R.drawable.mariy_el;
+            case -140292 : return R.drawable.omsk;
+            case -140291 : return R.drawable.tumen;
+            case -144764 : return R.drawable.altai_krai;
+            case -140295 : return R.drawable.tomsk;
+            case -140294 : return R.drawable.novosibirsk;
+            case -115135 : return R.drawable.perm;
+            case -77677 : return R.drawable.baskortostan;
+            case -79379 : return R.drawable.sverdlovsk;
+            case -77687 : return R.drawable.chelyabinsk;
+            case -2099216 : return R.drawable.murmansk;
+            case -151234 : return R.drawable.saha;
+            case -151231 : return R.drawable.chukotka;
+            case -151228 : return R.drawable.magadan;
+            case -191706 : return R.drawable.yamalo_nenets;
+            case -140296 : return R.drawable.yugra;
+            case -393980 : return R.drawable.karelia;
+            case -337422 : return R.drawable.piter;
+            case -274048 : return R.drawable.nenec;
+            case -176095 : return R.drawable.leningrad;
+            case -115136 : return R.drawable.komi;
+            case -115106 : return R.drawable.vologda;
+            case -72224 : return R.drawable.orel;
+            case -81996 : return R.drawable.smolensk;
+            case -72181 : return R.drawable.voronezh;
+            case -151223 : return R.drawable.habarovsk;
+            case -253256 : return R.drawable.adygea;
+            case -102269 : return R.drawable.moscow_city;
+            case -85963 : return R.drawable.kostroma;
+            case -83184 : return R.drawable.belgorod;
+            case -81995 : return R.drawable.kaluga;
+            case -72197 : return R.drawable.vladimir;
+            case -72180 : return R.drawable.tambov;
+            case -72169 : return R.drawable.lipetsk;
+            case -71950 : return R.drawable.ryazan;
+            case -51490 : return R.drawable.moscow_obl;
+            case -151233 : return R.drawable.kamchatka;
+            case -151225 : return R.drawable.primorsky;
+            case -147167 : return R.drawable.yevrey;
+            case -147166 : return R.drawable.amur;
+            case -72196 : return R.drawable.mordovia;
+            case -81997 : return R.drawable.bryansk;
+            case -155262 : return R.drawable.pskov;
+            case -112819 : return R.drawable.astrahan;
+            case -394235 : return R.drawable.sahalin;
+            case -253252 : return R.drawable.ingushetia;
+            case -110032 : return R.drawable.sev_osetia;
+            case -109879 : return R.drawable.kabardino_balkaria;
+            case -109877 : return R.drawable.chechnya;
+            case -103906 : return R.drawable.kaliningrad;
+            case -108083 : return R.drawable.kalmykia;
+            case -108082 : return R.drawable.krasnodar;
+            case -85606 : return R.drawable.rostov;
+            case -77665 : return R.drawable.volgograd;
+            case -115100 : return R.drawable.kirov;
+            case -80513 : return R.drawable.chuvashia;
+            case -79374 : return R.drawable.tatarstan;
+            case -81994 : return R.drawable.yaroslavl;
+            case -77669 : return R.drawable.orenburg;
+            case -72194 : return R.drawable.samara;
+            case -72182 : return R.drawable.penza;
+            case -72195 : return R.drawable.nizhny;
+            case -144763 : return R.drawable.kemerovo;
+            case -145729 : return R.drawable.buryatiya;
+            case -145730 : return R.drawable.zabaikal;
+            case -145454 : return R.drawable.irkutsk;
+            case -145194 : return R.drawable.altai_rep;
+            case -190911 : return R.drawable.hakasia;
+            case -145195 : return R.drawable.tyva;
+
+
+            default: return R.drawable.common_google_signin_btn_icon_dark_normal;
+        }
+    }
+
+    public static int getRegionNameResource(int osmId) {
+        switch (osmId) {
+
+            case -140290 : return R.string.kurgan;
+            case -89331 : return R.string.novgorod;
+            case -72192 : return R.string.ulyanovsk;
+            case -81993 : return R.string.tula;
+            case -72193 : return R.string.saratov;
+            case -72223 : return R.string.kursk;
+            case -190090 : return R.string.krasnoyarsk;
+            case -140337 : return R.string.arhangel;
+            case -109878 : return R.string.karachaevo_cherkessia;
+            case -109876 : return R.string.dagestan;
+            case -108081 : return R.string.stavropol;
+            case -2095259 : return R.string.tver;
+            case -85617 : return R.string.ivanovo;
+            case -115134 : return R.string.udmurtia;
+            case -115114 : return R.string.mariy_el;
+            case -140292 : return R.string.omsk;
+            case -140291 : return R.string.tumen;
+            case -144764 : return R.string.altai_krai;
+            case -140295 : return R.string.tomsk;
+            case -140294 : return R.string.novosibirsk;
+            case -115135 : return R.string.perm;
+            case -77677 : return R.string.bashkortostan;
+            case -79379 : return R.string.sverdlovsk;
+            case -77687 : return R.string.chelyabinsk;
+            case -2099216 : return R.string.murmansk;
+            case -151234 : return R.string.saha;
+            case -151231 : return R.string.chukotka;
+            case -151228 : return R.string.magadan;
+            case -191706 : return R.string.yamalo_nenets;
+            case -140296 : return R.string.yugra;
+            case -393980 : return R.string.karelia;
+            case -337422 : return R.string.piter;
+            case -274048 : return R.string.nenec;
+            case -176095 : return R.string.leningrad;
+            case -115136 : return R.string.komi;
+            case -115106 : return R.string.vologda;
+            case -72224 : return R.string.orel;
+            case -81996 : return R.string.smolensk;
+            case -72181 : return R.string.voronezh;
+            case -151223 : return R.string.habarovsk;
+            case -253256 : return R.string.adygea;
+            case -102269 : return R.string.moscow_city;
+            case -85963 : return R.string.kostroma;
+            case -83184 : return R.string.belgorod;
+            case -81995 : return R.string.kaluga;
+            case -72197 : return R.string.vladimir;
+            case -72180 : return R.string.tambov;
+            case -72169 : return R.string.lipetsk;
+            case -71950 : return R.string.ryazan;
+            case -51490 : return R.string.moscow_obl;
+            case -151233 : return R.string.kamchatka;
+            case -151225 : return R.string.primorsky;
+            case -147167 : return R.string.yevrey;
+            case -147166 : return R.string.amur;
+            case -72196 : return R.string.mordovia;
+            case -81997 : return R.string.bryansk;
+            case -155262 : return R.string.pskov;
+            case -112819 : return R.string.astrahan;
+            case -394235 : return R.string.sahalin;
+            case -253252 : return R.string.ingushetia;
+            case -110032 : return R.string.sev_osetia;
+            case -109879 : return R.string.kabardino_balkaria;
+            case -109877 : return R.string.chechnya;
+            case -103906 : return R.string.kaliningrad;
+            case -108083 : return R.string.kalmykia;
+            case -108082 : return R.string.krasnodar;
+            case -85606 : return R.string.rostov;
+            case -77665 : return R.string.volgograd;
+            case -115100 : return R.string.kirov;
+            case -80513 : return R.string.chuvashia;
+            case -79374 : return R.string.tatarstan;
+            case -81994 : return R.string.yaroslavl;
+            case -77669 : return R.string.orenburg;
+            case -72194 : return R.string.samara;
+            case -72182 : return R.string.penza;
+            case -72195 : return R.string.nizhny;
+            case -144763 : return R.string.kemerovo;
+            case -145729 : return R.string.buryatiya;
+            case -145730 : return R.string.zabaikal;
+            case -145454 : return R.string.irkutsk;
+            case -145194 : return R.string.altai_rep;
+            case -190911 : return R.string.hakasia;
+            case -145195 : return R.string.tyva;
+
+            default : return R.string.app_name;
+        }
     }
 }

@@ -8,15 +8,6 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
-import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.GoogleMapOptions;
-import com.google.android.gms.maps.OnMapReadyCallback;
-import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.CameraPosition;
-import com.google.android.gms.maps.model.LatLng;
-import com.google.maps.android.geojson.GeoJsonFeature;
-import com.google.maps.android.geojson.GeoJsonLayer;
-import com.google.maps.android.geojson.GeoJsonPolygonStyle;
 import com.j256.ormlite.android.apptools.OpenHelperManager;
 import com.j256.ormlite.dao.Dao;
 import com.mikepenz.materialdrawer.Drawer;
@@ -28,12 +19,10 @@ import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
 import com.noveogroup.teamzolotov.iwashere.R;
 import com.noveogroup.teamzolotov.iwashere.database.RegionOrmLiteOpenHelper;
 import com.noveogroup.teamzolotov.iwashere.fragments.ColourMapFragment;
+import com.noveogroup.teamzolotov.iwashere.fragments.RegionListFragment;
 import com.noveogroup.teamzolotov.iwashere.model.Region;
 import com.noveogroup.teamzolotov.iwashere.util.ImageUtil;
 
-import org.json.JSONException;
-
-import java.io.IOException;
 import java.sql.SQLException;
 import java.util.logging.Logger;
 
@@ -42,6 +31,7 @@ import butterknife.BindView;
 public class MainActivity extends BaseActivity {
 
     private static final String MAP_FRAGMENT_TAG = "map";
+    private static final String REGIONS_FRAGMENT_TAG = "regions";
 
     private final static int MAP_ID = 1;
     private final static int LIST_REGIONS_ID = 2;
@@ -176,6 +166,17 @@ public class MainActivity extends BaseActivity {
 
     private void onRegionsItemSelected() {
         toolbar.setTitle(R.string.regions_string);
+        RegionListFragment regionsFragment = (RegionListFragment) getSupportFragmentManager().findFragmentByTag(REGIONS_FRAGMENT_TAG);
+        if (regionsFragment == null) {
+            try {
+                FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+                RegionListFragment newRegionsFragment = RegionListFragment.newInstance(openHelper.getDao());
+                transaction.replace(R.id.layout_for_showing_fragment, newRegionsFragment, REGIONS_FRAGMENT_TAG);
+                transaction.commit();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     private void onSettingItemSelected() {
