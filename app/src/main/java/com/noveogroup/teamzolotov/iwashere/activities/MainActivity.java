@@ -1,18 +1,12 @@
 package com.noveogroup.teamzolotov.iwashere.activities;
 
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
-import android.widget.Toast;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.AuthResult;
-import com.google.firebase.auth.FirebaseAuth;
 import com.mikepenz.materialdrawer.Drawer;
 import com.mikepenz.materialdrawer.DrawerBuilder;
 import com.mikepenz.materialdrawer.model.DividerDrawerItem;
@@ -21,13 +15,14 @@ import com.mikepenz.materialdrawer.model.SecondaryDrawerItem;
 import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
 import com.noveogroup.teamzolotov.iwashere.R;
 import com.noveogroup.teamzolotov.iwashere.fragments.LoginFragment;
+import com.noveogroup.teamzolotov.iwashere.fragments.RegisterFragment;
 import com.noveogroup.teamzolotov.iwashere.util.ImageUtil;
 
 import java.util.logging.Logger;
 
 import butterknife.BindView;
 
-public class MainActivity extends BaseActivity implements OnLoginSuccessfully, Registrable{
+public class MainActivity extends BaseActivity implements Registrable, Loginable {
     private final static int LOGIN_ID = 0;
     private final static int MAP_ID = 1;
     private final static int LIST_REGIONS_ID = 2;
@@ -35,8 +30,6 @@ public class MainActivity extends BaseActivity implements OnLoginSuccessfully, R
     private final static int HELP_ID = 4;
 
     private final static Logger logger = Logger.getLogger(MainActivity.class.getName());
-
-    private String currentFragmentTag;
 
     @BindView(R.id.toolbar)
     protected Toolbar toolbar;
@@ -124,12 +117,26 @@ public class MainActivity extends BaseActivity implements OnLoginSuccessfully, R
     }
 
     @Override
+    public void login() {
+        onLoginItemSelected();
+    }
+
+    @Override
     public void onLoginSuccessfully() {
 
     }
 
     @Override
     public void register() {
+        toolbar.setTitle(getString(R.string.register_string));
+        getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.layout_for_showing_fragment, RegisterFragment.newInstance(), RegisterFragment.class.getName())
+                .commit();
+    }
+
+    @Override
+    public void onRegisteredSuccessfully() {
 
     }
 
@@ -156,7 +163,11 @@ public class MainActivity extends BaseActivity implements OnLoginSuccessfully, R
 
     private void onLoginItemSelected() {
         toolbar.setTitle(R.string.login_string);
-        getSupportFragmentManager().beginTransaction().replace(R.id.layout_for_showing_fragment, LoginFragment.newInstance(), LoginFragment.class.getName()).commit();
-    }
 
+        getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.layout_for_showing_fragment, LoginFragment.newInstance(), LoginFragment.class.getName())
+                .commit();
+
+    }
 }

@@ -14,7 +14,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.noveogroup.teamzolotov.iwashere.R;
-import com.noveogroup.teamzolotov.iwashere.activities.OnLoginSuccessfully;
+import com.noveogroup.teamzolotov.iwashere.activities.Loginable;
 import com.noveogroup.teamzolotov.iwashere.activities.Registrable;
 import com.noveogroup.teamzolotov.iwashere.util.EmailValidator;
 
@@ -106,7 +106,7 @@ public class LoginFragment extends BaseFragment {
             Registrable registrable = (Registrable) activity;
             registrable.register();
         } else {
-            logger.info ("Error! Activity does not implement register interface");
+            logger.info("Error! Activity does not implement register interface");
         }
     }
 
@@ -142,11 +142,11 @@ public class LoginFragment extends BaseFragment {
         showMessage("The authentication was successful!");
 
         Activity activity = getActivity();
-        if (activity instanceof OnLoginSuccessfully) {
-            OnLoginSuccessfully onLoginSuccessfully = (OnLoginSuccessfully) activity;
+        if (activity instanceof Loginable) {
+            Loginable onLoginSuccessfully = (Loginable) activity;
             onLoginSuccessfully.onLoginSuccessfully();
         } else {
-            logger.info ("Error! Activity does not implement onLoginSuccessfully interface");
+            logger.info("Error! Activity does not implement onLoginSuccessfully interface");
         }
     }
 

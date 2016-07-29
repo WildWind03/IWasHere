@@ -1,5 +1,7 @@
 package com.noveogroup.teamzolotov.iwashere.activities;
 
-public interface OnLoginSuccessfully {
+public interface Loginable {
+    void login();
     void onLoginSuccessfully();
 }
+
