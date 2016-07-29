@@ -18,6 +18,7 @@ import com.google.maps.android.geojson.GeoJsonFeature;
 import com.google.maps.android.geojson.GeoJsonLayer;
 import com.google.maps.android.geojson.GeoJsonPolygonStyle;
 import com.j256.ormlite.android.apptools.OpenHelperManager;
+import com.j256.ormlite.dao.Dao;
 import com.mikepenz.materialdrawer.Drawer;
 import com.mikepenz.materialdrawer.DrawerBuilder;
 import com.mikepenz.materialdrawer.model.DividerDrawerItem;
@@ -26,16 +27,19 @@ import com.mikepenz.materialdrawer.model.SecondaryDrawerItem;
 import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
 import com.noveogroup.teamzolotov.iwashere.R;
 import com.noveogroup.teamzolotov.iwashere.database.RegionOrmLiteOpenHelper;
+import com.noveogroup.teamzolotov.iwashere.fragments.ColourMapFragment;
+import com.noveogroup.teamzolotov.iwashere.model.Region;
 import com.noveogroup.teamzolotov.iwashere.util.ImageUtil;
 
 import org.json.JSONException;
 
 import java.io.IOException;
+import java.sql.SQLException;
 import java.util.logging.Logger;
 
 import butterknife.BindView;
 
-public class MainActivity extends BaseActivity implements OnMapReadyCallback {
+public class MainActivity extends BaseActivity {
 
     private static final String MAP_FRAGMENT_TAG = "map";
 
@@ -57,38 +61,20 @@ public class MainActivity extends BaseActivity implements OnMapReadyCallback {
         super.onCreate(savedInstanceState);
 
         openHelper = OpenHelperManager.getHelper(this, RegionOrmLiteOpenHelper.class);
-//        openHelper.getWritableDatabase();
 
         if (savedInstanceState == null) {
-            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-            GoogleMapOptions options = new GoogleMapOptions();
-            options.camera(new CameraPosition.Builder().target(new LatLng(55.0415, 82.9346)).build());
-            SupportMapFragment mapFragment = SupportMapFragment.newInstance(options);
-            mapFragment.setRetainInstance(true);
-            mapFragment.getMapAsync(this);
-            transaction.add(R.id.layout_for_showing_fragment, mapFragment, MAP_FRAGMENT_TAG);
-            transaction.commit();
-        }
-    }
-
-    @Override
-    public void onMapReady(GoogleMap googleMap) {
-        googleMap.getUiSettings().setMapToolbarEnabled(false);
-        try {
-            GeoJsonLayer layer = new GeoJsonLayer(googleMap, R.raw.adm4_region, this);
-            for (GeoJsonFeature feature : layer.getFeatures()) {
-                GeoJsonPolygonStyle polygonStyle = feature.getPolygonStyle();
-                polygonStyle.setFillColor(0xFFE5DAA5);
-                polygonStyle.setStrokeWidth(1);
-                feature.setPolygonStyle(polygonStyle);
+            try {
+                FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+                Dao<Region, Integer> dao = openHelper.getDao();
+                ColourMapFragment mapFragment = ColourMapFragment.newInstance(dao);
+                transaction.add(R.id.layout_for_showing_fragment, mapFragment, MAP_FRAGMENT_TAG);
+                transaction.commit();
+            } catch (SQLException e) {
+                e.printStackTrace();
             }
-            layer.addLayerToMap();
-        } catch (JSONException | IOException e) {
-            e.printStackTrace();
         }
-
-
     }
+
 
     @Override
     protected void onPostCreate(@Nullable final Bundle savedInstanceState) {
@@ -175,14 +161,16 @@ public class MainActivity extends BaseActivity implements OnMapReadyCallback {
 
     private void onMapItemSelected() {
         toolbar.setTitle(R.string.map_string);
-        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentByTag(MAP_FRAGMENT_TAG);
+        ColourMapFragment mapFragment = (ColourMapFragment) getSupportFragmentManager().findFragmentByTag(MAP_FRAGMENT_TAG);
         if (mapFragment == null) {
-            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-            SupportMapFragment newSupportMapFragment = SupportMapFragment.newInstance();
-            newSupportMapFragment.setRetainInstance(true);
-            newSupportMapFragment.getMapAsync(this);
-            transaction.replace(R.id.layout_for_showing_fragment, newSupportMapFragment, MAP_FRAGMENT_TAG);
-            transaction.commit();
+            try {
+                FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+                ColourMapFragment newMapFragment = ColourMapFragment.newInstance(openHelper.getDao());
+                transaction.replace(R.id.layout_for_showing_fragment, newMapFragment, MAP_FRAGMENT_TAG);
+                transaction.commit();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
     }
 

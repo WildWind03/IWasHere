@@ -1,5 +1,6 @@
 package com.noveogroup.teamzolotov.iwashere.model;
 
+import com.j256.ormlite.field.DataType;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
 import com.noveogroup.teamzolotov.iwashere.database.ContentDescriptor;
@@ -24,5 +25,13 @@ public class Region {
 
     public Region(int osmId) {
         this.osmId = osmId;
+    }
+
+    public int getOsmId() {
+        return osmId;
+    }
+
+    public boolean isVisited() {
+        return visited;
     }
 }

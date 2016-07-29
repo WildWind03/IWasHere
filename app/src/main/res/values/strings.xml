@@ -6,4 +6,7 @@
     <string name="regions_string">Regions</string>
     <string name="settings_string">Settings</string>
     <string name="help_string">Help</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
