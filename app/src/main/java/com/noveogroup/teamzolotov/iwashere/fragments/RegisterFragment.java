@@ -13,6 +13,8 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.noveogroup.teamzolotov.iwashere.R;
 import com.noveogroup.teamzolotov.iwashere.activities.Loginable;
 import com.noveogroup.teamzolotov.iwashere.activities.Registrable;
@@ -91,7 +93,6 @@ public class RegisterFragment extends BaseFragment {
 
             case SUCCESS:
 
-                String name = nameText.getText().toString();
                 String email = emailText.getText().toString();
                 String password = passwordText.getText().toString();
 
@@ -120,6 +121,14 @@ public class RegisterFragment extends BaseFragment {
     }
 
     private void onRegisterSuccess() {
+
+        final String name = nameText.getText().toString();
+        final String email = emailText.getText().toString();
+
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference myRef = database.getReference(email);
+        myRef.setValue(name);
+
         Activity activity = getActivity();
 
         if (activity instanceof Loginable) {
