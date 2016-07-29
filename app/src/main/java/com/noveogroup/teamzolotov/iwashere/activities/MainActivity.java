@@ -3,7 +3,6 @@ package com.noveogroup.teamzolotov.iwashere.activities;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.app.DialogFragment;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.ImageView;
@@ -21,14 +20,14 @@ import com.mikepenz.materialdrawer.model.PrimaryDrawerItem;
 import com.mikepenz.materialdrawer.model.SecondaryDrawerItem;
 import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
 import com.noveogroup.teamzolotov.iwashere.R;
-import com.noveogroup.teamzolotov.iwashere.dialogfragments.LoginDialog;
+import com.noveogroup.teamzolotov.iwashere.fragments.LoginFragment;
 import com.noveogroup.teamzolotov.iwashere.util.ImageUtil;
 
 import java.util.logging.Logger;
 
 import butterknife.BindView;
 
-public class MainActivity extends BaseActivity {
+public class MainActivity extends BaseActivity implements OnLoginSuccessfully, Registrable{
     private final static int LOGIN_ID = 0;
     private final static int MAP_ID = 1;
     private final static int LIST_REGIONS_ID = 2;
@@ -37,30 +36,14 @@ public class MainActivity extends BaseActivity {
 
     private final static Logger logger = Logger.getLogger(MainActivity.class.getName());
 
+    private String currentFragmentTag;
+
     @BindView(R.id.toolbar)
     protected Toolbar toolbar;
-
-    private FirebaseAuth mAuth;
-
 
     @Override
     protected void onPostCreate(@Nullable final Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
-
-        //LoginDialog.newInstance().show(getSupportFragmentManager(), "dlg1");
-        mAuth = FirebaseAuth.getInstance();
-
-        mAuth.createUserWithEmailAndPassword("usergreat03@gmail.com", "ggg1111ggg")
-                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        Toast.makeText(getApplicationContext(), "createUserWithEmail:onComplete:" + task.isSuccessful(), Toast.LENGTH_SHORT).show();
-                        if (!task.isSuccessful()) {
-                            Toast.makeText(getApplicationContext(), "Authentication failed." + task.getException(),
-                                    Toast.LENGTH_SHORT).show();
-                        }
-                    }
-                });
 
         setSupportActionBar(toolbar);
         toolbar.setTitle(R.string.map_string);
@@ -74,7 +57,7 @@ public class MainActivity extends BaseActivity {
         PrimaryDrawerItem loginDrawerItem = new PrimaryDrawerItem();
         loginDrawerItem
                 .withIdentifier(LOGIN_ID)
-                .withName(R.string.login_str)
+                .withName(R.string.login_string)
                 .withIcon(R.drawable.ic_person_black_24dp);
 
         PrimaryDrawerItem mapDrawerItem = new PrimaryDrawerItem();
@@ -141,13 +124,13 @@ public class MainActivity extends BaseActivity {
     }
 
     @Override
-    public void onStart() {
-        super.onStart();
+    public void onLoginSuccessfully() {
+
     }
 
     @Override
-    public void onStop() {
-        super.onStop();
+    public void register() {
+
     }
 
     @Override
@@ -172,7 +155,8 @@ public class MainActivity extends BaseActivity {
     }
 
     private void onLoginItemSelected() {
-        toolbar.setTitle(R.string.login_str);
-        getSupportFragmentManager().beginTransaction().add(R.id.layout_for_showing_fragment, LoginDialog.newInstance(), LoginDialog.class.getName()).commit();
+        toolbar.setTitle(R.string.login_string);
+        getSupportFragmentManager().beginTransaction().replace(R.id.layout_for_showing_fragment, LoginFragment.newInstance(), LoginFragment.class.getName()).commit();
     }
+
 }

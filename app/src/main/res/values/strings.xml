@@ -6,5 +6,15 @@
     <string name="regions_string">Regions</string>
     <string name="settings_string">Settings</string>
     <string name="help_string">Help</string>
-    <string name="login_str">Login</string>
+    <string name="login_string">Login</string>
+
+    <string name="email_text">Email</string>
+    <string name="password_text">Password</string>
+    <string name="login_text">Login</string>
+    <string name="turn_on_register_mode">No account yet? Create one</string>
+    <string name="name_text">Name</string>
+    <string name="create_account_text">Create Account</string>
+    <string name="turn_on_login_mode">Already a member? Login</string>
+    <string name="auth_text">Authenticating…</string>
+
 </resources>
