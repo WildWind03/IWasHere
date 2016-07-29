@@ -131,7 +131,7 @@ public class RegisterFragment extends BaseFragment {
 
         Activity activity = getActivity();
 
-        if (activity instanceof Loginable) {
+        if (activity instanceof Registrable) {
             Registrable registrable = (Registrable) activity;
             registrable.register();
         } else {
