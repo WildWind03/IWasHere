@@ -6,6 +6,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,17 +17,23 @@ import com.noveogroup.teamzolotov.iwashere.R;
 import com.noveogroup.teamzolotov.iwashere.adapters.RegionAdapter;
 import com.noveogroup.teamzolotov.iwashere.database.RegionOrmLiteOpenHelper;
 import com.noveogroup.teamzolotov.iwashere.model.Region;
+import com.noveogroup.teamzolotov.iwashere.util.RegionUtil;
 
 import java.sql.SQLException;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
 
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
+import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
 public class RegionListFragment extends Fragment {
+
+    private static final String TAG = RegionListFragment.class.getSimpleName();
 
     private RegionOrmLiteOpenHelper openHelper;
 
@@ -49,16 +56,32 @@ public class RegionListFragment extends Fragment {
                 openHelper = OpenHelperManager.getHelper(getContext(), RegionOrmLiteOpenHelper.class);
             }
             try {
-                Observable.just(openHelper.getDao().queryForAll())
+                final Dao<Region, Integer> dao = openHelper.getDao();
+                Observable.just(dao.queryForAll())
                         .subscribeOn(Schedulers.computation())
                         .observeOn(AndroidSchedulers.mainThread())
+                        .map(new Func1<List<Region>, List<Region>>() {
+                            @Override
+                            public List<Region> call(List<Region> regions) {
+                                Collections.sort(regions, new Comparator<Region>() {
+                                    @Override
+                                    public int compare(Region r1, Region r2) {
+                                        int firstNameResource = RegionUtil.getRegionNameResource(r1.getOsmId());
+                                        int secondNameResource = RegionUtil.getRegionNameResource(r2.getOsmId());
+                                        return getString(firstNameResource).compareTo(getString(secondNameResource));
+                                    }
+                                });
+                                return regions;
+                            }
+                        })
                         .subscribe(new Action1<List<Region>>() {
                             @Override
                             public void call(List<Region> regions) {
-                                recyclerView.setAdapter(new RegionAdapter(regions, getContext()));
+                                recyclerView.setAdapter(new RegionAdapter(regions, getContext(), dao));
                             }
                         });
             } catch (SQLException e) {
+                Log.d(TAG, "Failed querying for regions", e);
                 e.printStackTrace();
             }
         }

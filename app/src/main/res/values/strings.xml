@@ -35,11 +35,11 @@
     <string name="saha">Республика Саха (Якутия)</string>
     <string name="chukotka">Чукотский автономный округ</string>
     <string name="magadan">Магаданская область</string>
-    <string name="yamalo_nenets">Ямало-Ненецкий автономный округ (Тюменская область)</string>
-    <string name="yugra">Ханты-Мансийский автономный округ - Югра (Тюменская область)</string>
+    <string name="yamalo_nenets">Ямало-Ненецкий автономный округ</string>
+    <string name="yugra">Ханты-Мансийский автономный округ - Югра</string>
     <string name="karelia">Республика Карелия</string>
     <string name="piter">Санкт-Петербург</string>
-    <string name="nenec">Ненецкий автономный округ (Архангельская область)</string>
+    <string name="nenec">Ненецкий автономный округ</string>
     <string name="leningrad">Ленинградская область</string>
     <string name="komi">Республика Коми</string>
     <string name="vologda">Вологодская область</string>
@@ -47,7 +47,7 @@
     <string name="smolensk">Смоленская область</string>
     <string name="voronezh">Воронежская область</string>
     <string name="habarovsk">Хабаровский край</string>
-    <string name="adygea">Республика Адыгея (Адыгея)</string>
+    <string name="adygea">Республика Адыгея</string>
     <string name="moscow_city">Москва</string>
     <string name="kostroma">Костромская область</string>
     <string name="belgorod">Белгородская область</string>
@@ -77,7 +77,7 @@
     <string name="volgograd">Волгоградская область</string>
     <string name="kirov">Кировская область</string>
     <string name="chuvashia">Чувашская Республика - Чувашия</string>
-    <string name="tatarstan">Республика Татарстан (Татарстан)</string>
+    <string name="tatarstan">Республика Татарстан</string>
     <string name="yaroslavl">Ярославская область</string>
     <string name="orenburg">Оренбургская область</string>
     <string name="samara">Самарская область</string>
