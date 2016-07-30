@@ -18,8 +18,6 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.MutableData;
-import com.google.firebase.database.Transaction;
 import com.google.firebase.database.ValueEventListener;
 import com.noveogroup.teamzolotov.iwashere.R;
 import com.noveogroup.teamzolotov.iwashere.activities.Loginable;
@@ -107,6 +105,8 @@ public class LoginFragment extends BaseFragment {
         }
     }
 
+    //PROGRESS DILOG CLOSE WHEN USERNAME IS GOT!!!!
+
     @OnClick(R.id.link_signup)
     protected void onRegisterLinkClick() {
         Activity activity = getActivity();
@@ -147,7 +147,11 @@ public class LoginFragment extends BaseFragment {
     }
 
     private void onLoginSuccess() {
-        showMessage("The authentication was successful!");
+        final ProgressDialog progressDialog = new ProgressDialog(getActivity());
+        progressDialog.setIndeterminate(true);
+        progressDialog.setMessage(getResources().getString(R.string.getting_data_from_server_text));
+
+        progressDialog.show();
 
         DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference();
 
@@ -156,6 +160,8 @@ public class LoginFragment extends BaseFragment {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 String username = (String) dataSnapshot.getValue();
+
+                progressDialog.dismiss();
 
                 Profile profile = new Profile(firebaseUser.getEmail(), username);
 

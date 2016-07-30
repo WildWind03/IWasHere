@@ -20,4 +20,5 @@
     <string name="sign_up_text">Signing up</string>
     <string name="sign_out_text">Sign out</string>
 
+    <string name="getting_data_from_server_text">Loading data from server…</string>
 </resources>

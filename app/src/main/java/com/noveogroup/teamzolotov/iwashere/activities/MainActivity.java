@@ -139,10 +139,10 @@ public class MainActivity extends BaseActivity implements Registrable, Loginable
                 .withEmail(profile.getEmail())
                 .withName(profile.getUsername());
 
-       // accountHeader.updateProfile(iProfile);
-
         accountHeader.removeProfile(0);
         accountHeader.addProfiles(iProfile);
+
+        accountHeader.updateProfile(iProfile);
         onMapItemSelected();
     }
 
