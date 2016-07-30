@@ -32,6 +32,8 @@ public class RegisterFragment extends BaseFragment {
     private static final int MIN_LENGTH_OF_PASSWORD = 6;
     private static final int MIN_LENGTH_OF_USERNAME = 2;
     private static final Logger logger = Logger.getLogger(RegisterFragment.class.getName());
+    public static final String USERS_DATABASE_TAG = "users";
+    public static final String USERNAME_DATABASE_TAG = "username";
 
     @BindView(R.id.input_name)
     protected EditText nameText;
@@ -66,32 +68,31 @@ public class RegisterFragment extends BaseFragment {
 
         switch (registerValidateResult) {
             case SHORT_PASSWORD:
-                showMessage("Short password. It must has 6 characters at least");
+                showMessage(getContext().getString(R.string.short_password_message));
                 break;
 
             case SHORT_PASSWORD_INVALID_EMAIL:
-                showMessage("Invalid email");
+                showMessage(getContext().getString(R.string.short_password_invalid_email));
                 break;
 
             case SHORT_PASSWORD_INVALID_EMAIL_INVALID_USERNAME:
-                showMessage("Invalid email, too short username (it must has 2 characters at least" +
-                        "too short password(min length is 6 characters");
+                showMessage(getContext().getString(R.string.invalid_username_email_short_password));
                 break;
 
             case INVALID_EMAIL:
-                showMessage("Invalid email");
+                showMessage(getContext().getString(R.string.invalid_email_message));
                 break;
 
             case INVALID_EMAIL_INVALID_USERNAME:
-                showMessage("Invalid email and too short username (min length is 2 characters");
+                showMessage(getContext().getString(R.string.invalid_email_invalid_username));
                 break;
 
             case INVALID_USERNAME:
-                showMessage("Invalid username. Min length is 2 characters");
+                showMessage(getContext().getString(R.string.invalid_username));
                 break;
 
             case SHORT_PASSWORD_INVALID_USERNAME:
-                showMessage("Too short password (min length is 6 characters) and too short username(min length is 2 characters)");
+                showMessage(getContext().getString(R.string.short_password_invalid_username));
                 break;
 
             case SUCCESS:
@@ -130,8 +131,8 @@ public class RegisterFragment extends BaseFragment {
 
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference myRef = database.getReference();
-        DatabaseReference databaseReference = myRef.child("users").child(uid);
-        databaseReference.child("username").setValue(name);
+        DatabaseReference databaseReference = myRef.child(USERS_DATABASE_TAG).child(uid);
+        databaseReference.child(USERNAME_DATABASE_TAG).setValue(name);
 
         Profile profile = new Profile(email, name);
 
@@ -146,7 +147,7 @@ public class RegisterFragment extends BaseFragment {
     }
 
     private void onRegisterFailed() {
-        showMessage("The problem with registration! The account hasn't been created!");
+        showMessage(getContext().getString(R.string.REGISTARTION_FAILED_MESSAGE));
     }
 
     @OnClick(R.id.link_login)

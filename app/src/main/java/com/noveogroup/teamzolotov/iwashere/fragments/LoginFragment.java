@@ -35,6 +35,7 @@ public class LoginFragment extends BaseFragment {
 
     private static final int MIN_LENGTH_OF_PASSWORD = 6;
     private final static Logger logger = Logger.getLogger(LoginFragment.class.getName());
+    public static final String USERNAME_DATABASE_KEY = "username";
 
     @BindView(R.id.input_email)
     protected EditText emailText;
@@ -67,15 +68,15 @@ public class LoginFragment extends BaseFragment {
 
         switch (loginValidateResult) {
             case INVALID_EMAIL:
-                showMessage("Invalid email");
+                showMessage(getContext().getString(R.string.invalid_email_message));
                 return;
 
             case SHORT_PASSWORD:
-                showMessage("Short password. It must has 6 characters at least!");
+                showMessage(getContext().getString(R.string.short_password_message));
                 return;
 
             case SHORT_PASSWORD_INVALID_EMAIL:
-                showMessage("Invalid email and short password. A password must has 6 characters at least!");
+                showMessage(getContext().getString(R.string.short_password_invalid_email));
                 return;
 
             case SUCCESS:
@@ -104,8 +105,6 @@ public class LoginFragment extends BaseFragment {
                 break;
         }
     }
-
-    //PROGRESS DILOG CLOSE WHEN USERNAME IS GOT!!!!
 
     @OnClick(R.id.link_signup)
     protected void onRegisterLinkClick() {
@@ -143,7 +142,7 @@ public class LoginFragment extends BaseFragment {
     }
 
     private void onLoginFailed() {
-        showMessage("The problem with authentication");
+        showMessage(getContext().getString(R.string.auth_failed_message));
     }
 
     private void onLoginSuccess() {
@@ -156,7 +155,7 @@ public class LoginFragment extends BaseFragment {
         DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference();
 
         final String username;
-        mDatabase.child(firebaseUser.getUid()).child("username").addValueEventListener(new ValueEventListener() {
+        mDatabase.child(firebaseUser.getUid()).child(USERNAME_DATABASE_KEY).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 String username = (String) dataSnapshot.getValue();
