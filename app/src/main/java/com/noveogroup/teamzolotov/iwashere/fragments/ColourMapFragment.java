@@ -10,10 +10,15 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.GoogleMapOptions;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.UiSettings;
+import com.google.android.gms.maps.model.CameraPosition;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.maps.android.geojson.GeoJsonFeature;
 import com.google.maps.android.geojson.GeoJsonLayer;
 import com.google.maps.android.geojson.GeoJsonPolygonStyle;
@@ -60,6 +65,23 @@ public class ColourMapFragment extends SupportMapFragment implements OnMapReadyC
 
     @Override
     public void onMapReady(final GoogleMap googleMap) {
+
+        googleMap.setIndoorEnabled(false);
+        googleMap.setBuildingsEnabled(false);
+        LatLngBounds russia = new LatLngBounds(new LatLng(41, 19), new LatLng(82, 169));
+        googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(russia.getCenter(), 0));
+        googleMap.setOnCameraChangeListener(new GoogleMap.OnCameraChangeListener() {
+            @Override
+            public void onCameraChange(CameraPosition cameraPosition) {
+                if (cameraPosition.zoom > 5) {
+                    googleMap.animateCamera(CameraUpdateFactory.zoomTo(5));
+                }
+            }
+        });
+        UiSettings settings = googleMap.getUiSettings();
+        settings.setCompassEnabled(false);
+        settings.setRotateGesturesEnabled(false);
+        settings.setTiltGesturesEnabled(false);
 
         Observable.create(new Observable.OnSubscribe<GeoJsonLayer>() {
             @Override
