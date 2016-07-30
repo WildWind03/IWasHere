@@ -68,15 +68,15 @@ public class LoginFragment extends BaseFragment {
 
         switch (loginValidateResult) {
             case INVALID_EMAIL:
-                showMessage(getContext().getString(R.string.invalid_email_message));
+                showMessage(R.string.invalid_data, R.string.invalid_email_message);
                 return;
 
             case SHORT_PASSWORD:
-                showMessage(getContext().getString(R.string.short_password_message));
+                showMessage(R.string.invalid_data, R.string.short_password_message);
                 return;
 
             case SHORT_PASSWORD_INVALID_EMAIL:
-                showMessage(getContext().getString(R.string.short_password_invalid_email));
+                showMessage(R.string.invalid_data, R.string.short_password_invalid_email);
                 return;
 
             case SUCCESS:
@@ -142,7 +142,7 @@ public class LoginFragment extends BaseFragment {
     }
 
     private void onLoginFailed() {
-        showMessage(getContext().getString(R.string.auth_failed_message));
+        showMessage(R.string.auth_troubles_title, R.string.auth_failed_message);
     }
 
     private void onLoginSuccess() {

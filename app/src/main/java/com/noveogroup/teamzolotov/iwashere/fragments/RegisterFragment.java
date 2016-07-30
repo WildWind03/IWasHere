@@ -68,31 +68,31 @@ public class RegisterFragment extends BaseFragment {
 
         switch (registerValidateResult) {
             case SHORT_PASSWORD:
-                showMessage(getContext().getString(R.string.short_password_message));
+                showMessage(R.string.invalid_data, R.string.short_password_message);
                 break;
 
             case SHORT_PASSWORD_INVALID_EMAIL:
-                showMessage(getContext().getString(R.string.short_password_invalid_email));
+                showMessage(R.string.invalid_data, R.string.short_password_invalid_email);
                 break;
 
             case SHORT_PASSWORD_INVALID_EMAIL_INVALID_USERNAME:
-                showMessage(getContext().getString(R.string.invalid_username_email_short_password));
+                showMessage(R.string.invalid_data, R.string.invalid_username_email_short_password);
                 break;
 
             case INVALID_EMAIL:
-                showMessage(getContext().getString(R.string.invalid_email_message));
+                showMessage(R.string.invalid_data, R.string.invalid_email_message);
                 break;
 
             case INVALID_EMAIL_INVALID_USERNAME:
-                showMessage(getContext().getString(R.string.invalid_email_invalid_username));
+                showMessage(R.string.invalid_data, R.string.invalid_email_invalid_username);
                 break;
 
             case INVALID_USERNAME:
-                showMessage(getContext().getString(R.string.invalid_username));
+                showMessage(R.string.invalid_data, R.string.invalid_username);
                 break;
 
             case SHORT_PASSWORD_INVALID_USERNAME:
-                showMessage(getContext().getString(R.string.short_password_invalid_username));
+                showMessage(R.string.invalid_data, R.string.short_password_invalid_username);
                 break;
 
             case SUCCESS:
@@ -147,7 +147,7 @@ public class RegisterFragment extends BaseFragment {
     }
 
     private void onRegisterFailed() {
-        showMessage(getContext().getString(R.string.REGISTARTION_FAILED_MESSAGE));
+        showMessage(R.string.registration_problems_title, R.string.registration_failed_message);
     }
 
     @OnClick(R.id.link_login)
