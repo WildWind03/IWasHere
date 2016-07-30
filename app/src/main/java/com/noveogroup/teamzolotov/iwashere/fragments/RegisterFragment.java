@@ -17,7 +17,6 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.noveogroup.teamzolotov.iwashere.R;
-import com.noveogroup.teamzolotov.iwashere.activities.Loginable;
 import com.noveogroup.teamzolotov.iwashere.activities.Registrable;
 import com.noveogroup.teamzolotov.iwashere.model.Profile;
 import com.noveogroup.teamzolotov.iwashere.util.EmailValidator;
@@ -154,8 +153,8 @@ public class RegisterFragment extends BaseFragment {
     protected void onLoginLinkClick() {
         Activity activity = getActivity();
 
-        if (activity instanceof Loginable) {
-            Loginable loginable = (Loginable) activity;
+        if (activity instanceof Registrable) {
+            Registrable loginable = (Registrable) activity;
             loginable.onLoginLinkClicked();
         } else {
             logger.info("Error! Activity must implement loginable interface");

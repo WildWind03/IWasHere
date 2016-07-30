@@ -16,6 +16,7 @@ import com.mikepenz.materialdrawer.model.SecondaryDrawerItem;
 import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
 import com.mikepenz.materialdrawer.model.interfaces.IProfile;
 import com.noveogroup.teamzolotov.iwashere.R;
+import com.noveogroup.teamzolotov.iwashere.fragments.AccountFragment;
 import com.noveogroup.teamzolotov.iwashere.fragments.LoginFragment;
 import com.noveogroup.teamzolotov.iwashere.fragments.RegisterFragment;
 import com.noveogroup.teamzolotov.iwashere.model.Profile;
@@ -24,7 +25,7 @@ import java.util.logging.Logger;
 
 import butterknife.BindView;
 
-public class MainActivity extends BaseActivity implements Registrable, Loginable {
+public class MainActivity extends BaseActivity implements Registrable {
     private final static int LOGIN_ID = 0;
     private final static int MAP_ID = 1;
     private final static int LIST_REGIONS_ID = 2;
@@ -33,7 +34,13 @@ public class MainActivity extends BaseActivity implements Registrable, Loginable
 
     private final static Logger logger = Logger.getLogger(MainActivity.class.getName());
 
+    private LoginState loginState = LoginState.LOGIN;
+
     private AccountHeader accountHeader;
+    private Profile profile;
+    private Drawer drawer;
+
+    private PrimaryDrawerItem loginDrawerItem;
 
     @BindView(R.id.toolbar)
     protected Toolbar toolbar;
@@ -58,7 +65,8 @@ public class MainActivity extends BaseActivity implements Registrable, Loginable
                 .withSelectionListEnabled(false)
                 .build();
 
-        PrimaryDrawerItem loginDrawerItem = new PrimaryDrawerItem();
+        loginDrawerItem = new PrimaryDrawerItem();
+
         loginDrawerItem
                 .withIdentifier(LOGIN_ID)
                 .withName(R.string.login_string)
@@ -88,7 +96,7 @@ public class MainActivity extends BaseActivity implements Registrable, Loginable
                 .withName(R.string.help_string)
                 .withIcon(R.drawable.ic_help_black_24dp);
 
-        new DrawerBuilder()
+        drawer = new DrawerBuilder()
                 .withActivity(this)
                 .withToolbar(toolbar)
                 .withAccountHeader(accountHeader)
@@ -129,11 +137,14 @@ public class MainActivity extends BaseActivity implements Registrable, Loginable
 
     @Override
     public void onLoginLinkClicked() {
+        loginState = LoginState.LOGIN;
         onLoginItemSelected();
     }
 
     @Override
     public void onLoginSuccessfully(Profile profile) {
+        this.profile = profile;
+
         IProfile iProfile = new ProfileDrawerItem()
                 .withEmail(profile.getEmail())
                 .withName(profile.getUsername());
@@ -141,16 +152,32 @@ public class MainActivity extends BaseActivity implements Registrable, Loginable
         accountHeader.removeProfile(0);
         accountHeader.addProfiles(iProfile);
 
-        onMapItemSelected();
+        loginState = LoginState.SINGED_UP;
+
+        loginDrawerItem
+                .withIdentifier(LOGIN_ID)
+                .withName(R.string.account_text)
+                .withIcon(R.drawable.ic_person_black_24dp);
+
+        drawer.updateItem(loginDrawerItem);
+
+        onLoginItemSelected();
+    }
+
+    @Override
+    public void onSignOutClicked() {
+
+    }
+
+    @Override
+    public void onSignOutSuccessfully() {
+
     }
 
     @Override
     public void onRegisterLinkClicked() {
-        toolbar.setTitle(getString(R.string.register_string));
-        getSupportFragmentManager()
-                .beginTransaction()
-                .replace(R.id.layout_for_showing_fragment, RegisterFragment.newInstance(), RegisterFragment.class.getName())
-                .commit();
+        loginState = LoginState.REGISTER;
+        onLoginItemSelected();
     }
 
     @Override
@@ -180,12 +207,37 @@ public class MainActivity extends BaseActivity implements Registrable, Loginable
     }
 
     private void onLoginItemSelected() {
-        toolbar.setTitle(R.string.login_string);
 
-        getSupportFragmentManager()
-                .beginTransaction()
-                .replace(R.id.layout_for_showing_fragment, LoginFragment.newInstance(), LoginFragment.class.getName())
-                .commit();
+        switch (loginState) {
+            case LOGIN:
+                toolbar.setTitle(R.string.login_string);
 
+                getSupportFragmentManager()
+                        .beginTransaction()
+                        .replace(R.id.layout_for_showing_fragment, LoginFragment.newInstance(), LoginFragment.class.getName())
+                        .commit();
+                break;
+            case REGISTER:
+                toolbar.setTitle(getString(R.string.register_string));
+
+                getSupportFragmentManager()
+                        .beginTransaction()
+                        .replace(R.id.layout_for_showing_fragment, RegisterFragment.newInstance(), RegisterFragment.class.getName())
+                        .commit();
+                break;
+            case SINGED_UP:
+                toolbar.setTitle(getString(R.string.account_text));
+
+                getSupportFragmentManager()
+                        .beginTransaction()
+                        .replace(R.id.layout_for_showing_fragment, AccountFragment.newInstance(profile), AccountFragment.class.getName())
+                        .commit();
+                break;
+        }
+
+    }
+
+    enum LoginState {
+        LOGIN, REGISTER, SINGED_UP
     }
 }

@@ -20,7 +20,6 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.noveogroup.teamzolotov.iwashere.R;
-import com.noveogroup.teamzolotov.iwashere.activities.Loginable;
 import com.noveogroup.teamzolotov.iwashere.activities.Registrable;
 import com.noveogroup.teamzolotov.iwashere.model.Profile;
 import com.noveogroup.teamzolotov.iwashere.util.EmailValidator;
@@ -36,6 +35,7 @@ public class LoginFragment extends BaseFragment {
     private static final int MIN_LENGTH_OF_PASSWORD = 6;
     private final static Logger logger = Logger.getLogger(LoginFragment.class.getName());
     public static final String USERNAME_DATABASE_KEY = "username";
+    public static final String USERS_DATABASE_TAG = "users";
 
     @BindView(R.id.input_email)
     protected EditText emailText;
@@ -155,7 +155,7 @@ public class LoginFragment extends BaseFragment {
         DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference();
 
         final String username;
-        mDatabase.child(firebaseUser.getUid()).child(USERNAME_DATABASE_KEY).addValueEventListener(new ValueEventListener() {
+        mDatabase.child(USERS_DATABASE_TAG).child(firebaseUser.getUid()).child(USERNAME_DATABASE_KEY).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 String username = (String) dataSnapshot.getValue();
@@ -165,8 +165,8 @@ public class LoginFragment extends BaseFragment {
                 Profile profile = new Profile(firebaseUser.getEmail(), username);
 
                 Activity activity = getActivity();
-                if (activity instanceof Loginable) {
-                    Loginable onLoginSuccessfully = (Loginable) activity;
+                if (activity instanceof Registrable) {
+                    Registrable onLoginSuccessfully = (Registrable) activity;
                     onLoginSuccessfully.onLoginSuccessfully(profile);
                 } else {
                     logger.info("Error! Activity does not implement onLoginSuccessfully interface");
