@@ -13,11 +13,13 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.noveogroup.teamzolotov.iwashere.R;
 import com.noveogroup.teamzolotov.iwashere.activities.Loginable;
 import com.noveogroup.teamzolotov.iwashere.activities.Registrable;
+import com.noveogroup.teamzolotov.iwashere.model.Profile;
 import com.noveogroup.teamzolotov.iwashere.util.EmailValidator;
 
 import java.util.logging.Logger;
@@ -47,6 +49,7 @@ public class RegisterFragment extends BaseFragment {
     protected TextView loginLink;
 
     private FirebaseAuth mAuth;
+    private FirebaseUser firebaseUser;
 
     public static RegisterFragment newInstance() {
         return new RegisterFragment();
@@ -96,8 +99,6 @@ public class RegisterFragment extends BaseFragment {
                 String email = emailText.getText().toString();
                 String password = passwordText.getText().toString();
 
-                signupButton.setEnabled(false);
-
                 final ProgressDialog progressDialog = new ProgressDialog(getActivity());
                 progressDialog.setIndeterminate(true);
                 progressDialog.setMessage(getResources().getString(R.string.sign_up_text));
@@ -112,6 +113,7 @@ public class RegisterFragment extends BaseFragment {
                                 if (!task.isSuccessful()) {
                                     onRegisterFailed();
                                 } else {
+                                    firebaseUser = task.getResult().getUser();
                                     onRegisterSuccess();
                                 }
                             }
@@ -122,20 +124,22 @@ public class RegisterFragment extends BaseFragment {
 
     private void onRegisterSuccess() {
 
-        final String name = nameText.getText().toString();
-        final String email = emailText.getText().toString();
+        String name = nameText.getText().toString();
+        String uid = firebaseUser.getUid();
+        String email = emailText.getText().toString();
 
-        //Storage
-       // FirebaseDatabase database = FirebaseDatabase.getInstance();
-       // DatabaseReference myRef = database.getReference();
-       // DatabaseReference databaseReference = myRef.child("users");
-        //databaseReference.setValue("tggt")
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference myRef = database.getReference();
+        DatabaseReference databaseReference = myRef.child("users").child(uid);
+        databaseReference.child("username").setValue(name);
+
+        Profile profile = new Profile(email, name);
 
         Activity activity = getActivity();
 
         if (activity instanceof Registrable) {
             Registrable registrable = (Registrable) activity;
-            registrable.register();
+            registrable.onRegisteredSuccessfully(profile);
         } else {
             logger.info("Error! Activity must implement registrable interface");
         }
@@ -151,7 +155,7 @@ public class RegisterFragment extends BaseFragment {
 
         if (activity instanceof Loginable) {
             Loginable loginable = (Loginable) activity;
-            loginable.login();
+            loginable.onLoginLinkClicked();
         } else {
             logger.info("Error! Activity must implement loginable interface");
         }

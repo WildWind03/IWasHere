@@ -13,9 +13,18 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.MutableData;
+import com.google.firebase.database.Transaction;
+import com.google.firebase.database.ValueEventListener;
 import com.noveogroup.teamzolotov.iwashere.R;
 import com.noveogroup.teamzolotov.iwashere.activities.Loginable;
 import com.noveogroup.teamzolotov.iwashere.activities.Registrable;
+import com.noveogroup.teamzolotov.iwashere.model.Profile;
 import com.noveogroup.teamzolotov.iwashere.util.EmailValidator;
 
 import java.util.logging.Logger;
@@ -42,6 +51,7 @@ public class LoginFragment extends BaseFragment {
     protected TextView registerLink;
 
     private FirebaseAuth mAuth;
+    private FirebaseUser firebaseUser;
 
     public static LoginFragment newInstance() {
         return new LoginFragment();
@@ -71,14 +81,12 @@ public class LoginFragment extends BaseFragment {
                 return;
 
             case SUCCESS:
-                loginButton.setEnabled(false);
-
                 final ProgressDialog progressDialog = new ProgressDialog(getActivity());
                 progressDialog.setIndeterminate(true);
                 progressDialog.setMessage(getResources().getString(R.string.auth_text));
                 progressDialog.show();
 
-                String email = emailText.getText().toString();
+                final String email = emailText.getText().toString();
                 String password = passwordText.getText().toString();
 
                 mAuth.signInWithEmailAndPassword(email, password)
@@ -86,11 +94,11 @@ public class LoginFragment extends BaseFragment {
                             @Override
                             public void onComplete(@NonNull Task<AuthResult> task) {
                                 progressDialog.dismiss();
-                                loginButton.setEnabled(true);
 
                                 if (!task.isSuccessful()) {
                                     onLoginFailed();
                                 } else {
+                                    firebaseUser = task.getResult().getUser();
                                     onLoginSuccess();
                                 }
                             }
@@ -104,9 +112,9 @@ public class LoginFragment extends BaseFragment {
         Activity activity = getActivity();
         if (activity instanceof Registrable) {
             Registrable registrable = (Registrable) activity;
-            registrable.register();
+            registrable.onRegisterLinkClicked();
         } else {
-            logger.info("Error! Activity does not implement register interface");
+            logger.info("Error! Activity does not implement onRegisterLinkClicked interface");
         }
     }
 
@@ -141,13 +149,30 @@ public class LoginFragment extends BaseFragment {
     private void onLoginSuccess() {
         showMessage("The authentication was successful!");
 
-        Activity activity = getActivity();
-        if (activity instanceof Loginable) {
-            Loginable onLoginSuccessfully = (Loginable) activity;
-            onLoginSuccessfully.onLoginSuccessfully();
-        } else {
-            logger.info("Error! Activity does not implement onLoginSuccessfully interface");
-        }
+        DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference();
+
+        final String username;
+        mDatabase.child(firebaseUser.getUid()).child("username").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                String username = (String) dataSnapshot.getValue();
+
+                Profile profile = new Profile(firebaseUser.getEmail(), username);
+
+                Activity activity = getActivity();
+                if (activity instanceof Loginable) {
+                    Loginable onLoginSuccessfully = (Loginable) activity;
+                    onLoginSuccessfully.onLoginSuccessfully(profile);
+                } else {
+                    logger.info("Error! Activity does not implement onLoginSuccessfully interface");
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
     }
 
     private enum LoginValidateResult {

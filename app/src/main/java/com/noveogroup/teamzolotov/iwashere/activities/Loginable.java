@@ -1,8 +1,10 @@
 package com.noveogroup.teamzolotov.iwashere.activities;
 
-public interface Loginable {
-    void login();
+import com.noveogroup.teamzolotov.iwashere.model.Profile;
 
-    void onLoginSuccessfully();
+public interface Loginable {
+    void onLoginLinkClicked();
+
+    void onLoginSuccessfully(Profile profile);
 }
 

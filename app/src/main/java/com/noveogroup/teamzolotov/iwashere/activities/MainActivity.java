@@ -33,7 +33,8 @@ public class MainActivity extends BaseActivity implements Registrable, Loginable
 
     private final static Logger logger = Logger.getLogger(MainActivity.class.getName());
 
-    private Profile profile;
+    private Drawer drawer;
+    private AccountHeader accountHeader;
 
     @BindView(R.id.toolbar)
     protected Toolbar toolbar;
@@ -45,13 +46,13 @@ public class MainActivity extends BaseActivity implements Registrable, Loginable
         setSupportActionBar(toolbar);
         toolbar.setTitle(R.string.map_string);
 
-        profile = new Profile("No e-mail address", "Anonymous");
+        Profile profile = new Profile("No e-mail address", "Anonymous");
 
         IProfile iProfile = new ProfileDrawerItem()
                 .withEmail(profile.getEmail())
                 .withName(profile.getUsername());
 
-        AccountHeader accountHeader = new AccountHeaderBuilder()
+        accountHeader = new AccountHeaderBuilder()
                 .withActivity(this)
                 .withTextColorRes(R.color.primary_text)
                 .addProfiles(iProfile)
@@ -88,7 +89,7 @@ public class MainActivity extends BaseActivity implements Registrable, Loginable
                 .withName(R.string.help_string)
                 .withIcon(R.drawable.ic_help_black_24dp);
 
-        new DrawerBuilder()
+        drawer = new DrawerBuilder()
                 .withActivity(this)
                 .withToolbar(toolbar)
                 .withAccountHeader(accountHeader)
@@ -128,17 +129,25 @@ public class MainActivity extends BaseActivity implements Registrable, Loginable
     }
 
     @Override
-    public void login() {
+    public void onLoginLinkClicked() {
         onLoginItemSelected();
     }
 
     @Override
-    public void onLoginSuccessfully() {
+    public void onLoginSuccessfully(Profile profile) {
+        IProfile iProfile = new ProfileDrawerItem()
+                .withEmail(profile.getEmail())
+                .withName(profile.getUsername());
+
+       // accountHeader.updateProfile(iProfile);
+
+        accountHeader.removeProfile(0);
+        accountHeader.addProfiles(iProfile);
         onMapItemSelected();
     }
 
     @Override
-    public void register() {
+    public void onRegisterLinkClicked() {
         toolbar.setTitle(getString(R.string.register_string));
         getSupportFragmentManager()
                 .beginTransaction()
@@ -147,8 +156,8 @@ public class MainActivity extends BaseActivity implements Registrable, Loginable
     }
 
     @Override
-    public void onRegisteredSuccessfully() {
-        onLoginSuccessfully();
+    public void onRegisteredSuccessfully(Profile profile) {
+        onLoginSuccessfully(profile);
     }
 
     @Override
