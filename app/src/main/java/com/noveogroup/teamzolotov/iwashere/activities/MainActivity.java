@@ -33,7 +33,6 @@ public class MainActivity extends BaseActivity implements Registrable, Loginable
 
     private final static Logger logger = Logger.getLogger(MainActivity.class.getName());
 
-    private Drawer drawer;
     private AccountHeader accountHeader;
 
     @BindView(R.id.toolbar)
@@ -89,7 +88,7 @@ public class MainActivity extends BaseActivity implements Registrable, Loginable
                 .withName(R.string.help_string)
                 .withIcon(R.drawable.ic_help_black_24dp);
 
-        drawer = new DrawerBuilder()
+        new DrawerBuilder()
                 .withActivity(this)
                 .withToolbar(toolbar)
                 .withAccountHeader(accountHeader)
@@ -142,7 +141,6 @@ public class MainActivity extends BaseActivity implements Registrable, Loginable
         accountHeader.removeProfile(0);
         accountHeader.addProfiles(iProfile);
 
-        accountHeader.updateProfile(iProfile);
         onMapItemSelected();
     }
 
