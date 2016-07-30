@@ -17,9 +17,11 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.maps.android.geojson.GeoJsonFeature;
 import com.google.maps.android.geojson.GeoJsonLayer;
 import com.google.maps.android.geojson.GeoJsonPolygonStyle;
+import com.j256.ormlite.android.apptools.OpenHelperManager;
 import com.j256.ormlite.dao.Dao;
 import com.noveogroup.teamzolotov.iwashere.R;
 import com.noveogroup.teamzolotov.iwashere.database.ContentDescriptor;
+import com.noveogroup.teamzolotov.iwashere.database.RegionOrmLiteOpenHelper;
 import com.noveogroup.teamzolotov.iwashere.model.Region;
 
 import org.json.JSONException;
@@ -39,17 +41,19 @@ public class ColourMapFragment extends SupportMapFragment implements OnMapReadyC
 
     private static final String TAG = ColourMapFragment.class.getSimpleName();
 
-    private Dao<Region, Integer> dao;
+    private RegionOrmLiteOpenHelper openHelper;
 
-    public static ColourMapFragment newInstance(Dao<Region, Integer> dao) {
-        ColourMapFragment fragment = new ColourMapFragment();
-        fragment.dao = dao;
-        return fragment;
+    public static ColourMapFragment newInstance() {
+        return new ColourMapFragment();
     }
 
     @Override
     public void onCreate(Bundle bundle) {
         super.onCreate(bundle);
+        if (openHelper == null) {
+            openHelper = OpenHelperManager.getHelper(getContext(), RegionOrmLiteOpenHelper.class);
+        }
+
         setRetainInstance(true);
         getMapAsync(this);
     }
@@ -64,7 +68,7 @@ public class ColourMapFragment extends SupportMapFragment implements OnMapReadyC
                     GeoJsonLayer layer = new GeoJsonLayer(googleMap, R.raw.adm4_region, getContext());
                     GeoJsonPolygonStyle defaultStyle = layer.getDefaultPolygonStyle();
                     defaultStyle.setFillColor(0);
-                    List<Region> regions = dao.queryForAll();
+                    List<Region> regions = openHelper.getDao().queryForAll();
                     for (GeoJsonFeature feature : layer.getFeatures()) {
                         GeoJsonPolygonStyle polygonStyle = new GeoJsonPolygonStyle();
                         polygonStyle.setStrokeWidth(1);
@@ -103,5 +107,14 @@ public class ColourMapFragment extends SupportMapFragment implements OnMapReadyC
                 }
             });
 
+    }
+
+    @Override
+    public void onDestroy() {
+        if (openHelper != null) {
+            OpenHelperManager.releaseHelper();
+            openHelper = null;
+        }
+        super.onDestroy();
     }
 }

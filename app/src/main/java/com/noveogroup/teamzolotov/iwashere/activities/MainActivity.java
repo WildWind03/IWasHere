@@ -40,8 +40,6 @@ public class MainActivity extends BaseActivity {
 
     private final static Logger logger = Logger.getLogger(MainActivity.class.getName());
 
-    private RegionOrmLiteOpenHelper openHelper;
-
     @BindView(R.id.toolbar)
     protected Toolbar toolbar;
 
@@ -50,18 +48,11 @@ public class MainActivity extends BaseActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        openHelper = OpenHelperManager.getHelper(this, RegionOrmLiteOpenHelper.class);
-
         if (savedInstanceState == null) {
-            try {
-                FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-                Dao<Region, Integer> dao = openHelper.getDao();
-                ColourMapFragment mapFragment = ColourMapFragment.newInstance(dao);
-                transaction.add(R.id.layout_for_showing_fragment, mapFragment, MAP_FRAGMENT_TAG);
-                transaction.commit();
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
+            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+            ColourMapFragment mapFragment = ColourMapFragment.newInstance();
+            transaction.add(R.id.layout_for_showing_fragment, mapFragment, MAP_FRAGMENT_TAG);
+            transaction.commit();
         }
     }
 
@@ -153,14 +144,10 @@ public class MainActivity extends BaseActivity {
         toolbar.setTitle(R.string.map_string);
         ColourMapFragment mapFragment = (ColourMapFragment) getSupportFragmentManager().findFragmentByTag(MAP_FRAGMENT_TAG);
         if (mapFragment == null) {
-            try {
-                FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-                ColourMapFragment newMapFragment = ColourMapFragment.newInstance(openHelper.getDao());
-                transaction.replace(R.id.layout_for_showing_fragment, newMapFragment, MAP_FRAGMENT_TAG);
-                transaction.commit();
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
+            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+            ColourMapFragment newMapFragment = ColourMapFragment.newInstance();
+            transaction.replace(R.id.layout_for_showing_fragment, newMapFragment, MAP_FRAGMENT_TAG);
+            transaction.commit();
         }
     }
 
@@ -168,14 +155,10 @@ public class MainActivity extends BaseActivity {
         toolbar.setTitle(R.string.regions_string);
         RegionListFragment regionsFragment = (RegionListFragment) getSupportFragmentManager().findFragmentByTag(REGIONS_FRAGMENT_TAG);
         if (regionsFragment == null) {
-            try {
-                FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-                RegionListFragment newRegionsFragment = RegionListFragment.newInstance(openHelper.getDao());
-                transaction.replace(R.id.layout_for_showing_fragment, newRegionsFragment, REGIONS_FRAGMENT_TAG);
-                transaction.commit();
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
+            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+            RegionListFragment newRegionsFragment = RegionListFragment.newInstance();
+            transaction.replace(R.id.layout_for_showing_fragment, newRegionsFragment, REGIONS_FRAGMENT_TAG);
+            transaction.commit();
         }
     }
 
