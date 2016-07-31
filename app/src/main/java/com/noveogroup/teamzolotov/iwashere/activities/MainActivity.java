@@ -180,12 +180,7 @@ public class MainActivity extends BaseActivity implements Registrable {
     public void onLoginSuccessfully(Profile profile) {
         this.profile = profile;
 
-        IProfile iProfile = new ProfileDrawerItem()
-                .withEmail(profile.getEmail())
-                .withName(profile.getUsername());
-
-        accountHeader.removeProfile(0);
-        accountHeader.addProfiles(iProfile);
+        updateAccountHeader(profile);
 
         loginState = LoginState.SINGED_UP;
         updateLoginDrawerItem();
@@ -197,6 +192,7 @@ public class MainActivity extends BaseActivity implements Registrable {
         loginState = LoginState.LOGIN;
         this.profile = null;
         updateLoginDrawerItem();
+        updateAccountHeader(profile);
         onLoginItemSelected();
     }
 
@@ -231,6 +227,25 @@ public class MainActivity extends BaseActivity implements Registrable {
 
     private void onHelpItemSelected() {
         toolbar.setTitle(R.string.help_string);
+    }
+
+    private void updateAccountHeader(@Nullable Profile profile) {
+        this.profile = profile;
+
+        IProfile iProfile;
+
+        if (null != profile) {
+            iProfile = new ProfileDrawerItem()
+                    .withEmail(profile.getEmail())
+                    .withName(profile.getUsername());
+        } else {
+            iProfile = new ProfileDrawerItem()
+                    .withEmail(getResources().getString(R.string.default_email))
+                    .withName(getResources().getString(R.string.default_username));
+        }
+
+        accountHeader.removeProfile(0);
+        accountHeader.addProfiles(iProfile);
     }
 
     private void onLoginItemSelected() {
