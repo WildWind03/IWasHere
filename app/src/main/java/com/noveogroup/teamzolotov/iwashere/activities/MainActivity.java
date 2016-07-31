@@ -138,6 +138,7 @@ public class MainActivity extends BaseActivity implements Registrable {
     @Override
     public void onLoginLinkClicked() {
         loginState = LoginState.LOGIN;
+        updateLoginDrawerItem();
         onLoginItemSelected();
     }
 
@@ -153,13 +154,7 @@ public class MainActivity extends BaseActivity implements Registrable {
         accountHeader.addProfiles(iProfile);
 
         loginState = LoginState.SINGED_UP;
-
-        loginDrawerItem
-                .withIdentifier(LOGIN_ID)
-                .withName(R.string.account_text)
-                .withIcon(R.drawable.ic_person_black_24dp);
-
-        drawer.updateItem(loginDrawerItem);
+        updateLoginDrawerItem();
 
         onLoginItemSelected();
     }
@@ -177,6 +172,7 @@ public class MainActivity extends BaseActivity implements Registrable {
     @Override
     public void onRegisterLinkClicked() {
         loginState = LoginState.REGISTER;
+        updateLoginDrawerItem();
         onLoginItemSelected();
     }
 
@@ -235,6 +231,33 @@ public class MainActivity extends BaseActivity implements Registrable {
                 break;
         }
 
+    }
+
+    private void updateLoginDrawerItem() {
+        switch (loginState) {
+            case LOGIN:
+                loginDrawerItem
+                        .withIdentifier(LOGIN_ID)
+                        .withName(R.string.login_text)
+                        .withIcon(R.drawable.ic_person_black_24dp);
+                break;
+
+            case SINGED_UP:
+                loginDrawerItem
+                        .withIdentifier(LOGIN_ID)
+                        .withName(R.string.account_text)
+                        .withIcon(R.drawable.ic_person_black_24dp);
+                break;
+
+            case REGISTER:
+                loginDrawerItem
+                        .withIdentifier(LOGIN_ID)
+                        .withName(R.string.create_account_text)
+                        .withIcon(R.drawable.ic_person_black_24dp);
+                break;
+        }
+
+        drawer.updateItem(loginDrawerItem);
     }
 
     enum LoginState {

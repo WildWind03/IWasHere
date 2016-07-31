@@ -154,7 +154,6 @@ public class LoginFragment extends BaseFragment {
 
         DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference();
 
-        final String username;
         mDatabase.child(USERS_DATABASE_TAG).child(firebaseUser.getUid()).child(USERNAME_DATABASE_KEY).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
