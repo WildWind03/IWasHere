@@ -1,17 +1,23 @@
 package com.noveogroup.teamzolotov.iwashere.fragments;
 
+import android.app.Activity;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.widget.TextView;
 
 import com.noveogroup.teamzolotov.iwashere.R;
+import com.noveogroup.teamzolotov.iwashere.activities.Registrable;
 import com.noveogroup.teamzolotov.iwashere.model.Profile;
 
+import java.util.logging.Logger;
+
 import butterknife.BindView;
+import butterknife.OnClick;
 
 public class AccountFragment extends BaseFragment {
 
     private final static String PROFILE_KEY = "PROFILE_KEY";
+    private static final Logger logger = Logger.getLogger(AccountFragment.class.getName());
 
     @BindView(R.id.username_text_view)
     protected TextView usernameTextView;
@@ -33,6 +39,17 @@ public class AccountFragment extends BaseFragment {
         if (null != profile) {
             usernameTextView.setText(profile.getUsername());
             emailTextView.setText(profile.getEmail());
+        }
+    }
+
+    @OnClick(R.id.sign_out_button)
+    protected void onSignOutButtonClick() {
+        Activity activity = getActivity();
+
+        if (activity instanceof Registrable) {
+            ((Registrable) activity).onSignOutClicked();
+        } else {
+            logger.info("Activity of account fragment must implement registrable interface");
         }
     }
 

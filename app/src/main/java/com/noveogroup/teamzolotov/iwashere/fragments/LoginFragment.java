@@ -23,6 +23,7 @@ import com.noveogroup.teamzolotov.iwashere.R;
 import com.noveogroup.teamzolotov.iwashere.activities.Registrable;
 import com.noveogroup.teamzolotov.iwashere.model.Profile;
 import com.noveogroup.teamzolotov.iwashere.util.EmailValidator;
+import com.noveogroup.teamzolotov.iwashere.util.LoginUtil;
 
 import java.util.logging.Logger;
 
@@ -49,8 +50,6 @@ public class LoginFragment extends BaseFragment {
     @BindView(R.id.link_signup)
     protected TextView registerLink;
 
-    private FirebaseAuth mAuth;
-    private FirebaseUser firebaseUser;
 
     public static LoginFragment newInstance() {
         return new LoginFragment();
@@ -58,7 +57,7 @@ public class LoginFragment extends BaseFragment {
 
     @Override
     protected void onPostViewCrated(@Nullable Bundle savedInstanceState) {
-        mAuth = FirebaseAuth.getInstance();
+
     }
 
     @OnClick(R.id.btn_login)
@@ -80,28 +79,20 @@ public class LoginFragment extends BaseFragment {
                 return;
 
             case SUCCESS:
-                final ProgressDialog progressDialog = new ProgressDialog(getActivity());
-                progressDialog.setIndeterminate(true);
-                progressDialog.setMessage(getResources().getString(R.string.auth_text));
-                progressDialog.show();
-
-                final String email = emailText.getText().toString();
+                String email = emailText.getText().toString();
                 String password = passwordText.getText().toString();
 
-                mAuth.signInWithEmailAndPassword(email, password)
-                        .addOnCompleteListener(getActivity(), new OnCompleteListener<AuthResult>() {
-                            @Override
-                            public void onComplete(@NonNull Task<AuthResult> task) {
-                                progressDialog.dismiss();
+                LoginUtil.login(email, password, getActivity(), true, new DoWithProfile() {
+                    @Override
+                    public void onSuccess(FirebaseUser firebaseUser, String password) {
+                        onLoginSuccess(firebaseUser, password);
+                    }
 
-                                if (!task.isSuccessful()) {
-                                    onLoginFailed();
-                                } else {
-                                    firebaseUser = task.getResult().getUser();
-                                    onLoginSuccess();
-                                }
-                            }
-                        });
+                    @Override
+                    public void onError() {
+                        onLoginFailed();
+                    }
+                });
                 break;
         }
     }
@@ -116,6 +107,7 @@ public class LoginFragment extends BaseFragment {
             logger.info("Error! Activity does not implement onRegisterLinkClicked interface");
         }
     }
+
 
     @Override
     protected int getLayout() {
@@ -145,7 +137,7 @@ public class LoginFragment extends BaseFragment {
         showMessage(R.string.auth_troubles_title, R.string.auth_failed_message);
     }
 
-    private void onLoginSuccess() {
+    private void onLoginSuccess(final FirebaseUser firebaseUser, final String password) {
         final ProgressDialog progressDialog = new ProgressDialog(getActivity());
         progressDialog.setIndeterminate(true);
         progressDialog.setMessage(getResources().getString(R.string.getting_data_from_server_text));
@@ -161,7 +153,7 @@ public class LoginFragment extends BaseFragment {
 
                 progressDialog.dismiss();
 
-                Profile profile = new Profile(firebaseUser.getEmail(), username);
+                Profile profile = new Profile(firebaseUser.getEmail(), username, password, firebaseUser.getUid());
 
                 Activity activity = getActivity();
                 if (activity instanceof Registrable) {

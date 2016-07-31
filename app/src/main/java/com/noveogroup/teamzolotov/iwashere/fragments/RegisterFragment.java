@@ -127,13 +127,14 @@ public class RegisterFragment extends BaseFragment {
         String name = nameText.getText().toString();
         String uid = firebaseUser.getUid();
         String email = emailText.getText().toString();
+        String password = passwordText.getText().toString();
 
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference myRef = database.getReference();
         DatabaseReference databaseReference = myRef.child(USERS_DATABASE_TAG).child(uid);
         databaseReference.child(USERNAME_DATABASE_TAG).setValue(name);
 
-        Profile profile = new Profile(email, name);
+        Profile profile = new Profile(email, name, password, firebaseUser.getUid());
 
         Activity activity = getActivity();
 

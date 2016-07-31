@@ -12,6 +12,4 @@ public interface Registrable {
     void onLoginSuccessfully(Profile profile);
 
     void onSignOutClicked();
-
-    void onSignOutSuccessfully();
 }

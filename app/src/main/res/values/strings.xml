@@ -40,4 +40,7 @@
     <string name="invalid_data">Invalid data</string>
     <string name="auth_troubles_title">Authorization problems</string>
     <string name="registration_problems_title">Registration problems</string>
+
+    <string name="default_email">No e-mail address</string>
+    <string name="default_username">Anonymous</string>
 </resources>

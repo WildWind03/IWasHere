@@ -1,5 +1,6 @@
 package com.noveogroup.teamzolotov.iwashere.activities;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.Toolbar;
@@ -32,6 +33,11 @@ public class MainActivity extends BaseActivity implements Registrable {
     private final static int SETTINGS_ID = 3;
     private final static int HELP_ID = 4;
 
+    private final static String IS_AUTH_KEY = "IS AUTH_KEY";
+    private final static String EMAIL_KEY = "EMAIL_KEY";
+    private final static String USERNAME_KEY = "USERNAME_KEY";
+    private final static String PASSWORD_KEY = "PASSWORD_KEY";
+
     private final static Logger logger = Logger.getLogger(MainActivity.class.getName());
 
     private LoginState loginState = LoginState.LOGIN;
@@ -42,6 +48,8 @@ public class MainActivity extends BaseActivity implements Registrable {
 
     private PrimaryDrawerItem loginDrawerItem;
 
+    private SharedPreferences sharedPreferences;
+
     @BindView(R.id.toolbar)
     protected Toolbar toolbar;
 
@@ -49,14 +57,20 @@ public class MainActivity extends BaseActivity implements Registrable {
     protected void onPostCreate(@Nullable final Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
 
+        sharedPreferences = getPreferences(MODE_PRIVATE);
+
+        boolean isAuth = sharedPreferences.getBoolean(IS_AUTH_KEY, false);
+
+        if (isAuth) {
+
+        }
+
         setSupportActionBar(toolbar);
         toolbar.setTitle(R.string.map_string);
 
-        Profile profile = new Profile("No e-mail address", "Anonymous");
-
         IProfile iProfile = new ProfileDrawerItem()
-                .withEmail(profile.getEmail())
-                .withName(profile.getUsername());
+                .withEmail(getString(R.string.default_email))
+                .withName(getString(R.string.default_username));
 
         accountHeader = new AccountHeaderBuilder()
                 .withActivity(this)
@@ -136,6 +150,26 @@ public class MainActivity extends BaseActivity implements Registrable {
     }
 
     @Override
+    protected void onDestroy() {
+        super.onDestroy();
+
+        sharedPreferences = getPreferences(MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+
+        if (null == profile) {
+            editor.putBoolean(IS_AUTH_KEY, false);
+        } else {
+            editor.putBoolean(IS_AUTH_KEY, true);
+            editor.putString(USERNAME_KEY, profile.getUsername());
+            editor.putString(EMAIL_KEY, profile.getEmail());
+            editor.putString(PASSWORD_KEY, profile.getPassword());
+        }
+
+        editor.apply();
+
+    }
+
+    @Override
     public void onLoginLinkClicked() {
         loginState = LoginState.LOGIN;
         updateLoginDrawerItem();
@@ -155,18 +189,15 @@ public class MainActivity extends BaseActivity implements Registrable {
 
         loginState = LoginState.SINGED_UP;
         updateLoginDrawerItem();
-
         onLoginItemSelected();
     }
 
     @Override
     public void onSignOutClicked() {
-
-    }
-
-    @Override
-    public void onSignOutSuccessfully() {
-
+        loginState = LoginState.LOGIN;
+        this.profile = null;
+        updateLoginDrawerItem();
+        onLoginItemSelected();
     }
 
     @Override
