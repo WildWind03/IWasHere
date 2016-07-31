@@ -37,10 +37,37 @@ public class RegionAdapter extends RecyclerView.Adapter<RegionAdapter.ViewHolder
     private Context context;
     private Dao<Region, Integer> dao;
 
+
+    // CR1: Do not pass dao to adapter. Adapter should not perform queries.
+    // Passing click callback is a better solution.
+    // https://github.com/rohitshampur/RecyclerItemClickSupport - this lib can be used to create a callback in Activity/Fragment
+
+    // CR1: Add extra methods for data handling:
+
+    /*
+    private final List<Region> regions = new ArrayList<>();
+    public void clear() {
+        regions.clear();
+        notifyDataSetChanged();
+    }
+
+
+    public void replaceData(List<Region> newRegions) {
+        regions.clear();
+        regions.addAll(newRegions);
+        notifyDataSetChanged();
+    }
+
+    Same for adding, modifying, etc.
+    */
+
+
     public RegionAdapter(List<Region> regions, Context context, Dao<Region, Integer> dao) {
         this.regions = regions;
         this.context = context;
         this.dao = dao;
+
+        // CR1: inflater can be created here as well.
     }
 
 
@@ -56,6 +83,8 @@ public class RegionAdapter extends RecyclerView.Adapter<RegionAdapter.ViewHolder
         holder.regionImage.setImageResource(RegionUtil.getRegionIconResource(region.getOsmId()));
         holder.regionName.setText(RegionUtil.getRegionNameResource(region.getOsmId()));
         holder.regionVisited.setChecked(region.isVisited());
+
+        // CR1: Move this click listener to ViewHolder, see ButterKnife @OnClick.
         holder.regionVisited.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

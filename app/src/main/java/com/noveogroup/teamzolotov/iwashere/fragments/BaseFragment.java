@@ -20,6 +20,7 @@ public abstract class BaseFragment extends Fragment {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        // CR1: Unbinder
         ButterKnife.bind(this, view);
         onPostViewCrated(savedInstanceState);
     }

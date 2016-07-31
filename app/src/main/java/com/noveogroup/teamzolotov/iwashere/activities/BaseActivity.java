@@ -14,6 +14,10 @@ public abstract class BaseActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         setContentView(getLayout());
+
+        // CR1: do not forget to unbind:
+        // Ubinbed unbinder = ButterKnife.bind(this);
+        // unbinder.unbind();
         ButterKnife.bind(this);
     }
 

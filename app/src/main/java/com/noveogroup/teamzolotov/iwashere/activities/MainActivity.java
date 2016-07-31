@@ -48,6 +48,14 @@ public class MainActivity extends BaseActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+
+        // CR1: Call onMapItemSelected() ?
+        // Can be moved to FragmentUtils which handles transaction:
+        // FragmentUtils.replaceFragment(ColourMapFragment.newInstance(), R.id.layout_for_showing_fragment, getSupportFragmentManager());
+        // or
+        // FragmentUtils.addFragment(ColourMapFragment.newInstance(), R.id.layout_for_showing_fragment, getSupportFragmentManager());
+        // depending on navigation you want
+
         if (savedInstanceState == null) {
             FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
             ColourMapFragment mapFragment = ColourMapFragment.newInstance();

@@ -29,11 +29,15 @@ import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.functions.Func1;
+import rx.functions.Func2;
 import rx.schedulers.Schedulers;
 
 public class RegionListFragment extends Fragment {
 
     private static final String TAG = RegionListFragment.class.getSimpleName();
+
+
+    // CR1: Can be moved to BaseDatabaseFragment (extends BaseFragment) and acquired/released in onCreate/onDestroy
 
     private RegionOrmLiteOpenHelper openHelper;
 
@@ -46,8 +50,12 @@ public class RegionListFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
+        // CR1: Better wrap into a FrameLayout and use Butterknife
         View view = inflater.inflate(R.layout.fragment_region_list, container, false);
 
+
+        // CR1: avoid instanceof whenever possible
         if (view instanceof RecyclerView) {
             Context context = view.getContext();
             final RecyclerView recyclerView = (RecyclerView) view;
@@ -57,6 +65,40 @@ public class RegionListFragment extends Fragment {
             }
             try {
                 final Dao<Region, Integer> dao = openHelper.getDao();
+
+
+
+                /* CR1: any sequential transformation can be done using transformation operators.
+                This helps avoiding deep code nesting with anonymous classes
+
+                see related CRs in RegionAdapter
+
+                final RegionAdapter adapter = new RegionAdapter(getActivity());
+                recyclerView.setAdapter(adapter);
+
+
+                Observable.from(dao.queryForAll())
+                        .toSortedList(new Func2<Region, Region, Integer>() {
+                            @Override
+                            public Integer call(final Region region, final Region region2) {
+                                // TODO: compare
+                                return null;
+                            }
+                        }).compose(new Observable.Transformer<List<Region>, List<Region>>() {
+                            @Override
+                            public Observable<List<Region>> call(final Observable<List<Region>> listObservable) {
+                                return listObservable
+                                        .subscribeOn(Schedulers.computation())
+                                        .observeOn(AndroidSchedulers.mainThread());
+                            }
+                        }).subscribe(new Action1<List<Region>>() {
+                            @Override
+                            public void call(final List<Region> regions) {
+                                adapter.setData(regions);
+                            }
+                        });*/
+
+
                 Observable.just(dao.queryForAll())
                         .subscribeOn(Schedulers.computation())
                         .observeOn(AndroidSchedulers.mainThread())
