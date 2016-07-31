@@ -51,29 +51,32 @@ public class RegionAdapter extends RecyclerView.Adapter<RegionAdapter.ViewHolder
     }
 
     @Override
-    public void onBindViewHolder(RegionAdapter.ViewHolder holder, final int position) {
-        final Region region = regions.get(position);
+    public void onBindViewHolder(final RegionAdapter.ViewHolder holder, int position) {
+        final Region region = regions.get(holder.getAdapterPosition());
         holder.regionImage.setImageResource(RegionUtil.getRegionIconResource(region.getOsmId()));
         holder.regionName.setText(RegionUtil.getRegionNameResource(region.getOsmId()));
         holder.regionVisited.setChecked(region.isVisited());
-        holder.regionVisited.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+        holder.regionVisited.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                region.setVisited(b);
-                try {
-                    Observable.just(dao.update(region))
-                            .subscribeOn(Schedulers.computation())
-                            .subscribe(new Action1<Integer>() {
-                                @Override
-                                public void call(Integer integer) {
-                                    if (integer != 1) {
-                                        Log.d(TAG, "How the hell did you get up here, anyway?");
+            public void onClick(View v) {
+                if (v instanceof CheckBox) {
+                    CheckBox box = (CheckBox) v;
+                    region.setVisited(box.isChecked());
+                    try {
+                        Observable.just(dao.update(region))
+                                .subscribeOn(Schedulers.computation())
+                                .subscribe(new Action1<Integer>() {
+                                    @Override
+                                    public void call(Integer integer) {
+                                        if (integer != 1) {
+                                            Log.d(TAG, "How the hell did you get up here, anyway?");
+                                        }
                                     }
-                                }
-                            });
-                } catch (SQLException e) {
-                    Log.d(TAG, "Failed updating region at pos " + position);
-                    e.printStackTrace();
+                                });
+                    } catch (SQLException e) {
+                        Log.d(TAG, "Failed updating region at pos " + holder.getAdapterPosition());
+                        e.printStackTrace();
+                    }
                 }
             }
         });
