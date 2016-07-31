@@ -181,10 +181,7 @@ public class MainActivity extends BaseActivity implements Registrable {
 
     }
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-
+    private void updateAuthState() {
         sharedPreferences = getPreferences(MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
 
@@ -199,7 +196,6 @@ public class MainActivity extends BaseActivity implements Registrable {
         }
 
         editor.apply();
-
     }
 
     @Override
@@ -218,6 +214,7 @@ public class MainActivity extends BaseActivity implements Registrable {
         loginState = LoginState.SINGED_UP;
         updateLoginDrawerItem();
         onLoginItemSelected();
+        updateAuthState();
     }
 
     @Override
@@ -227,6 +224,7 @@ public class MainActivity extends BaseActivity implements Registrable {
         updateLoginDrawerItem();
         updateAccountHeader(profile);
         onLoginItemSelected();
+        updateAuthState();
     }
 
     @Override
