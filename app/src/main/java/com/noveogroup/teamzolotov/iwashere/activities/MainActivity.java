@@ -6,6 +6,7 @@ import android.support.annotation.Nullable;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 
+import com.google.firebase.auth.FirebaseUser;
 import com.mikepenz.materialdrawer.AccountHeader;
 import com.mikepenz.materialdrawer.AccountHeaderBuilder;
 import com.mikepenz.materialdrawer.Drawer;
@@ -18,9 +19,11 @@ import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
 import com.mikepenz.materialdrawer.model.interfaces.IProfile;
 import com.noveogroup.teamzolotov.iwashere.R;
 import com.noveogroup.teamzolotov.iwashere.fragments.AccountFragment;
+import com.noveogroup.teamzolotov.iwashere.fragments.DoWithProfile;
 import com.noveogroup.teamzolotov.iwashere.fragments.LoginFragment;
 import com.noveogroup.teamzolotov.iwashere.fragments.RegisterFragment;
 import com.noveogroup.teamzolotov.iwashere.model.Profile;
+import com.noveogroup.teamzolotov.iwashere.util.LoginUtil;
 
 import java.util.logging.Logger;
 
@@ -37,6 +40,7 @@ public class MainActivity extends BaseActivity implements Registrable {
     private final static String EMAIL_KEY = "EMAIL_KEY";
     private final static String USERNAME_KEY = "USERNAME_KEY";
     private final static String PASSWORD_KEY = "PASSWORD_KEY";
+    private final static String UID_KEY = "UID_KEY";
 
     private final static Logger logger = Logger.getLogger(MainActivity.class.getName());
 
@@ -61,16 +65,51 @@ public class MainActivity extends BaseActivity implements Registrable {
 
         boolean isAuth = sharedPreferences.getBoolean(IS_AUTH_KEY, false);
 
-        if (isAuth) {
+        IProfile iProfile;
+        loginDrawerItem = new PrimaryDrawerItem();
 
+        if (isAuth) {
+            String username = sharedPreferences.getString(USERNAME_KEY, getResources().getString(R.string.default_username));
+            String email = sharedPreferences.getString(EMAIL_KEY, getResources().getString(R.string.default_email));
+            String password = sharedPreferences.getString(PASSWORD_KEY, null);
+            String uid = sharedPreferences.getString(UID_KEY, null);
+
+            profile = new Profile(email, username, password, uid);
+
+            iProfile = new ProfileDrawerItem()
+                    .withEmail(email)
+                    .withName(username);
+
+            loginState = LoginState.SINGED_UP;
+            loginDrawerItem
+                    .withIdentifier(LOGIN_ID)
+                    .withName(R.string.account_text)
+                    .withIcon(R.drawable.ic_person_black_24dp);
+
+            LoginUtil.login(email, password, this, false, new DoWithProfile() {
+                @Override
+                public void onSuccess(FirebaseUser firebaseUser, String password) {
+
+                }
+
+                @Override
+                public void onError() {
+                    showToast("There is not internet connection. The offline mode has been turned on");
+                }
+            });
+        } else {
+            iProfile = new ProfileDrawerItem()
+                    .withEmail(getString(R.string.default_email))
+                    .withName(getString(R.string.default_username));
+
+            loginDrawerItem
+                    .withIdentifier(LOGIN_ID)
+                    .withName(R.string.login_string)
+                    .withIcon(R.drawable.ic_person_black_24dp);
         }
 
         setSupportActionBar(toolbar);
         toolbar.setTitle(R.string.map_string);
-
-        IProfile iProfile = new ProfileDrawerItem()
-                .withEmail(getString(R.string.default_email))
-                .withName(getString(R.string.default_username));
 
         accountHeader = new AccountHeaderBuilder()
                 .withActivity(this)
@@ -78,13 +117,6 @@ public class MainActivity extends BaseActivity implements Registrable {
                 .addProfiles(iProfile)
                 .withSelectionListEnabled(false)
                 .build();
-
-        loginDrawerItem = new PrimaryDrawerItem();
-
-        loginDrawerItem
-                .withIdentifier(LOGIN_ID)
-                .withName(R.string.login_string)
-                .withIcon(R.drawable.ic_person_black_24dp);
 
         PrimaryDrawerItem mapDrawerItem = new PrimaryDrawerItem();
         mapDrawerItem
@@ -163,6 +195,7 @@ public class MainActivity extends BaseActivity implements Registrable {
             editor.putString(USERNAME_KEY, profile.getUsername());
             editor.putString(EMAIL_KEY, profile.getEmail());
             editor.putString(PASSWORD_KEY, profile.getPassword());
+            editor.putString(UID_KEY, profile.getUid());
         }
 
         editor.apply();
