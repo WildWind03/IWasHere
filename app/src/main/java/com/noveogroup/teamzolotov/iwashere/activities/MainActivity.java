@@ -85,18 +85,6 @@ public class MainActivity extends BaseActivity implements Registrable {
                     .withIdentifier(LOGIN_ID)
                     .withName(R.string.account_text)
                     .withIcon(R.drawable.ic_person_black_24dp);
-
-            LoginUtil.login(email, password, this, false, new DoWithProfile() {
-                @Override
-                public void onSuccess(FirebaseUser firebaseUser, String password) {
-
-                }
-
-                @Override
-                public void onError() {
-                    showToast("There is not internet connection. The offline mode has been turned on");
-                }
-            });
         } else {
             iProfile = new ProfileDrawerItem()
                     .withEmail(getString(R.string.default_email))
