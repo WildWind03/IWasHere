@@ -48,9 +48,7 @@ public class MainActivity extends BaseActivity implements Registrable {
 
     private AccountHeader accountHeader;
     private Profile profile;
-    private Drawer drawer;
 
-    private PrimaryDrawerItem loginDrawerItem;
 
     private SharedPreferences sharedPreferences;
 
@@ -66,7 +64,6 @@ public class MainActivity extends BaseActivity implements Registrable {
         boolean isAuth = sharedPreferences.getBoolean(IS_AUTH_KEY, false);
 
         IProfile iProfile;
-        loginDrawerItem = new PrimaryDrawerItem();
 
         if (isAuth) {
             String username = sharedPreferences.getString(USERNAME_KEY, getResources().getString(R.string.default_username));
@@ -81,19 +78,10 @@ public class MainActivity extends BaseActivity implements Registrable {
                     .withName(username);
 
             loginState = LoginState.SINGED_UP;
-            loginDrawerItem
-                    .withIdentifier(LOGIN_ID)
-                    .withName(R.string.account_text)
-                    .withIcon(R.drawable.ic_person_black_24dp);
         } else {
             iProfile = new ProfileDrawerItem()
                     .withEmail(getString(R.string.default_email))
-                    .withName(getString(R.string.default_username));
-
-            loginDrawerItem
-                    .withIdentifier(LOGIN_ID)
-                    .withName(R.string.login_string)
-                    .withIcon(R.drawable.ic_person_black_24dp);
+                    .withName(getString(R.string.default_username));;
         }
 
         setSupportActionBar(toolbar);
@@ -104,8 +92,15 @@ public class MainActivity extends BaseActivity implements Registrable {
                 .withTextColorRes(R.color.primary_text)
                 .addProfiles(iProfile)
                 .withSelectionListEnabled(false)
+                .withOnAccountHeaderListener(new AccountHeader.OnAccountHeaderListener() {
+                    @Override
+                    public boolean onProfileChanged(View view, IProfile profile, boolean current) {
+                        onLoginItemSelected();
+                        return false;
+                    }
+                })
                 .build();
-
+        //// TODO: 01.08.2016 saving state of selected item in drawer while the orientation is changed
         PrimaryDrawerItem mapDrawerItem = new PrimaryDrawerItem();
         mapDrawerItem
                 .withIdentifier(MAP_ID)
@@ -130,12 +125,11 @@ public class MainActivity extends BaseActivity implements Registrable {
                 .withName(R.string.help_string)
                 .withIcon(R.drawable.ic_help_black_24dp);
 
-        drawer = new DrawerBuilder()
+        new DrawerBuilder()
                 .withActivity(this)
                 .withToolbar(toolbar)
                 .withAccountHeader(accountHeader)
                 .addDrawerItems(
-                        loginDrawerItem,
                         mapDrawerItem,
                         listRegionsDrawerItem,
                         new DividerDrawerItem(),
@@ -189,7 +183,6 @@ public class MainActivity extends BaseActivity implements Registrable {
     @Override
     public void onLoginLinkClicked() {
         loginState = LoginState.LOGIN;
-        updateLoginDrawerItem();
         onLoginItemSelected();
     }
 
@@ -200,7 +193,6 @@ public class MainActivity extends BaseActivity implements Registrable {
         updateAccountHeader(profile);
 
         loginState = LoginState.SINGED_UP;
-        updateLoginDrawerItem();
         onLoginItemSelected();
         updateAuthState();
     }
@@ -209,8 +201,7 @@ public class MainActivity extends BaseActivity implements Registrable {
     public void onSignOutClicked() {
         loginState = LoginState.LOGIN;
         this.profile = null;
-        updateLoginDrawerItem();
-        updateAccountHeader(profile);
+        updateAccountHeader(null);
         onLoginItemSelected();
         updateAuthState();
     }
@@ -218,7 +209,6 @@ public class MainActivity extends BaseActivity implements Registrable {
     @Override
     public void onRegisterLinkClicked() {
         loginState = LoginState.REGISTER;
-        updateLoginDrawerItem();
         onLoginItemSelected();
     }
 
@@ -295,34 +285,6 @@ public class MainActivity extends BaseActivity implements Registrable {
                         .commit();
                 break;
         }
-
-    }
-
-    private void updateLoginDrawerItem() {
-        switch (loginState) {
-            case LOGIN:
-                loginDrawerItem
-                        .withIdentifier(LOGIN_ID)
-                        .withName(R.string.login_text)
-                        .withIcon(R.drawable.ic_person_black_24dp);
-                break;
-
-            case SINGED_UP:
-                loginDrawerItem
-                        .withIdentifier(LOGIN_ID)
-                        .withName(R.string.account_text)
-                        .withIcon(R.drawable.ic_person_black_24dp);
-                break;
-
-            case REGISTER:
-                loginDrawerItem
-                        .withIdentifier(LOGIN_ID)
-                        .withName(R.string.create_account_text)
-                        .withIcon(R.drawable.ic_person_black_24dp);
-                break;
-        }
-
-        drawer.updateItem(loginDrawerItem);
     }
 
     enum LoginState {

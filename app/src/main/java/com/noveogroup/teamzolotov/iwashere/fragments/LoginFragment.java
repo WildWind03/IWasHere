@@ -129,7 +129,6 @@ public class LoginFragment extends BaseFragment {
     }
 
     private void onLoginFailed(Exception e) {
-        //showMessage(R.string.auth_troubles_title, R.string.auth_failed_message);
         showMessage(R.string.auth_troubles_title, e.getMessage());
     }
 

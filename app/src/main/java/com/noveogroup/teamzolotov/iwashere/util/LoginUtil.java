@@ -45,7 +45,6 @@ public class LoginUtil {
 
                         if (!task.isSuccessful()) {
                             Exception exception = task.getException();
-
                             doWithProfile.onError(exception);
                         } else {
                             FirebaseUser firebaseUser = task.getResult().getUser();
