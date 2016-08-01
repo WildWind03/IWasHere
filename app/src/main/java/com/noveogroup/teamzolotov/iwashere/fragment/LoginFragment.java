@@ -136,7 +136,7 @@ public class LoginFragment extends BaseFragment {
         final ProgressDialog progressDialog = new ProgressDialog(getActivity());
         progressDialog.setIndeterminate(true);
         progressDialog.setMessage(getResources().getString(R.string.getting_data_from_server_text));
-
+        progressDialog.setCancelable(false);
         progressDialog.show();
 
         DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference();
@@ -146,7 +146,9 @@ public class LoginFragment extends BaseFragment {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 String username = (String) dataSnapshot.getValue();
 
-                progressDialog.dismiss();
+                if (progressDialog.isShowing()) {
+                    progressDialog.dismiss();
+                }
 
                 Profile profile = new Profile(firebaseUser.getEmail(), username, password, firebaseUser.getUid());
 

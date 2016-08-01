@@ -102,6 +102,7 @@ public class RegisterFragment extends BaseFragment {
                 final ProgressDialog progressDialog = new ProgressDialog(getActivity());
                 progressDialog.setIndeterminate(true);
                 progressDialog.setMessage(getResources().getString(R.string.sign_up_text));
+                progressDialog.setCancelable(false);
                 progressDialog.show();
 
                 mAuth.createUserWithEmailAndPassword(email, password)

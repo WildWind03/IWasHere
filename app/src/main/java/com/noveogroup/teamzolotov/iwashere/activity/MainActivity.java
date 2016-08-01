@@ -10,6 +10,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
+import com.google.firebase.storage.StorageReference;
 import com.mikepenz.materialdrawer.AccountHeader;
 import com.mikepenz.materialdrawer.AccountHeaderBuilder;
 import com.mikepenz.materialdrawer.Drawer;
@@ -71,6 +72,9 @@ public class MainActivity extends BaseActivity implements Registrable {
 
     private Drawer drawer;
 
+    private PrimaryDrawerItem backupDrawerItem;
+    private PrimaryDrawerItem restoreDrawerItem;
+
     @BindView(R.id.toolbar)
     protected Toolbar toolbar;
 
@@ -96,6 +100,18 @@ public class MainActivity extends BaseActivity implements Registrable {
 
         IProfile iProfile;
 
+        restoreDrawerItem = new PrimaryDrawerItem();
+        restoreDrawerItem
+                .withIdentifier(RESTORE_ID)
+                .withName(R.string.restore_text)
+                .withIcon(R.drawable.ic_restore_black_24dp);
+
+        backupDrawerItem = new PrimaryDrawerItem();
+        backupDrawerItem
+                .withIdentifier(BACKUP_ID)
+                .withName(R.string.backup_text)
+                .withIcon(R.drawable.ic_backup_black_24dp);
+
         if (isAuth) {
             String username = sharedPreferences.getString(USERNAME_KEY, getResources().getString(R.string.default_username));
             String email = sharedPreferences.getString(EMAIL_KEY, getResources().getString(R.string.default_email));
@@ -109,11 +125,18 @@ public class MainActivity extends BaseActivity implements Registrable {
                     .withName(username);
 
             loginState = LoginState.SINGED_UP;
+
+            backupDrawerItem.withEnabled(true);
+            restoreDrawerItem.withEnabled(true);
         } else {
             iProfile = new ProfileDrawerItem()
                     .withEmail(getString(R.string.default_email))
                     .withName(getString(R.string.default_username));
-            ;
+                    .withName(getString(R.string.default_username));
+
+            backupDrawerItem.withEnabled(false);
+            restoreDrawerItem.withEnabled(false);
+
         }
 
         setSupportActionBar(toolbar);
@@ -143,18 +166,6 @@ public class MainActivity extends BaseActivity implements Registrable {
                 .withIdentifier(LIST_REGIONS_ID)
                 .withName(R.string.regions_string)
                 .withIcon(R.drawable.ic_list_black_24dp);
-
-        PrimaryDrawerItem restoreDrawerItem = new PrimaryDrawerItem();
-        restoreDrawerItem
-                .withIdentifier(RESTORE_ID)
-                .withName(R.string.restore_text)
-                .withIcon(R.drawable.ic_restore_black_24dp);
-
-        PrimaryDrawerItem backupDrawerItem = new PrimaryDrawerItem();
-        backupDrawerItem
-                .withIdentifier(BACKUP_ID)
-                .withName(R.string.backup_text)
-                .withIcon(R.drawable.ic_backup_black_24dp);
 
         SecondaryDrawerItem settingDrawerItem = new SecondaryDrawerItem();
         settingDrawerItem
@@ -219,7 +230,11 @@ public class MainActivity extends BaseActivity implements Registrable {
             currentItemState = MAP_ID;
         }
 
-        drawer.setSelection(currentItemState);
+        if (currentItemState == LOGIN_ID) {
+            drawer.deselect();
+        } else {
+            drawer.setSelection(currentItemState);
+        }
 
         switch (currentItemState) {
             case MAP_ID:
@@ -284,6 +299,12 @@ public class MainActivity extends BaseActivity implements Registrable {
         loginState = LoginState.SINGED_UP;
         onAccountHeaderClicked();
         updateAuthState();
+
+        backupDrawerItem.withEnabled(true);
+        restoreDrawerItem.withEnabled(true);
+
+        drawer.updateItem(backupDrawerItem);
+        drawer.updateItem(restoreDrawerItem);
     }
 
     @Override
@@ -293,6 +314,12 @@ public class MainActivity extends BaseActivity implements Registrable {
         updateAccountHeader(null);
         onAccountHeaderClicked();
         updateAuthState();
+
+        backupDrawerItem.withEnabled(false);
+        restoreDrawerItem.withEnabled(false);
+
+        drawer.updateItem(backupDrawerItem);
+        drawer.updateItem(restoreDrawerItem);
     }
 
     @Override
@@ -399,6 +426,7 @@ public class MainActivity extends BaseActivity implements Registrable {
 
     private void onAccountHeaderClicked() {
         currentItemState = LOGIN_ID;
+        drawer.deselect();
 
         switch (loginState) {
             case LOGIN:
