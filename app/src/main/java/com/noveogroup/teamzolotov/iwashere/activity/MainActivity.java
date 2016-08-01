@@ -132,7 +132,6 @@ public class MainActivity extends BaseActivity implements Registrable {
             iProfile = new ProfileDrawerItem()
                     .withEmail(getString(R.string.default_email))
                     .withName(getString(R.string.default_username));
-                    .withName(getString(R.string.default_username));
 
             backupDrawerItem.withEnabled(false);
             restoreDrawerItem.withEnabled(false);
