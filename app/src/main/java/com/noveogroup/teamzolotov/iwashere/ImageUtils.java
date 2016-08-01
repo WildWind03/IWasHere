@@ -1,11 +1,11 @@
-package com.noveogroup.teamzolotov.iwashere.util;
+package com.noveogroup.teamzolotov.iwashere;
 
 import android.app.Activity;
 import android.graphics.Point;
 import android.view.Display;
 
-public class ImageUtil {
-    private ImageUtil() {
+public class ImageUtils {
+    private ImageUtils() {
 
     }
 
