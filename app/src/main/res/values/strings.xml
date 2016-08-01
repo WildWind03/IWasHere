@@ -130,4 +130,6 @@
 
     <string name="default_email">No e-mail address</string>
     <string name="default_username">Anonymous</string>
+    <string name="backup_successful">Successful backup</string>
+    <string name="restore_successful">Restored data successfully</string>
 </resources>

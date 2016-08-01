@@ -2,9 +2,13 @@ package com.noveogroup.teamzolotov.iwashere.activity;
 
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.annotation.Nullable;
+import android.support.design.widget.Snackbar;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
+import android.widget.Toast;
 
 import com.mikepenz.materialdrawer.AccountHeader;
 import com.mikepenz.materialdrawer.AccountHeaderBuilder;
@@ -17,6 +21,7 @@ import com.mikepenz.materialdrawer.model.SecondaryDrawerItem;
 import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
 import com.mikepenz.materialdrawer.model.interfaces.IProfile;
 import com.noveogroup.teamzolotov.iwashere.R;
+import com.noveogroup.teamzolotov.iwashere.database.RegionOrmLiteOpenHelper;
 import com.noveogroup.teamzolotov.iwashere.fragment.ColourMapFragment;
 import com.noveogroup.teamzolotov.iwashere.fragment.RegionListFragment;
 import com.noveogroup.teamzolotov.iwashere.util.FragmentUtils;
@@ -25,11 +30,12 @@ import com.noveogroup.teamzolotov.iwashere.fragment.LoginFragment;
 import com.noveogroup.teamzolotov.iwashere.fragment.RegisterFragment;
 import com.noveogroup.teamzolotov.iwashere.model.Profile;
 
+import java.io.File;
 import java.util.logging.Logger;
 
 import butterknife.BindView;
 
-public class MainActivity extends BaseActivity implements Registrable{
+public class MainActivity extends BaseActivity implements Registrable {
 
     private static final String TAG = MainActivity.class.getSimpleName();
 
@@ -106,7 +112,8 @@ public class MainActivity extends BaseActivity implements Registrable{
         } else {
             iProfile = new ProfileDrawerItem()
                     .withEmail(getString(R.string.default_email))
-                    .withName(getString(R.string.default_username));;
+                    .withName(getString(R.string.default_username));
+            ;
         }
 
         setSupportActionBar(toolbar);
@@ -195,8 +202,10 @@ public class MainActivity extends BaseActivity implements Registrable{
                                 onAccountHeaderClicked();
                                 break;
                             case RESTORE_ID:
+                                onRestoreItemSelected();
                                 break;
                             case BACKUP_ID:
+                                onBackupItemSelected();
                                 break;
                         }
                         return false;
@@ -212,7 +221,7 @@ public class MainActivity extends BaseActivity implements Registrable{
 
         drawer.setSelection(currentItemState);
 
-        switch(currentItemState) {
+        switch (currentItemState) {
             case MAP_ID:
                 onMapItemSelected();
                 break;
@@ -334,11 +343,39 @@ public class MainActivity extends BaseActivity implements Registrable{
     }
 
     private void onRestoreItemSelected() {
+        try {
+            String currentDBPath = getDatabasePath(RegionOrmLiteOpenHelper.DATABASE_NAME).getPath();
+            File restoreDB = new File(currentDBPath);
 
+            if (restoreDB.canWrite()) {
+                // TODO: 01/08/16 restore this file using Firebase & rxJava
+
+                // do this on the main thread upon completion
+
+                Toast.makeText(this, R.string.restore_successful, Toast.LENGTH_SHORT).show();
+
+            }
+        } catch (Exception e) {
+            Log.d(TAG, "Unable to restore");
+        }
     }
 
     private void onBackupItemSelected() {
+        try {
+            String currentDBPath = getDatabasePath(RegionOrmLiteOpenHelper.DATABASE_NAME).getPath();
+            File backupDB = new File(currentDBPath);
 
+            if (backupDB.canRead()) {
+                // TODO: 01/08/16 backup this file using Firebase & rxJava
+
+                // do this on the main thread upon completion
+
+                Toast.makeText(this, R.string.backup_successful, Toast.LENGTH_SHORT).show();
+
+            }
+        } catch (Exception e) {
+            Log.d(TAG, "Unable to backup");
+        }
     }
 
     private void updateAccountHeader(@Nullable Profile profile) {
