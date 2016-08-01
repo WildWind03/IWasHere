@@ -1,4 +1,4 @@
-package com.noveogroup.teamzolotov.iwashere.activities;
+package com.noveogroup.teamzolotov.iwashere.activity;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -14,8 +14,8 @@ import com.mikepenz.materialdrawer.model.PrimaryDrawerItem;
 import com.mikepenz.materialdrawer.model.SecondaryDrawerItem;
 import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
 import com.noveogroup.teamzolotov.iwashere.R;
-import com.noveogroup.teamzolotov.iwashere.fragments.ColourMapFragment;
-import com.noveogroup.teamzolotov.iwashere.fragments.RegionListFragment;
+import com.noveogroup.teamzolotov.iwashere.fragment.ColourMapFragment;
+import com.noveogroup.teamzolotov.iwashere.fragment.RegionListFragment;
 import com.noveogroup.teamzolotov.iwashere.util.FragmentUtils;
 import com.noveogroup.teamzolotov.iwashere.util.ImageUtils;
 

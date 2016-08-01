@@ -1,15 +1,11 @@
-package com.noveogroup.teamzolotov.iwashere.activities;
+package com.noveogroup.teamzolotov.iwashere.activity;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.Toast;
 
-import com.j256.ormlite.android.apptools.OpenHelperManager;
-import com.noveogroup.teamzolotov.iwashere.database.RegionOrmLiteOpenHelper;
-
 import butterknife.ButterKnife;
-import butterknife.Unbinder;
 
 public abstract class BaseActivity extends AppCompatActivity {
 
