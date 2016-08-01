@@ -13,7 +13,7 @@
         android:layout_marginLeft="16dp"
         android:layout_marginRight="16dp"
         app:layoutManager="LinearLayoutManager"
-        tools:context="com.noveogroup.teamzolotov.iwashere.fragments.RegionListFragment"
+        tools:context="com.noveogroup.teamzolotov.iwashere.fragment.RegionListFragment"
         tools:listitem="@layout/region_list_item"/>
 </FrameLayout>
 

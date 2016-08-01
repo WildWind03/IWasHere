@@ -1,7 +1,6 @@
-package com.noveogroup.teamzolotov.iwashere.fragments;
+package com.noveogroup.teamzolotov.iwashere.fragment;
 
 
-import android.graphics.Canvas;
 import android.os.Bundle;
 import android.support.v4.content.res.ResourcesCompat;
 import android.util.Log;
@@ -31,9 +30,6 @@ import java.util.List;
 import rx.Observable;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action1;
-import rx.functions.Func1;
-import rx.functions.Func2;
 import rx.schedulers.Schedulers;
 
 public class ColourMapFragment extends SupportMapFragment implements OnMapReadyCallback {

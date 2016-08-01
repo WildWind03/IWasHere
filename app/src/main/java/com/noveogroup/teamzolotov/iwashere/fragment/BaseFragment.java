@@ -1,4 +1,4 @@
-package com.noveogroup.teamzolotov.iwashere.fragments;
+package com.noveogroup.teamzolotov.iwashere.fragment;
 
 import android.content.DialogInterface;
 import android.os.Bundle;

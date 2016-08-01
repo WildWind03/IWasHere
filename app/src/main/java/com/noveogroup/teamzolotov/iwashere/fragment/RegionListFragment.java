@@ -1,4 +1,4 @@
-package com.noveogroup.teamzolotov.iwashere.fragments;
+package com.noveogroup.teamzolotov.iwashere.fragment;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -9,7 +9,7 @@ import android.util.Log;
 
 import com.j256.ormlite.dao.Dao;
 import com.noveogroup.teamzolotov.iwashere.R;
-import com.noveogroup.teamzolotov.iwashere.adapters.RegionAdapter;
+import com.noveogroup.teamzolotov.iwashere.adapter.RegionAdapter;
 import com.noveogroup.teamzolotov.iwashere.model.Region;
 import com.noveogroup.teamzolotov.iwashere.util.RegionUtils;
 
