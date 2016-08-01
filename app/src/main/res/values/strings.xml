@@ -1,7 +1,8 @@
 <resources>
     <string name="app_name">IWasHere</string>
-    <string name="content_description">1</string>
-    <string name="app_logo_text">app_logo</string>
+    <string name="app_logo_text">Logo of application</string>
+
+    <!-- strings for toolbar -->
     <string name="map_string">Map</string>
     <string name="regions_string">Regions</string>
     <string name="settings_string">Settings</string>
@@ -91,4 +92,40 @@
     <string name="hakasia">Республика Хакасия</string>
     <string name="tyva">Республика Тыва</string>
 
+    <string name="login_string">Login</string>
+    <string name="register_string">Create account</string>
+
+
+    <!-- string for auth, register and account layouts -->
+    <string name="email_text">E-mail</string>
+    <string name="password_text">Password</string>
+    <string name="login_text">Login</string>
+    <string name="turn_on_register_mode">No account yet? Create one</string>
+    <string name="name_text">Username</string>
+    <string name="create_account_text">Sign up</string>
+    <string name="turn_on_login_mode">Already a member? Login</string>
+    <string name="sign_up_text">Signing up</string>
+    <string name="sign_out_text">Sign out</string>
+    <string name="account_text">Account</string>
+
+    <!-- strings for program messages to user -->
+    <string name="auth_text">Authenticating…</string>
+    <string name="getting_data_from_server_text">Loading data from server…</string>
+    <string name="invalid_email_message">Invalid email</string>
+    <string name="short_password_message">Short password. It must has 6 characters at least!</string>
+    <string name="short_password_invalid_email">Invalid email and short password. A password must has 6 characters at least!</string>
+    <string name="auth_failed_message">Unfortunately, it\'s impossible to authorize</string>
+    <string name="invalid_username_email_short_password">Invalid email, too short username (it must has 2 characters at least) and too short password(min length is 6 characters)</string>
+    <string name="invalid_email_invalid_username">Invalid email and too short username (min length is 2 characters</string>
+    <string name="invalid_username">Invalid username. Min length is 2 characters</string>
+    <string name="short_password_invalid_username">Too short password (min length is 6 characters) and too short username(min length is 2 characters)</string>
+    <string name="registration_failed_message">The account hasn\'t been created!</string>
+    <string name="ok_message">OK</string>
+
+    <string name="invalid_data">Invalid data</string>
+    <string name="auth_troubles_title">Authorization problems</string>
+    <string name="registration_problems_title">Registration problems</string>
+
+    <string name="default_email">No e-mail address</string>
+    <string name="default_username">Anonymous</string>
 </resources>

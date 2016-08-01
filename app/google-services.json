@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "729962638652",
+    "firebase_url": "https://iwashere-da39d.firebaseio.com",
+    "project_id": "iwashere-da39d",
+    "storage_bucket": "iwashere-da39d.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:729962638652:android:598e344666c02fc9",
+        "android_client_info": {
+          "package_name": "com.noveogroup.teamzolotov.iwashere"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "729962638652-2of3s4j1cmd9i7i1oehtie3tj0aoucev.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.noveogroup.teamzolotov.iwashere",
+            "certificate_hash": "FB1907D26B524DCB2D0DA043EC16E8C8E85BCD13"
+          }
+        },
+        {
+          "client_id": "729962638652-c7am9tqkebumjlc9mf5i1q2c2ohhskta.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDkZVZZquSnnNNXZWD7QrdEVtElYnUMtzw"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "729962638652-c7am9tqkebumjlc9mf5i1q2c2ohhskta.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
