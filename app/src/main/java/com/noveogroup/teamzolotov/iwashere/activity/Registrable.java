@@ -1,4 +1,4 @@
-package com.noveogroup.teamzolotov.iwashere.activities;
+package com.noveogroup.teamzolotov.iwashere.activity;
 
 import com.noveogroup.teamzolotov.iwashere.model.Profile;
 

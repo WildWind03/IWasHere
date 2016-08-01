@@ -1,4 +1,4 @@
-package com.noveogroup.teamzolotov.iwashere.dialogfragments;
+package com.noveogroup.teamzolotov.iwashere.dialogfragment;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;

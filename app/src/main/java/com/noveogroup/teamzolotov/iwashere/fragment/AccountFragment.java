@@ -1,4 +1,4 @@
-package com.noveogroup.teamzolotov.iwashere.fragments;
+package com.noveogroup.teamzolotov.iwashere.fragment;
 
 import android.app.Activity;
 import android.os.Bundle;
@@ -6,7 +6,7 @@ import android.support.annotation.Nullable;
 import android.widget.TextView;
 
 import com.noveogroup.teamzolotov.iwashere.R;
-import com.noveogroup.teamzolotov.iwashere.activities.Registrable;
+import com.noveogroup.teamzolotov.iwashere.activity.Registrable;
 import com.noveogroup.teamzolotov.iwashere.model.Profile;
 
 import java.util.logging.Logger;

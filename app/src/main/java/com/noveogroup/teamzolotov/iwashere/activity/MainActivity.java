@@ -5,8 +5,6 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
-import android.widget.ImageView;
-import android.widget.RelativeLayout;
 
 import com.mikepenz.materialdrawer.AccountHeader;
 import com.mikepenz.materialdrawer.AccountHeaderBuilder;
@@ -22,10 +20,9 @@ import com.noveogroup.teamzolotov.iwashere.R;
 import com.noveogroup.teamzolotov.iwashere.fragment.ColourMapFragment;
 import com.noveogroup.teamzolotov.iwashere.fragment.RegionListFragment;
 import com.noveogroup.teamzolotov.iwashere.util.FragmentUtils;
-import com.noveogroup.teamzolotov.iwashere.util.ImageUtils;
-import com.noveogroup.teamzolotov.iwashere.fragments.AccountFragment;
-import com.noveogroup.teamzolotov.iwashere.fragments.LoginFragment;
-import com.noveogroup.teamzolotov.iwashere.fragments.RegisterFragment;
+import com.noveogroup.teamzolotov.iwashere.fragment.AccountFragment;
+import com.noveogroup.teamzolotov.iwashere.fragment.LoginFragment;
+import com.noveogroup.teamzolotov.iwashere.fragment.RegisterFragment;
 import com.noveogroup.teamzolotov.iwashere.model.Profile;
 
 import java.util.logging.Logger;
