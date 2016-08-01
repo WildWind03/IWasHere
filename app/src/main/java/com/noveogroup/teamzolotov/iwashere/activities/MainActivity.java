@@ -6,7 +6,6 @@ import android.support.annotation.Nullable;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 
-import com.google.firebase.auth.FirebaseUser;
 import com.mikepenz.materialdrawer.AccountHeader;
 import com.mikepenz.materialdrawer.AccountHeaderBuilder;
 import com.mikepenz.materialdrawer.Drawer;
@@ -19,11 +18,9 @@ import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
 import com.mikepenz.materialdrawer.model.interfaces.IProfile;
 import com.noveogroup.teamzolotov.iwashere.R;
 import com.noveogroup.teamzolotov.iwashere.fragments.AccountFragment;
-import com.noveogroup.teamzolotov.iwashere.fragments.DoWithProfile;
 import com.noveogroup.teamzolotov.iwashere.fragments.LoginFragment;
 import com.noveogroup.teamzolotov.iwashere.fragments.RegisterFragment;
 import com.noveogroup.teamzolotov.iwashere.model.Profile;
-import com.noveogroup.teamzolotov.iwashere.util.LoginUtil;
 
 import java.util.logging.Logger;
 
@@ -42,15 +39,20 @@ public class MainActivity extends BaseActivity implements Registrable {
     private final static String PASSWORD_KEY = "PASSWORD_KEY";
     private final static String UID_KEY = "UID_KEY";
 
+    private final static String CURRENT_ITEM_STATE_KEY = "CURRENT_ITEM_STATE_KEY";
+
     private final static Logger logger = Logger.getLogger(MainActivity.class.getName());
 
     private LoginState loginState = LoginState.LOGIN;
 
+    private int currentItemState = MAP_ID;
+
     private AccountHeader accountHeader;
     private Profile profile;
 
-
     private SharedPreferences sharedPreferences;
+
+    private Drawer drawer;
 
     @BindView(R.id.toolbar)
     protected Toolbar toolbar;
@@ -85,7 +87,6 @@ public class MainActivity extends BaseActivity implements Registrable {
         }
 
         setSupportActionBar(toolbar);
-        toolbar.setTitle(R.string.map_string);
 
         accountHeader = new AccountHeaderBuilder()
                 .withActivity(this)
@@ -95,12 +96,11 @@ public class MainActivity extends BaseActivity implements Registrable {
                 .withOnAccountHeaderListener(new AccountHeader.OnAccountHeaderListener() {
                     @Override
                     public boolean onProfileChanged(View view, IProfile profile, boolean current) {
-                        onLoginItemSelected();
+                        onAccountHeaderClicked();
                         return false;
                     }
                 })
                 .build();
-        //// TODO: 01.08.2016 saving state of selected item in drawer while the orientation is changed
         PrimaryDrawerItem mapDrawerItem = new PrimaryDrawerItem();
         mapDrawerItem
                 .withIdentifier(MAP_ID)
@@ -125,7 +125,7 @@ public class MainActivity extends BaseActivity implements Registrable {
                 .withName(R.string.help_string)
                 .withIcon(R.drawable.ic_help_black_24dp);
 
-        new DrawerBuilder()
+        drawer = new DrawerBuilder()
                 .withActivity(this)
                 .withToolbar(toolbar)
                 .withAccountHeader(accountHeader)
@@ -142,6 +142,7 @@ public class MainActivity extends BaseActivity implements Registrable {
 
                         switch (itemId) {
                             case MAP_ID:
+
                                 onMapItemSelected();
                                 break;
                             case LIST_REGIONS_ID:
@@ -154,14 +155,51 @@ public class MainActivity extends BaseActivity implements Registrable {
                                 onHelpItemSelected();
                                 break;
                             case LOGIN_ID:
-                                onLoginItemSelected();
+                                onAccountHeaderClicked();
                         }
                         return false;
                     }
                 })
                 .build();
 
+        if (null != savedInstanceState) {
+            currentItemState = savedInstanceState.getInt(CURRENT_ITEM_STATE_KEY, MAP_ID);
+        } else {
+            currentItemState = MAP_ID;
+        }
+
+        drawer.setSelection(currentItemState);
+
+        switch(currentItemState) {
+            case MAP_ID:
+                onMapItemSelected();
+                break;
+
+            case LIST_REGIONS_ID:
+                onRegionsItemSelected();
+                break;
+
+            case LOGIN_ID:
+                onAccountHeaderClicked();
+                break;
+
+            case SETTINGS_ID:
+                onSettingItemSelected();
+                break;
+
+            case HELP_ID:
+                onHelpItemSelected();
+                break;
+        }
+
     }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putInt(CURRENT_ITEM_STATE_KEY, currentItemState);
+    }
+
 
     private void updateAuthState() {
         sharedPreferences = getPreferences(MODE_PRIVATE);
@@ -183,7 +221,7 @@ public class MainActivity extends BaseActivity implements Registrable {
     @Override
     public void onLoginLinkClicked() {
         loginState = LoginState.LOGIN;
-        onLoginItemSelected();
+        onAccountHeaderClicked();
     }
 
     @Override
@@ -193,7 +231,7 @@ public class MainActivity extends BaseActivity implements Registrable {
         updateAccountHeader(profile);
 
         loginState = LoginState.SINGED_UP;
-        onLoginItemSelected();
+        onAccountHeaderClicked();
         updateAuthState();
     }
 
@@ -202,14 +240,14 @@ public class MainActivity extends BaseActivity implements Registrable {
         loginState = LoginState.LOGIN;
         this.profile = null;
         updateAccountHeader(null);
-        onLoginItemSelected();
+        onAccountHeaderClicked();
         updateAuthState();
     }
 
     @Override
     public void onRegisterLinkClicked() {
         loginState = LoginState.REGISTER;
-        onLoginItemSelected();
+        onAccountHeaderClicked();
     }
 
     @Override
@@ -224,18 +262,22 @@ public class MainActivity extends BaseActivity implements Registrable {
 
     private void onMapItemSelected() {
         toolbar.setTitle(R.string.map_string);
+        currentItemState = MAP_ID;
     }
 
     private void onRegionsItemSelected() {
         toolbar.setTitle(R.string.regions_string);
+        currentItemState = LIST_REGIONS_ID;
     }
 
     private void onSettingItemSelected() {
         toolbar.setTitle(R.string.settings_string);
+        currentItemState = SETTINGS_ID;
     }
 
     private void onHelpItemSelected() {
         toolbar.setTitle(R.string.help_string);
+        currentItemState = HELP_ID;
     }
 
     private void updateAccountHeader(@Nullable Profile profile) {
@@ -257,7 +299,8 @@ public class MainActivity extends BaseActivity implements Registrable {
         accountHeader.addProfiles(iProfile);
     }
 
-    private void onLoginItemSelected() {
+    private void onAccountHeaderClicked() {
+        currentItemState = LOGIN_ID;
 
         switch (loginState) {
             case LOGIN:
