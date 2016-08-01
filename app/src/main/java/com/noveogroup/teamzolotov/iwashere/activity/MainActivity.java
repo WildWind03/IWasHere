@@ -10,6 +10,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
+import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.mikepenz.materialdrawer.AccountHeader;
 import com.mikepenz.materialdrawer.AccountHeaderBuilder;
@@ -25,6 +26,7 @@ import com.noveogroup.teamzolotov.iwashere.R;
 import com.noveogroup.teamzolotov.iwashere.database.RegionOrmLiteOpenHelper;
 import com.noveogroup.teamzolotov.iwashere.fragment.ColourMapFragment;
 import com.noveogroup.teamzolotov.iwashere.fragment.RegionListFragment;
+import com.noveogroup.teamzolotov.iwashere.util.BackupUtils;
 import com.noveogroup.teamzolotov.iwashere.util.FragmentUtils;
 import com.noveogroup.teamzolotov.iwashere.fragment.AccountFragment;
 import com.noveogroup.teamzolotov.iwashere.fragment.LoginFragment;
@@ -154,6 +156,7 @@ public class MainActivity extends BaseActivity implements Registrable {
                     }
                 })
                 .build();
+
         PrimaryDrawerItem mapDrawerItem = new PrimaryDrawerItem();
         mapDrawerItem
                 .withIdentifier(MAP_ID)
