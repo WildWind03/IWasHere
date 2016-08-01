@@ -11,7 +11,7 @@ import android.widget.TextView;
 
 import com.noveogroup.teamzolotov.iwashere.R;
 import com.noveogroup.teamzolotov.iwashere.model.Region;
-import com.noveogroup.teamzolotov.iwashere.RegionUtils;
+import com.noveogroup.teamzolotov.iwashere.util.RegionUtils;
 
 import java.util.ArrayList;
 import java.util.List;

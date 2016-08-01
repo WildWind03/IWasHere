@@ -9,7 +9,7 @@ import com.j256.ormlite.dao.RuntimeExceptionDao;
 import com.j256.ormlite.support.ConnectionSource;
 import com.j256.ormlite.table.TableUtils;
 import com.noveogroup.teamzolotov.iwashere.model.Region;
-import com.noveogroup.teamzolotov.iwashere.RegionUtils;
+import com.noveogroup.teamzolotov.iwashere.util.RegionUtils;
 
 import java.sql.SQLException;
 import java.util.List;

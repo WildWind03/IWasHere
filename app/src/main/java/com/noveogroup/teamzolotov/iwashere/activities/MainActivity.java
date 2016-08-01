@@ -16,8 +16,8 @@ import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
 import com.noveogroup.teamzolotov.iwashere.R;
 import com.noveogroup.teamzolotov.iwashere.fragments.ColourMapFragment;
 import com.noveogroup.teamzolotov.iwashere.fragments.RegionListFragment;
-import com.noveogroup.teamzolotov.iwashere.FragmentUtils;
-import com.noveogroup.teamzolotov.iwashere.ImageUtils;
+import com.noveogroup.teamzolotov.iwashere.util.FragmentUtils;
+import com.noveogroup.teamzolotov.iwashere.util.ImageUtils;
 
 import java.util.logging.Logger;
 
