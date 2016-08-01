@@ -2,6 +2,7 @@ package com.noveogroup.teamzolotov.iwashere.util;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.support.annotation.NonNull;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -23,13 +24,14 @@ public class LoginUtil {
 
         final ProgressDialog progressDialog = new ProgressDialog(activity);
 
+        final FirebaseAuth mAuth = FirebaseAuth.getInstance();
+
         if (isProgressDialog) {
             progressDialog.setIndeterminate(true);
             progressDialog.setMessage(activity.getResources().getString(R.string.auth_text));
+            progressDialog.setCancelable(false);
             progressDialog.show();
         }
-
-        FirebaseAuth mAuth = FirebaseAuth.getInstance();
 
         mAuth.signInWithEmailAndPassword(email, password)
                 .addOnCompleteListener(activity, new OnCompleteListener<AuthResult>() {
