@@ -132,4 +132,7 @@
     <string name="default_username">Anonymous</string>
     <string name="backup_successful">Successful backup</string>
     <string name="restore_successful">Restored data successfully</string>
+
+    <string name="backup_troubles_title">Unable to backup</string>
+    <string name="backup_troubles_text">Please, check your internet connection</string>
 </resources>

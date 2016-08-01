@@ -10,6 +10,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.mikepenz.materialdrawer.AccountHeader;
@@ -25,6 +26,7 @@ import com.mikepenz.materialdrawer.model.interfaces.IProfile;
 import com.noveogroup.teamzolotov.iwashere.R;
 import com.noveogroup.teamzolotov.iwashere.database.RegionOrmLiteOpenHelper;
 import com.noveogroup.teamzolotov.iwashere.fragment.ColourMapFragment;
+import com.noveogroup.teamzolotov.iwashere.fragment.DoWithProfile;
 import com.noveogroup.teamzolotov.iwashere.fragment.RegionListFragment;
 import com.noveogroup.teamzolotov.iwashere.util.BackupUtils;
 import com.noveogroup.teamzolotov.iwashere.util.FragmentUtils;
@@ -32,6 +34,7 @@ import com.noveogroup.teamzolotov.iwashere.fragment.AccountFragment;
 import com.noveogroup.teamzolotov.iwashere.fragment.LoginFragment;
 import com.noveogroup.teamzolotov.iwashere.fragment.RegisterFragment;
 import com.noveogroup.teamzolotov.iwashere.model.Profile;
+import com.noveogroup.teamzolotov.iwashere.util.LoginUtil;
 
 import java.io.File;
 import java.util.logging.Logger;
@@ -390,21 +393,37 @@ public class MainActivity extends BaseActivity implements Registrable {
     }
 
     private void onBackupItemSelected() {
-        try {
-            String currentDBPath = getDatabasePath(RegionOrmLiteOpenHelper.DATABASE_NAME).getPath();
-            File backupDB = new File(currentDBPath);
+        LoginUtil.login(profile.getEmail(), profile.getPassword(), this, false, new DoWithProfile() {
+            @Override
+            public void onSuccess(FirebaseUser firebaseUser, String password) {
+                try {
+                    String currentDBPath = getDatabasePath(RegionOrmLiteOpenHelper.DATABASE_NAME).getPath();
+                    File backupDB = new File(currentDBPath);
 
-            if (backupDB.canRead()) {
-                // TODO: 01/08/16 backup this file using Firebase & rxJava
-
-                // do this on the main thread upon completion
-
-                Toast.makeText(this, R.string.backup_successful, Toast.LENGTH_SHORT).show();
-
+                    if (backupDB.canRead()) {
+                        BackupUtils.backup(backupDB, firebaseUser, new BackupUtils.OnBackupFailed() {
+                            @Override
+                            public void handle(Exception e) {
+                                showMessage(R.string.backup_troubles_title, R.string.backup_troubles_text);
+                            }
+                        }, new BackupUtils.OnBackupSuccess() {
+                            @Override
+                            public void handle() {
+                                Toast.makeText(getApplicationContext(), R.string.backup_successful, Toast.LENGTH_SHORT).show();
+                            }
+                        });
+                    }
+                } catch (Exception e) {
+                    Log.d(TAG, "Unable to backup");
+                    showMessage(R.string.backup_troubles_title, R.string.backup_troubles_text);
+                }
             }
-        } catch (Exception e) {
-            Log.d(TAG, "Unable to backup");
-        }
+
+            @Override
+            public void onError(Exception e) {
+                showMessage(R.string.auth_troubles_title, e.getMessage());
+            }
+        });
     }
 
     private void updateAccountHeader(@Nullable Profile profile) {
