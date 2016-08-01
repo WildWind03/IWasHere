@@ -212,7 +212,11 @@ public class MainActivity extends BaseActivity implements Registrable{
             currentItemState = MAP_ID;
         }
 
-        drawer.setSelection(currentItemState);
+        if (currentItemState == LOGIN_ID) {
+            drawer.deselect();
+        } else {
+            drawer.setSelection(currentItemState);
+        }
 
         switch(currentItemState) {
             case MAP_ID:
@@ -364,6 +368,7 @@ public class MainActivity extends BaseActivity implements Registrable{
 
     private void onAccountHeaderClicked() {
         currentItemState = LOGIN_ID;
+        drawer.deselect();
 
         switch (loginState) {
             case LOGIN:
