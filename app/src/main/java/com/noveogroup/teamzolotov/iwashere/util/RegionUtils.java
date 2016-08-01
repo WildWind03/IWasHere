@@ -9,7 +9,7 @@ import java.util.LinkedList;
 /**
  * Created by dserov on 28/07/16.
  */
-public class RegionUtil {
+public class RegionUtils {
     public static LinkedList<Region> initRegions() {
         LinkedList<Region> regions = new LinkedList<>();
         regions.add(new Region(-140290));

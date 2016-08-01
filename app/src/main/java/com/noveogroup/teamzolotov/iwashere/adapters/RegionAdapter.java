@@ -2,31 +2,23 @@ package com.noveogroup.teamzolotov.iwashere.adapters;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.j256.ormlite.dao.Dao;
 import com.noveogroup.teamzolotov.iwashere.R;
 import com.noveogroup.teamzolotov.iwashere.model.Region;
-import com.noveogroup.teamzolotov.iwashere.util.RegionUtil;
+import com.noveogroup.teamzolotov.iwashere.util.RegionUtils;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import rx.Observable;
-import rx.Scheduler;
-import rx.functions.Action1;
-import rx.schedulers.Schedulers;
 
 /**
  * Created by dserov on 29/07/16.
@@ -56,8 +48,8 @@ public class RegionAdapter extends RecyclerView.Adapter<RegionAdapter.ViewHolder
     @Override
     public void onBindViewHolder(final RegionAdapter.ViewHolder holder, final int position) {
         final Region region = regions.get(holder.getAdapterPosition());
-        holder.regionImage.setImageResource(RegionUtil.getRegionIconResource(region.getOsmId()));
-        holder.regionName.setText(RegionUtil.getRegionNameResource(region.getOsmId()));
+        holder.regionImage.setImageResource(RegionUtils.getRegionIconResource(region.getOsmId()));
+        holder.regionName.setText(RegionUtils.getRegionNameResource(region.getOsmId()));
         holder.regionVisited.setChecked(region.isVisited());
     }
 

@@ -1,7 +1,9 @@
 package com.noveogroup.teamzolotov.iwashere.fragments;
 
 
+import android.graphics.Canvas;
 import android.os.Bundle;
+import android.support.v4.content.res.ResourcesCompat;
 import android.util.Log;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -90,16 +92,14 @@ public class ColourMapFragment extends SupportMapFragment implements OnMapReadyC
                         for (Region r : regions) {
                             if (r.getOsmId() == Integer.parseInt(feature.getProperty("OSM_ID")) &&
                                     r.isVisited()) {
-                                // CR1: use context.getColor(R.color.some_color)
-                                polygonStyle.setFillColor(0xFF64DD17);
+                                polygonStyle.setFillColor(ResourcesCompat.getColor(getResources(), R.color.map_fill, null));
                                 break;
                             }
                         }
                         feature.setPolygonStyle(polygonStyle);
                     }
                     subscriber.onNext(layer);
-
-                    // CR1: Observable will never end unless you call onCompleted()
+                    subscriber.onCompleted();
                 } catch (JSONException | IOException | SQLException e) {
                     subscriber.onError(e);
                 }

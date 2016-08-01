@@ -2,15 +2,11 @@ package com.noveogroup.teamzolotov.iwashere.activities;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
-import com.j256.ormlite.android.apptools.OpenHelperManager;
-import com.j256.ormlite.dao.Dao;
 import com.mikepenz.materialdrawer.Drawer;
 import com.mikepenz.materialdrawer.DrawerBuilder;
 import com.mikepenz.materialdrawer.model.DividerDrawerItem;
@@ -18,21 +14,14 @@ import com.mikepenz.materialdrawer.model.PrimaryDrawerItem;
 import com.mikepenz.materialdrawer.model.SecondaryDrawerItem;
 import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
 import com.noveogroup.teamzolotov.iwashere.R;
-import com.noveogroup.teamzolotov.iwashere.adapters.RegionAdapter;
-import com.noveogroup.teamzolotov.iwashere.database.RegionOrmLiteOpenHelper;
 import com.noveogroup.teamzolotov.iwashere.fragments.ColourMapFragment;
 import com.noveogroup.teamzolotov.iwashere.fragments.RegionListFragment;
-import com.noveogroup.teamzolotov.iwashere.model.Region;
 import com.noveogroup.teamzolotov.iwashere.util.FragmentUtils;
-import com.noveogroup.teamzolotov.iwashere.util.ImageUtil;
+import com.noveogroup.teamzolotov.iwashere.util.ImageUtils;
 
-import java.sql.SQLException;
 import java.util.logging.Logger;
 
 import butterknife.BindView;
-import rx.Observable;
-import rx.functions.Action1;
-import rx.schedulers.Schedulers;
 
 public class MainActivity extends BaseActivity {
 
@@ -74,7 +63,7 @@ public class MainActivity extends BaseActivity {
         ImageView headerImageView = (ImageView) headerView.findViewById(R.id.header_view_image);
 
         RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) headerImageView.getLayoutParams();
-        layoutParams.height = ImageUtil.getAppropriateHeight(this);
+        layoutParams.height = ImageUtils.getAppropriateHeight(this);
 
         PrimaryDrawerItem mapDrawerItem = new PrimaryDrawerItem();
         mapDrawerItem
@@ -133,12 +122,6 @@ public class MainActivity extends BaseActivity {
                 })
                 .build();
 
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        OpenHelperManager.releaseHelper();
     }
 
     @Override

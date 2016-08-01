@@ -9,7 +9,7 @@ import com.j256.ormlite.dao.RuntimeExceptionDao;
 import com.j256.ormlite.support.ConnectionSource;
 import com.j256.ormlite.table.TableUtils;
 import com.noveogroup.teamzolotov.iwashere.model.Region;
-import com.noveogroup.teamzolotov.iwashere.util.RegionUtil;
+import com.noveogroup.teamzolotov.iwashere.util.RegionUtils;
 
 import java.sql.SQLException;
 import java.util.List;
@@ -73,7 +73,7 @@ public class RegionOrmLiteOpenHelper extends OrmLiteSqliteOpenHelper {
 
     private void populateDatabase() throws SQLException {
         Dao<Region, Integer> dao = getDao();
-        List<Region> regions = RegionUtil.initRegions();
+        List<Region> regions = RegionUtils.initRegions();
         for (Region r : regions) {
             dao.create(r);
         }
