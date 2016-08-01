@@ -107,6 +107,8 @@
     <string name="sign_up_text">Signing up</string>
     <string name="sign_out_text">Sign out</string>
     <string name="account_text">Account</string>
+    <string name="restore_text">Restore</string>
+    <string name="backup_text">Backup</string>
 
     <!-- strings for program messages to user -->
     <string name="auth_text">Authenticating…</string>
