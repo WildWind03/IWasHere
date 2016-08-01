@@ -14,7 +14,7 @@ import java.io.File;
 
 public class BackupUtils {
     private final static String STORAGE_URL = "gs://iwashere-da39d.appspot.com";
-    private final static String IMAGES_CHILD_KEY = "images";
+    private final static String IMAGES_CHILD_KEY = "regions_database";
     private BackupUtils() {
 
     }
