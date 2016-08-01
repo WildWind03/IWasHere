@@ -10,6 +10,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
 
 import com.j256.ormlite.android.apptools.OpenHelperManager;
 import com.j256.ormlite.dao.Dao;
@@ -18,6 +19,7 @@ import com.noveogroup.teamzolotov.iwashere.adapters.RegionAdapter;
 import com.noveogroup.teamzolotov.iwashere.database.RegionOrmLiteOpenHelper;
 import com.noveogroup.teamzolotov.iwashere.model.Region;
 import com.noveogroup.teamzolotov.iwashere.util.RegionUtil;
+import com.rohit.recycleritemclicksupport.RecyclerItemClickSupport;
 
 import java.sql.SQLException;
 import java.util.Collections;
@@ -32,7 +34,7 @@ import rx.functions.Func1;
 import rx.functions.Func2;
 import rx.schedulers.Schedulers;
 
-public class RegionListFragment extends Fragment {
+public class RegionListFragment extends Fragment implements RegionAdapter.RegionUpdateListener {
 
     private static final String TAG = RegionListFragment.class.getSimpleName();
 
@@ -54,78 +56,44 @@ public class RegionListFragment extends Fragment {
         // CR1: Better wrap into a FrameLayout and use Butterknife
         View view = inflater.inflate(R.layout.fragment_region_list, container, false);
 
+        Context context = view.getContext();
+        final RecyclerView recyclerView = (RecyclerView) view;
+        recyclerView.setLayoutManager(new LinearLayoutManager(context));
+        if (openHelper == null) {
+            openHelper = OpenHelperManager.getHelper(getContext(), RegionOrmLiteOpenHelper.class);
+        }
 
-        // CR1: avoid instanceof whenever possible
-        if (view instanceof RecyclerView) {
-            Context context = view.getContext();
-            final RecyclerView recyclerView = (RecyclerView) view;
-            recyclerView.setLayoutManager(new LinearLayoutManager(context));
-            if (openHelper == null) {
-                openHelper = OpenHelperManager.getHelper(getContext(), RegionOrmLiteOpenHelper.class);
-            }
-            try {
-                final Dao<Region, Integer> dao = openHelper.getDao();
+        final RegionAdapter adapter = new RegionAdapter(getActivity(), this);
+        recyclerView.setAdapter(adapter);
 
+        try {
+            final Dao<Region, Integer> dao = openHelper.getDao();
 
+            Observable.from(dao.queryForAll())
+                    .toSortedList(new Func2<Region, Region, Integer>() {
+                        @Override
+                        public Integer call(final Region r1, final Region r2) {
+                            int firstNameResource = RegionUtil.getRegionNameResource(r1.getOsmId());
+                            int secondNameResource = RegionUtil.getRegionNameResource(r2.getOsmId());
+                            return getString(firstNameResource).compareTo(getString(secondNameResource));
+                        }
+                    }).compose(new Observable.Transformer<List<Region>, List<Region>>() {
+                        @Override
+                        public Observable<List<Region>> call(final Observable<List<Region>> listObservable) {
+                            return listObservable
+                                    .subscribeOn(Schedulers.computation())
+                                    .observeOn(AndroidSchedulers.mainThread());
+                        }
+                    }).subscribe(new Action1<List<Region>>() {
+                        @Override
+                        public void call(final List<Region> regions) {
+                            adapter.replaceData(regions);
+                        }
+                    });
 
-                /* CR1: any sequential transformation can be done using transformation operators.
-                This helps avoiding deep code nesting with anonymous classes
-
-                see related CRs in RegionAdapter
-
-                final RegionAdapter adapter = new RegionAdapter(getActivity());
-                recyclerView.setAdapter(adapter);
-
-
-                Observable.from(dao.queryForAll())
-                        .toSortedList(new Func2<Region, Region, Integer>() {
-                            @Override
-                            public Integer call(final Region region, final Region region2) {
-                                // TODO: compare
-                                return null;
-                            }
-                        }).compose(new Observable.Transformer<List<Region>, List<Region>>() {
-                            @Override
-                            public Observable<List<Region>> call(final Observable<List<Region>> listObservable) {
-                                return listObservable
-                                        .subscribeOn(Schedulers.computation())
-                                        .observeOn(AndroidSchedulers.mainThread());
-                            }
-                        }).subscribe(new Action1<List<Region>>() {
-                            @Override
-                            public void call(final List<Region> regions) {
-                                adapter.setData(regions);
-                            }
-                        });*/
-
-
-                Observable.just(dao.queryForAll())
-                        .subscribeOn(Schedulers.computation())
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .map(new Func1<List<Region>, List<Region>>() {
-                            @Override
-                            public List<Region> call(List<Region> regions) {
-                                Collections.sort(regions, new Comparator<Region>() {
-                                    @Override
-                                    public int compare(Region r1, Region r2) {
-                                        int firstNameResource = RegionUtil.getRegionNameResource(r1.getOsmId());
-                                        int secondNameResource = RegionUtil.getRegionNameResource(r2.getOsmId());
-                                        return getString(firstNameResource).compareTo(getString(secondNameResource));
-                                    }
-                                });
-                                return regions;
-                            }
-                        })
-                        .subscribe(new Action1<List<Region>>() {
-                            @Override
-                            public void call(List<Region> regions) {
-                                recyclerView.setAdapter(new RegionAdapter(regions, getContext(), dao));
-                            }
-                        });
-            } catch (SQLException e) {
-                Log.d(TAG, "Failed querying for regions", e);
-                e.printStackTrace();
-            }
+        } catch (SQLException e) {
+            Log.d(TAG, "Failed querying for regions", e);
+            e.printStackTrace();
         }
         return view;
     }
@@ -137,5 +105,26 @@ public class RegionListFragment extends Fragment {
             openHelper = null;
         }
         super.onDestroyView();
+    }
+
+    @Override
+    public void onUpdate(Region region) {
+        try {
+            final Dao<Region, Integer> dao = openHelper.getDao();
+
+            Observable.just(dao.update(region))
+                    .subscribeOn(Schedulers.computation())
+                    .subscribe(new Action1<Integer>() {
+                        @Override
+                        public void call(Integer integer) {
+                            if (integer != 1) {
+                                Log.d(TAG, "How the hell did you get up here, anyway?");
+                            }
+                        }
+                    });
+        } catch (SQLException e) {
+            Log.d(TAG, "Failed updating region " + region.getOsmId());
+            e.printStackTrace();
+        }
     }
 }

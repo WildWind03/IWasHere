@@ -5,9 +5,15 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.Toast;
 
+import com.j256.ormlite.android.apptools.OpenHelperManager;
+import com.noveogroup.teamzolotov.iwashere.database.RegionOrmLiteOpenHelper;
+
 import butterknife.ButterKnife;
+import butterknife.Unbinder;
 
 public abstract class BaseActivity extends AppCompatActivity {
+
+    protected RegionOrmLiteOpenHelper openHelper;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -15,9 +21,6 @@ public abstract class BaseActivity extends AppCompatActivity {
 
         setContentView(getLayout());
 
-        // CR1: do not forget to unbind:
-        // Ubinbed unbinder = ButterKnife.bind(this);
-        // unbinder.unbind();
         ButterKnife.bind(this);
     }
 
@@ -28,4 +31,5 @@ public abstract class BaseActivity extends AppCompatActivity {
     }
 
     protected abstract int getLayout();
+
 }

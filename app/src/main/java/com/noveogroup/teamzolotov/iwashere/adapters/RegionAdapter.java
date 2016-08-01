@@ -17,10 +17,12 @@ import com.noveogroup.teamzolotov.iwashere.model.Region;
 import com.noveogroup.teamzolotov.iwashere.util.RegionUtil;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import rx.Observable;
 import rx.Scheduler;
 import rx.functions.Action1;
@@ -33,82 +35,30 @@ public class RegionAdapter extends RecyclerView.Adapter<RegionAdapter.ViewHolder
 
     private static final String TAG = RegionAdapter.class.getSimpleName();
 
-    private List<Region> regions;
-    private Context context;
-    private Dao<Region, Integer> dao;
-
-
-    // CR1: Do not pass dao to adapter. Adapter should not perform queries.
-    // Passing click callback is a better solution.
-    // https://github.com/rohitshampur/RecyclerItemClickSupport - this lib can be used to create a callback in Activity/Fragment
-
-    // CR1: Add extra methods for data handling:
-
-    /*
     private final List<Region> regions = new ArrayList<>();
-    public void clear() {
-        regions.clear();
-        notifyDataSetChanged();
-    }
+    private Context context;
+    private LayoutInflater inflater;
+    private RegionUpdateListener listener;
 
-
-    public void replaceData(List<Region> newRegions) {
-        regions.clear();
-        regions.addAll(newRegions);
-        notifyDataSetChanged();
-    }
-
-    Same for adding, modifying, etc.
-    */
-
-
-    public RegionAdapter(List<Region> regions, Context context, Dao<Region, Integer> dao) {
-        this.regions = regions;
+    public RegionAdapter(Context context, RegionUpdateListener listener) {
         this.context = context;
-        this.dao = dao;
-
-        // CR1: inflater can be created here as well.
+        this.inflater = LayoutInflater.from(this.context);
+        this.listener = listener;
     }
 
 
     @Override
     public RegionAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View v = LayoutInflater.from(context).inflate(R.layout.region_list_item, parent, false);
-        return new ViewHolder(v);
+        View v = inflater.inflate(R.layout.region_list_item, parent, false);
+        return new ViewHolder(v, listener);
     }
 
     @Override
-    public void onBindViewHolder(final RegionAdapter.ViewHolder holder, int position) {
+    public void onBindViewHolder(final RegionAdapter.ViewHolder holder, final int position) {
         final Region region = regions.get(holder.getAdapterPosition());
         holder.regionImage.setImageResource(RegionUtil.getRegionIconResource(region.getOsmId()));
         holder.regionName.setText(RegionUtil.getRegionNameResource(region.getOsmId()));
         holder.regionVisited.setChecked(region.isVisited());
-
-        // CR1: Move this click listener to ViewHolder, see ButterKnife @OnClick.
-        holder.regionVisited.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (v instanceof CheckBox) {
-                    CheckBox box = (CheckBox) v;
-                    region.setVisited(box.isChecked());
-                    try {
-                        Observable.just(dao.update(region))
-                                .subscribeOn(Schedulers.computation())
-                                .subscribe(new Action1<Integer>() {
-                                    @Override
-                                    public void call(Integer integer) {
-                                        if (integer != 1) {
-                                            Log.d(TAG, "How the hell did you get up here, anyway?");
-                                        }
-                                    }
-                                });
-                    } catch (SQLException e) {
-                        Log.d(TAG, "Failed updating region at pos " + holder.getAdapterPosition());
-                        e.printStackTrace();
-                    }
-                }
-            }
-        });
     }
 
     @Override
@@ -116,7 +66,20 @@ public class RegionAdapter extends RecyclerView.Adapter<RegionAdapter.ViewHolder
         return regions.size();
     }
 
-    public static class ViewHolder extends RecyclerView.ViewHolder {
+    public void clear() {
+        regions.clear();
+        notifyDataSetChanged();
+    }
+
+    public void replaceData(List<Region> newRegions) {
+        regions.clear();
+        regions.addAll(newRegions);
+        notifyDataSetChanged();
+    }
+
+    public class ViewHolder extends RecyclerView.ViewHolder {
+
+        private RegionUpdateListener listener;
 
         @BindView(R.id.regionImage)
         protected ImageView regionImage;
@@ -127,9 +90,23 @@ public class RegionAdapter extends RecyclerView.Adapter<RegionAdapter.ViewHolder
         @BindView(R.id.regionCheckbox)
         protected CheckBox regionVisited;
 
-        public ViewHolder(View itemView) {
+        public ViewHolder(View itemView, RegionUpdateListener listener) {
             super(itemView);
             ButterKnife.bind(this, itemView);
+            this.listener = listener;
         }
+
+        @OnClick(R.id.regionCheckbox)
+        public void onClick(CheckBox checkBox) {
+            if (listener != null) {
+                Region region = regions.get(getAdapterPosition());
+                region.setVisited(checkBox.isChecked());
+                listener.onUpdate(region);
+            }
+        }
+    }
+
+    public interface RegionUpdateListener {
+        void onUpdate(Region region);
     }
 }

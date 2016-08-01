@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
@@ -17,18 +18,25 @@ import com.mikepenz.materialdrawer.model.PrimaryDrawerItem;
 import com.mikepenz.materialdrawer.model.SecondaryDrawerItem;
 import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
 import com.noveogroup.teamzolotov.iwashere.R;
+import com.noveogroup.teamzolotov.iwashere.adapters.RegionAdapter;
 import com.noveogroup.teamzolotov.iwashere.database.RegionOrmLiteOpenHelper;
 import com.noveogroup.teamzolotov.iwashere.fragments.ColourMapFragment;
 import com.noveogroup.teamzolotov.iwashere.fragments.RegionListFragment;
 import com.noveogroup.teamzolotov.iwashere.model.Region;
+import com.noveogroup.teamzolotov.iwashere.util.FragmentUtils;
 import com.noveogroup.teamzolotov.iwashere.util.ImageUtil;
 
 import java.sql.SQLException;
 import java.util.logging.Logger;
 
 import butterknife.BindView;
+import rx.Observable;
+import rx.functions.Action1;
+import rx.schedulers.Schedulers;
 
 public class MainActivity extends BaseActivity {
+
+    private static final String TAG = MainActivity.class.getSimpleName();
 
     private static final String MAP_FRAGMENT_TAG = "map";
     private static final String REGIONS_FRAGMENT_TAG = "regions";
@@ -48,19 +56,9 @@ public class MainActivity extends BaseActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-
-        // CR1: Call onMapItemSelected() ?
-        // Can be moved to FragmentUtils which handles transaction:
-        // FragmentUtils.replaceFragment(ColourMapFragment.newInstance(), R.id.layout_for_showing_fragment, getSupportFragmentManager());
-        // or
-        // FragmentUtils.addFragment(ColourMapFragment.newInstance(), R.id.layout_for_showing_fragment, getSupportFragmentManager());
-        // depending on navigation you want
-
         if (savedInstanceState == null) {
-            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-            ColourMapFragment mapFragment = ColourMapFragment.newInstance();
-            transaction.add(R.id.layout_for_showing_fragment, mapFragment, MAP_FRAGMENT_TAG);
-            transaction.commit();
+            FragmentUtils.addFragment(ColourMapFragment.newInstance(), R.id.layout_for_showing_fragment,
+                    getSupportFragmentManager(), MAP_FRAGMENT_TAG);
         }
     }
 
@@ -152,10 +150,8 @@ public class MainActivity extends BaseActivity {
         toolbar.setTitle(R.string.map_string);
         ColourMapFragment mapFragment = (ColourMapFragment) getSupportFragmentManager().findFragmentByTag(MAP_FRAGMENT_TAG);
         if (mapFragment == null) {
-            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-            ColourMapFragment newMapFragment = ColourMapFragment.newInstance();
-            transaction.replace(R.id.layout_for_showing_fragment, newMapFragment, MAP_FRAGMENT_TAG);
-            transaction.commit();
+            FragmentUtils.replaceFragment(ColourMapFragment.newInstance(), R.id.layout_for_showing_fragment,
+                    getSupportFragmentManager(), MAP_FRAGMENT_TAG);
         }
     }
 
@@ -163,10 +159,8 @@ public class MainActivity extends BaseActivity {
         toolbar.setTitle(R.string.regions_string);
         RegionListFragment regionsFragment = (RegionListFragment) getSupportFragmentManager().findFragmentByTag(REGIONS_FRAGMENT_TAG);
         if (regionsFragment == null) {
-            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-            RegionListFragment newRegionsFragment = RegionListFragment.newInstance();
-            transaction.replace(R.id.layout_for_showing_fragment, newRegionsFragment, REGIONS_FRAGMENT_TAG);
-            transaction.commit();
+            FragmentUtils.replaceFragment(RegionListFragment.newInstance(), R.id.layout_for_showing_fragment,
+                    getSupportFragmentManager(), REGIONS_FRAGMENT_TAG);
         }
     }
 
