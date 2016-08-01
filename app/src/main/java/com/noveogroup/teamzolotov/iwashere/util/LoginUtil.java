@@ -5,10 +5,13 @@ import android.app.ProgressDialog;
 import android.support.annotation.NonNull;
 
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.Exclude;
+import com.mikepenz.materialdrawer.model.SecondaryDrawerItem;
 import com.noveogroup.teamzolotov.iwashere.R;
 import com.noveogroup.teamzolotov.iwashere.fragments.DoWithProfile;
 
@@ -41,7 +44,9 @@ public class LoginUtil {
                         }
 
                         if (!task.isSuccessful()) {
-                            doWithProfile.onError();
+                            Exception exception = task.getException();
+
+                            doWithProfile.onError(exception);
                         } else {
                             FirebaseUser firebaseUser = task.getResult().getUser();
                             doWithProfile.onSuccess(firebaseUser, password);

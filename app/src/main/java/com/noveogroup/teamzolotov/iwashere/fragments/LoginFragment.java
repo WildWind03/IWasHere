@@ -84,8 +84,8 @@ public class LoginFragment extends BaseFragment {
                     }
 
                     @Override
-                    public void onError() {
-                        onLoginFailed();
+                    public void onError(Exception e) {
+                        onLoginFailed(e);
                     }
                 });
                 break;
@@ -128,8 +128,9 @@ public class LoginFragment extends BaseFragment {
         }
     }
 
-    private void onLoginFailed() {
-        showMessage(R.string.auth_troubles_title, R.string.auth_failed_message);
+    private void onLoginFailed(Exception e) {
+        //showMessage(R.string.auth_troubles_title, R.string.auth_failed_message);
+        showMessage(R.string.auth_troubles_title, e.getMessage());
     }
 
     private void onLoginSuccess(final FirebaseUser firebaseUser, final String password) {

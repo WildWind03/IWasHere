@@ -52,6 +52,10 @@ public abstract class BaseFragment extends Fragment {
         showMessage(getString(titleResId), getString(messageResId));
     }
 
+    protected void showMessage(int titleResId, String message) {
+        showMessage(getString(titleResId), message);
+    }
+
     protected abstract void onPostViewCrated(@Nullable final Bundle savedInstanceState);
 
     protected abstract int getLayout();

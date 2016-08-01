@@ -6,5 +6,5 @@ import com.google.firebase.auth.FirebaseUser;
 public interface DoWithProfile {
     void onSuccess(FirebaseUser firebaseUser, String password);
 
-    void onError();
+    void onError(Exception e);
 }
