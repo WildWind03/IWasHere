@@ -6,6 +6,7 @@ import android.support.annotation.Nullable;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 
+import com.google.firebase.storage.StorageReference;
 import com.mikepenz.materialdrawer.AccountHeader;
 import com.mikepenz.materialdrawer.AccountHeaderBuilder;
 import com.mikepenz.materialdrawer.Drawer;
@@ -125,6 +126,7 @@ public class MainActivity extends BaseActivity implements Registrable{
                     }
                 })
                 .build();
+
         PrimaryDrawerItem mapDrawerItem = new PrimaryDrawerItem();
         mapDrawerItem
                 .withIdentifier(MAP_ID)
