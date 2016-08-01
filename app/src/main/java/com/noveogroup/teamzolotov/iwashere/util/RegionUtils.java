@@ -6,9 +6,6 @@ import com.noveogroup.teamzolotov.iwashere.model.Region;
 import java.util.ArrayList;
 import java.util.LinkedList;
 
-/**
- * Created by dserov on 28/07/16.
- */
 public class RegionUtils {
     public static LinkedList<Region> initRegions() {
         LinkedList<Region> regions = new LinkedList<>();

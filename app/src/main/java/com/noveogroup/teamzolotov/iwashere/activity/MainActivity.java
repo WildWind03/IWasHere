@@ -41,6 +41,8 @@ public class MainActivity extends BaseActivity implements Registrable{
     private final static int LIST_REGIONS_ID = 2;
     private final static int SETTINGS_ID = 3;
     private final static int HELP_ID = 4;
+    private final static int RESTORE_ID = 5;
+    private final static int BACKUP_ID = 6;
 
     private final static String IS_AUTH_KEY = "IS AUTH_KEY";
     private final static String EMAIL_KEY = "EMAIL_KEY";
@@ -135,6 +137,18 @@ public class MainActivity extends BaseActivity implements Registrable{
                 .withName(R.string.regions_string)
                 .withIcon(R.drawable.ic_list_black_24dp);
 
+        PrimaryDrawerItem restoreDrawerItem = new PrimaryDrawerItem();
+        restoreDrawerItem
+                .withIdentifier(RESTORE_ID)
+                .withName(R.string.restore_text)
+                .withIcon(R.drawable.ic_restore_black_24dp);
+
+        PrimaryDrawerItem backupDrawerItem = new PrimaryDrawerItem();
+        backupDrawerItem
+                .withIdentifier(BACKUP_ID)
+                .withName(R.string.backup_text)
+                .withIcon(R.drawable.ic_backup_black_24dp);
+
         SecondaryDrawerItem settingDrawerItem = new SecondaryDrawerItem();
         settingDrawerItem
                 .withIdentifier(SETTINGS_ID)
@@ -154,6 +168,8 @@ public class MainActivity extends BaseActivity implements Registrable{
                 .addDrawerItems(
                         mapDrawerItem,
                         listRegionsDrawerItem,
+                        backupDrawerItem,
+                        restoreDrawerItem,
                         new DividerDrawerItem(),
                         settingDrawerItem,
                         helpDrawerItem)
@@ -177,6 +193,11 @@ public class MainActivity extends BaseActivity implements Registrable{
                                 break;
                             case LOGIN_ID:
                                 onAccountHeaderClicked();
+                                break;
+                            case RESTORE_ID:
+                                break;
+                            case BACKUP_ID:
+                                break;
                         }
                         return false;
                     }
@@ -310,6 +331,14 @@ public class MainActivity extends BaseActivity implements Registrable{
     private void onHelpItemSelected() {
         toolbar.setTitle(R.string.help_string);
         currentItemState = HELP_ID;
+    }
+
+    private void onRestoreItemSelected() {
+
+    }
+
+    private void onBackupItemSelected() {
+
     }
 
     private void updateAccountHeader(@Nullable Profile profile) {
