@@ -147,4 +147,6 @@
     <string name="successfully_restored">The map was successfully restored</string>
 
     <string name="connect_with_server">Connecting with server</string>
+    <string name="google_connection_failed">Cannot connect to Google Services</string>
+    <string name="menu_submit_current_region">Submit current region</string>
 </resources>
