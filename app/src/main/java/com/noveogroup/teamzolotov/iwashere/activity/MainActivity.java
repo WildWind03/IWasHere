@@ -35,6 +35,7 @@ import com.noveogroup.teamzolotov.iwashere.fragment.LoginFragment;
 import com.noveogroup.teamzolotov.iwashere.fragment.RegisterFragment;
 import com.noveogroup.teamzolotov.iwashere.model.Profile;
 import com.noveogroup.teamzolotov.iwashere.util.LoginUtil;
+import com.noveogroup.teamzolotov.iwashere.util.RestoreUtils;
 
 import java.io.File;
 import java.util.logging.Logger;
@@ -79,6 +80,8 @@ public class MainActivity extends BaseActivity implements Registrable {
 
     private PrimaryDrawerItem backupDrawerItem;
     private PrimaryDrawerItem restoreDrawerItem;
+
+    private FirebaseUser firebaseUser;
 
     @BindView(R.id.toolbar)
     protected Toolbar toolbar;
@@ -296,8 +299,9 @@ public class MainActivity extends BaseActivity implements Registrable {
     }
 
     @Override
-    public void onLoginSuccessfully(Profile profile) {
+    public void onLoginSuccessfully(Profile profile, FirebaseUser firebaseUser) {
         this.profile = profile;
+        this.firebaseUser = firebaseUser;
 
         updateAccountHeader(profile);
 
@@ -315,7 +319,10 @@ public class MainActivity extends BaseActivity implements Registrable {
     @Override
     public void onSignOutClicked() {
         loginState = LoginState.LOGIN;
+
         this.profile = null;
+        this.firebaseUser = null;
+
         updateAccountHeader(null);
         onAccountHeaderClicked();
         updateAuthState();
@@ -334,8 +341,8 @@ public class MainActivity extends BaseActivity implements Registrable {
     }
 
     @Override
-    public void onRegisteredSuccessfully(Profile profile) {
-        onLoginSuccessfully(profile);
+    public void onRegisteredSuccessfully(Profile profile, FirebaseUser firebaseUser) {
+        onLoginSuccessfully(profile, firebaseUser);
     }
 
     @Override
@@ -375,53 +382,92 @@ public class MainActivity extends BaseActivity implements Registrable {
     }
 
     private void onRestoreItemSelected() {
+        if (null == firebaseUser) {
+            login(new AbleToDoSomething() {
+                @Override
+                public void doSomething() {
+                    restore(firebaseUser);
+                }
+            });
+        } else {
+            restore(firebaseUser);
+        }
+    }
+
+    private void onBackupItemSelected() {
+        if (null == firebaseUser) {
+            login(new AbleToDoSomething() {
+                @Override
+                public void doSomething() {
+                    backup(firebaseUser);
+                }
+            });
+        } else {
+            backup(firebaseUser);
+        }
+    }
+
+    private void backup(FirebaseUser firebaseUser) {
+        try {
+            String currentDBPath = getDatabasePath(RegionOrmLiteOpenHelper.DATABASE_NAME).getPath();
+            File backupDB = new File(currentDBPath);
+
+            if (backupDB.canRead()) {
+                BackupUtils.backup(backupDB, firebaseUser, new BackupUtils.OnBackupFailed() {
+                    @Override
+                    public void handle(Exception e) {
+                        showMessage(R.string.backup_troubles_title, R.string.backup_troubles_text);
+                    }
+                }, new BackupUtils.OnBackupSuccess() {
+                    @Override
+                    public void handle() {
+                        Toast.makeText(getApplicationContext(), R.string.backup_successful, Toast.LENGTH_SHORT).show();
+                    }
+                });
+            }
+        } catch (Exception e) {
+            Log.d(TAG, "Unable to backup");
+            showMessage(R.string.backup_troubles_title, R.string.backup_troubles_text);
+        }
+    }
+
+    private void restore(FirebaseUser firebaseUser) {
         try {
             String currentDBPath = getDatabasePath(RegionOrmLiteOpenHelper.DATABASE_NAME).getPath();
             File restoreDB = new File(currentDBPath);
 
             if (restoreDB.canWrite()) {
-                // TODO: 01/08/16 restore this file using Firebase & rxJava
-
-                // do this on the main thread upon completion
-
-                Toast.makeText(this, R.string.restore_successful, Toast.LENGTH_SHORT).show();
+                RestoreUtils.restore(firebaseUser, restoreDB, new RestoreUtils.OnRestoreSuccessfully() {
+                    @Override
+                    public void handle() {
+                        Toast.makeText(MainActivity.this, R.string.restore_successful, Toast.LENGTH_SHORT).show();
+                    }
+                }, new RestoreUtils.OnRestoreFailed() {
+                    @Override
+                    public void handle(Exception e) {
+                        showMessage(R.string.restore_troubles_title, R.string.restore_troubles_text);
+                    }
+                });
 
             }
         } catch (Exception e) {
             Log.d(TAG, "Unable to restore");
+            showMessage(R.string.restore_troubles_title, R.string.restore_troubles_text);
         }
     }
 
-    private void onBackupItemSelected() {
+    private void login(final AbleToDoSomething onLoginSuccess) {
         LoginUtil.login(profile.getEmail(), profile.getPassword(), this, false, new DoWithProfile() {
             @Override
             public void onSuccess(FirebaseUser firebaseUser, String password) {
-                try {
-                    String currentDBPath = getDatabasePath(RegionOrmLiteOpenHelper.DATABASE_NAME).getPath();
-                    File backupDB = new File(currentDBPath);
-
-                    if (backupDB.canRead()) {
-                        BackupUtils.backup(backupDB, firebaseUser, new BackupUtils.OnBackupFailed() {
-                            @Override
-                            public void handle(Exception e) {
-                                showMessage(R.string.backup_troubles_title, R.string.backup_troubles_text);
-                            }
-                        }, new BackupUtils.OnBackupSuccess() {
-                            @Override
-                            public void handle() {
-                                Toast.makeText(getApplicationContext(), R.string.backup_successful, Toast.LENGTH_SHORT).show();
-                            }
-                        });
-                    }
-                } catch (Exception e) {
-                    Log.d(TAG, "Unable to backup");
-                    showMessage(R.string.backup_troubles_title, R.string.backup_troubles_text);
-                }
+                MainActivity.this.firebaseUser = firebaseUser;
+                onLoginSuccess.doSomething();
             }
 
             @Override
             public void onError(Exception e) {
                 showMessage(R.string.auth_troubles_title, e.getMessage());
+                MainActivity.this.firebaseUser = null;
             }
         });
     }
@@ -479,5 +525,9 @@ public class MainActivity extends BaseActivity implements Registrable {
 
     enum LoginState {
         LOGIN, REGISTER, SINGED_UP
+    }
+
+    private interface AbleToDoSomething {
+        void doSomething();
     }
 }

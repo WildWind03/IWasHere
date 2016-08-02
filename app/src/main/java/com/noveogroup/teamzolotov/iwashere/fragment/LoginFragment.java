@@ -155,7 +155,7 @@ public class LoginFragment extends BaseFragment {
                 Activity activity = getActivity();
                 if (activity instanceof Registrable) {
                     Registrable onLoginSuccessfully = (Registrable) activity;
-                    onLoginSuccessfully.onLoginSuccessfully(profile);
+                    onLoginSuccessfully.onLoginSuccessfully(profile, firebaseUser);
                 } else {
                     logger.info("Error! Activity does not implement onLoginSuccessfully interface");
                 }

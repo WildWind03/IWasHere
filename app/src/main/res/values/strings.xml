@@ -135,4 +135,7 @@
 
     <string name="backup_troubles_title">Unable to backup</string>
     <string name="backup_troubles_text">Please, check your internet connection</string>
+
+    <string name="restore_troubles_title">Unable to restore</string>
+    <string name="restore_troubles_text">Please, check your internet connection</string>
 </resources>

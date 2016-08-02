@@ -50,7 +50,6 @@ public class RegisterFragment extends BaseFragment {
     protected TextView loginLink;
 
     private FirebaseAuth mAuth;
-    private FirebaseUser firebaseUser;
 
     public static RegisterFragment newInstance() {
         return new RegisterFragment();
@@ -114,8 +113,7 @@ public class RegisterFragment extends BaseFragment {
                                 if (!task.isSuccessful()) {
                                     onRegisterFailed();
                                 } else {
-                                    firebaseUser = task.getResult().getUser();
-                                    onRegisterSuccess();
+                                    onRegisterSuccess(task.getResult().getUser());
                                 }
                             }
                         });
@@ -123,7 +121,7 @@ public class RegisterFragment extends BaseFragment {
         }
     }
 
-    private void onRegisterSuccess() {
+    private void onRegisterSuccess(FirebaseUser firebaseUser) {
 
         String name = nameText.getText().toString();
         String uid = firebaseUser.getUid();
@@ -141,7 +139,7 @@ public class RegisterFragment extends BaseFragment {
 
         if (activity instanceof Registrable) {
             Registrable registrable = (Registrable) activity;
-            registrable.onRegisteredSuccessfully(profile);
+            registrable.onRegisteredSuccessfully(profile, firebaseUser);
         } else {
             logger.info("Error! Activity must implement registrable interface");
         }
