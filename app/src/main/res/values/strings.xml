@@ -138,4 +138,13 @@
 
     <string name="restore_troubles_title">Unable to restore</string>
     <string name="restore_troubles_text">Please, check your internet connection</string>
+
+    <string name="no_internet_message">No internet connection. Please, try later</string>
+    <string name="backup_in_progress_message">Backing up the map</string>
+    <string name="backup_successfully">The map was successfully backed up</string>
+
+    <string name="restore_in_progress_message">Restoring the map</string>
+    <string name="successfully_restored">The map was successfully restored</string>
+
+    <string name="connect_with_server">Connecting with server</string>
 </resources>

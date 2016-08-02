@@ -2,7 +2,6 @@ package com.noveogroup.teamzolotov.iwashere.activity;
 
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.os.Environment;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v7.widget.Toolbar;
@@ -11,8 +10,6 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageReference;
 import com.mikepenz.materialdrawer.AccountHeader;
 import com.mikepenz.materialdrawer.AccountHeaderBuilder;
 import com.mikepenz.materialdrawer.Drawer;
@@ -25,15 +22,16 @@ import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
 import com.mikepenz.materialdrawer.model.interfaces.IProfile;
 import com.noveogroup.teamzolotov.iwashere.R;
 import com.noveogroup.teamzolotov.iwashere.database.RegionOrmLiteOpenHelper;
+import com.noveogroup.teamzolotov.iwashere.fragment.AccountFragment;
 import com.noveogroup.teamzolotov.iwashere.fragment.ColourMapFragment;
 import com.noveogroup.teamzolotov.iwashere.fragment.DoWithProfile;
-import com.noveogroup.teamzolotov.iwashere.fragment.RegionListFragment;
-import com.noveogroup.teamzolotov.iwashere.util.BackupUtils;
-import com.noveogroup.teamzolotov.iwashere.util.FragmentUtils;
-import com.noveogroup.teamzolotov.iwashere.fragment.AccountFragment;
 import com.noveogroup.teamzolotov.iwashere.fragment.LoginFragment;
+import com.noveogroup.teamzolotov.iwashere.fragment.RegionListFragment;
 import com.noveogroup.teamzolotov.iwashere.fragment.RegisterFragment;
 import com.noveogroup.teamzolotov.iwashere.model.Profile;
+import com.noveogroup.teamzolotov.iwashere.util.BackupUtils;
+import com.noveogroup.teamzolotov.iwashere.util.FragmentUtils;
+import com.noveogroup.teamzolotov.iwashere.util.InternetUtils;
 import com.noveogroup.teamzolotov.iwashere.util.LoginUtil;
 import com.noveogroup.teamzolotov.iwashere.util.RestoreUtils;
 
@@ -408,6 +406,15 @@ public class MainActivity extends BaseActivity implements Registrable {
     }
 
     private void backup(FirebaseUser firebaseUser) {
+        if (!InternetUtils.isOnline(this)) {
+            showSnackBar(R.string.no_internet_message);
+            return;
+        }
+
+        final Snackbar snackbar = Snackbar.make(findViewById(R.id.layout_for_showing_fragment), getText(R.string.backup_in_progress_message), Snackbar.LENGTH_INDEFINITE);
+        snackbar.show();
+
+
         try {
             String currentDBPath = getDatabasePath(RegionOrmLiteOpenHelper.DATABASE_NAME).getPath();
             File backupDB = new File(currentDBPath);
@@ -416,22 +423,33 @@ public class MainActivity extends BaseActivity implements Registrable {
                 BackupUtils.backup(backupDB, firebaseUser, new BackupUtils.OnBackupFailed() {
                     @Override
                     public void handle(Exception e) {
-                        showMessage(R.string.backup_troubles_title, R.string.backup_troubles_text);
+                        snackbar.dismiss();
+                        showSnackBar(R.string.backup_troubles_title);
                     }
                 }, new BackupUtils.OnBackupSuccess() {
                     @Override
                     public void handle() {
-                        Toast.makeText(getApplicationContext(), R.string.backup_successful, Toast.LENGTH_SHORT).show();
+                        snackbar.dismiss();
+                        showSnackBar(R.string.backup_successfully);
                     }
                 });
             }
         } catch (Exception e) {
             Log.d(TAG, "Unable to backup");
-            showMessage(R.string.backup_troubles_title, R.string.backup_troubles_text);
+            snackbar.dismiss();
+            showSnackBar(R.string.backup_troubles_title);
         }
     }
 
     private void restore(FirebaseUser firebaseUser) {
+        if (!InternetUtils.isOnline(this)) {
+            showSnackBar(R.string.no_internet_message);
+            return;
+        }
+
+        final Snackbar snackbar = Snackbar.make(findViewById(R.id.layout_for_showing_fragment), getText(R.string.restore_in_progress_message), Snackbar.LENGTH_INDEFINITE);
+        snackbar.show();
+
         try {
             String currentDBPath = getDatabasePath(RegionOrmLiteOpenHelper.DATABASE_NAME).getPath();
             File restoreDB = new File(currentDBPath);
@@ -440,32 +458,44 @@ public class MainActivity extends BaseActivity implements Registrable {
                 RestoreUtils.restore(firebaseUser, restoreDB, new RestoreUtils.OnRestoreSuccessfully() {
                     @Override
                     public void handle() {
-                        Toast.makeText(MainActivity.this, R.string.restore_successful, Toast.LENGTH_SHORT).show();
+                        snackbar.dismiss();
+                        showSnackBar(R.string.successfully_restored);
                     }
                 }, new RestoreUtils.OnRestoreFailed() {
                     @Override
                     public void handle(Exception e) {
-                        showMessage(R.string.restore_troubles_title, R.string.restore_troubles_text);
+                        showSnackBar(R.string.restore_troubles_title);
                     }
                 });
 
             }
         } catch (Exception e) {
             Log.d(TAG, "Unable to restore");
-            showMessage(R.string.restore_troubles_title, R.string.restore_troubles_text);
+            showSnackBar(R.string.restore_troubles_title);
         }
     }
 
     private void login(final AbleToDoSomething onLoginSuccess) {
+        if (!InternetUtils.isOnline(this)) {
+            showSnackBar(R.string.no_internet_message);
+            return;
+        }
+
+        final Snackbar snackbar = Snackbar.make(findViewById(R.id.layout_for_showing_fragment), getText(R.string.connect_with_server), Snackbar.LENGTH_INDEFINITE);
+        snackbar.show();
+
+
         LoginUtil.login(profile.getEmail(), profile.getPassword(), this, false, new DoWithProfile() {
             @Override
             public void onSuccess(FirebaseUser firebaseUser, String password) {
                 MainActivity.this.firebaseUser = firebaseUser;
+                snackbar.dismiss();
                 onLoginSuccess.doSomething();
             }
 
             @Override
             public void onError(Exception e) {
+                snackbar.dismiss();
                 showMessage(R.string.auth_troubles_title, e.getMessage());
                 MainActivity.this.firebaseUser = null;
             }
@@ -521,6 +551,11 @@ public class MainActivity extends BaseActivity implements Registrable {
                         .commit();
                 break;
         }
+    }
+
+    private void showSnackBar(int resId) {
+        final Snackbar snackbar = Snackbar.make(findViewById(R.id.layout_for_showing_fragment), getText(resId), Snackbar.LENGTH_SHORT);
+        snackbar.show();
     }
 
     enum LoginState {

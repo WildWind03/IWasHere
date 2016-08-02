@@ -2,7 +2,6 @@ package com.noveogroup.teamzolotov.iwashere.util;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
-import android.content.DialogInterface;
 import android.support.annotation.NonNull;
 
 import com.google.android.gms.tasks.OnCompleteListener;
