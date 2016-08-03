@@ -1,7 +1,6 @@
 package com.noveogroup.teamzolotov.iwashere.activity;
 
 import android.Manifest;
-import android.app.ProgressDialog;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.location.Location;
@@ -54,12 +53,10 @@ import com.noveogroup.teamzolotov.iwashere.util.RegionUtils;
 import java.io.File;
 import java.sql.SQLException;
 import java.util.List;
-import java.util.logging.Logger;
 
 import butterknife.BindView;
 import rx.Subscriber;
 import rx.Subscription;
-import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
 public class MainActivity extends BaseDatabaseActivity implements Registrable, GoogleApiClient.ConnectionCallbacks,
@@ -215,8 +212,8 @@ public class MainActivity extends BaseDatabaseActivity implements Registrable, G
         SecondaryDrawerItem helpDrawerItem = new SecondaryDrawerItem();
         helpDrawerItem
                 .withIdentifier(HELP_ID)
-                .withName(R.string.help_string)
-                .withIcon(R.drawable.ic_help_black_24dp);
+                .withName(R.string.license_string)
+                .withIcon(R.drawable.ic_info_outline_black_24dp);
 
         drawer = new DrawerBuilder()
                 .withActivity(this)
@@ -228,7 +225,6 @@ public class MainActivity extends BaseDatabaseActivity implements Registrable, G
                         backupDrawerItem,
                         restoreDrawerItem,
                         new DividerDrawerItem(),
-                        settingDrawerItem,
                         helpDrawerItem)
                 .withOnDrawerItemClickListener(new Drawer.OnDrawerItemClickListener() {
                     @Override
@@ -463,7 +459,7 @@ public class MainActivity extends BaseDatabaseActivity implements Registrable, G
     }
 
     private void onHelpItemSelected() {
-        toolbar.setTitle(R.string.help_string);
+        toolbar.setTitle(R.string.license_string);
         currentItemState = HELP_ID;
 
         HelpFragment helpFragment = (HelpFragment) getSupportFragmentManager().findFragmentByTag(HELP_FRAGMENT_TAG);

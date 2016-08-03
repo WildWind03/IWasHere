@@ -6,7 +6,7 @@
     <string name="map_string">Map</string>
     <string name="regions_string">Regions</string>
     <string name="settings_string">Settings</string>
-    <string name="help_string">Help</string>
+    <string name="license_string">License</string>
 
     <string name="kurgan">Курганская область</string>
     <string name="novgorod">Новгородская область</string>
