@@ -5,7 +5,6 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
@@ -216,7 +215,7 @@ public class MainActivity extends BaseDatabaseActivity implements Registrable, G
         SecondaryDrawerItem helpDrawerItem = new SecondaryDrawerItem();
         helpDrawerItem
                 .withIdentifier(HELP_ID)
-                .withName(R.string.license_string)
+                .withName(R.string.info_string)
                 .withIcon(R.drawable.ic_info_outline_black_24dp);
 
         drawer = new DrawerBuilder()
@@ -478,7 +477,7 @@ public class MainActivity extends BaseDatabaseActivity implements Registrable, G
     }
 
     private void onHelpItemSelected() {
-        toolbar.setTitle(R.string.license_string);
+        toolbar.setTitle(R.string.info_string);
         currentItemState = HELP_ID;
 
         HelpFragment helpFragment = (HelpFragment) getSupportFragmentManager().findFragmentByTag(HELP_FRAGMENT_TAG);
