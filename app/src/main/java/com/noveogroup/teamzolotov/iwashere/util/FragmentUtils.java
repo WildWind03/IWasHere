@@ -4,7 +4,10 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 
-public class FragmentUtils {
+public final class FragmentUtils {
+    private FragmentUtils() {
+        throw new UnsupportedOperationException("Trying to create instance of utility class");
+    }
 
     public static void replaceFragment(Fragment fragment, int resId, FragmentManager manager, String tag) {
         FragmentTransaction transaction = manager.beginTransaction();

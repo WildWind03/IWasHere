@@ -12,10 +12,10 @@ import com.google.firebase.auth.FirebaseUser;
 import com.noveogroup.teamzolotov.iwashere.R;
 import com.noveogroup.teamzolotov.iwashere.fragment.DoWithProfile;
 
-public class LoginUtils {
+public final class LoginUtils {
 
     private LoginUtils() {
-
+        throw new UnsupportedOperationException("Trying to create instance of utility class");
     }
 
     public static void login(final String email, final String password, final Activity activity, final boolean isProgressDialog,

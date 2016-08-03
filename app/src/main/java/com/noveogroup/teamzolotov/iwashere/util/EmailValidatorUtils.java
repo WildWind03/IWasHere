@@ -3,8 +3,9 @@ package com.noveogroup.teamzolotov.iwashere.util;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class EmailValidatorUtils {
+public final class EmailValidatorUtils {
     private EmailValidatorUtils() {
+        throw new UnsupportedOperationException("Trying to create instance of utility class");
     }
 
     private static final Pattern VALID_EMAIL_ADDRESS_REGEX =

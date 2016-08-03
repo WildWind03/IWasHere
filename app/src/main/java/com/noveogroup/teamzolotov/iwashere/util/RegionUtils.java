@@ -5,7 +5,11 @@ import com.noveogroup.teamzolotov.iwashere.model.Region;
 
 import java.util.LinkedList;
 
-public class RegionUtils {
+public final class RegionUtils {
+
+    private RegionUtils() {
+        throw new UnsupportedOperationException("Trying to create instance of utility class");
+    }
     public static LinkedList<Region> initRegions() {
         LinkedList<Region> regions = new LinkedList<>();
         regions.add(new Region(-140290));

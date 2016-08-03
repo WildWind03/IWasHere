@@ -4,9 +4,10 @@ import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 
-public class InternetUtils {
-    private InternetUtils() {
+public final class InternetUtils {
 
+    private InternetUtils() {
+        throw new UnsupportedOperationException("Trying to create instance of utility class");
     }
 
     public static boolean isOnline(Context context) {
