@@ -3,20 +3,9 @@
     <color name="toolbar_text_color">#ffffff</color>
 
 
-    <color name="primary">#03A9F4</color>
-    <color name="primary_dark">#0288D1</color>
     <color name="primary_light">#B3E5FC</color>
-    <color name="accent">#00BCD4</color>
     <color name="primary_text">#212121</color>
-    <color name="secondary_text">#727272</color>
-    <color name="icons">#FFFFFF</color>
-    <color name="divider">#B6B6B6</color>
     <color name="map_fill">#FF64DD17</color>
-
-    <color name="material_login_login_color">@color/icons</color>
-    <color name="material_login_register_color">@color/primary</color>
-    <color name="material_login_login_error_color">#ffbebe</color>
-    <color name="material_login_register_error_color">#600002</color>
 
 
 </resources>
