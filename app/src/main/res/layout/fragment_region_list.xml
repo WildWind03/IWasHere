@@ -10,8 +10,6 @@
         android:name="com.noveogroup.teamzolotov.iwashere.fragments.RegionListFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginLeft="16dp"
-        android:layout_marginRight="16dp"
         app:layoutManager="LinearLayoutManager"
         tools:context="com.noveogroup.teamzolotov.iwashere.fragment.RegionListFragment"
         tools:listitem="@layout/region_list_item" />
