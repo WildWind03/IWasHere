@@ -1,13 +1,21 @@
 package com.noveogroup.teamzolotov.iwashere.activity;
 
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.os.Environment;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Menu;
 import android.view.View;
 
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.firebase.auth.FirebaseUser;
 import com.mikepenz.materialdrawer.AccountHeader;
 import com.mikepenz.materialdrawer.AccountHeaderBuilder;
@@ -39,7 +47,8 @@ import java.util.logging.Logger;
 
 import butterknife.BindView;
 
-public class MainActivity extends BaseActivity implements Registrable {
+public class MainActivity extends BaseActivity implements Registrable, GoogleApiClient.ConnectionCallbacks,
+        GoogleApiClient.OnConnectionFailedListener  {
 
     private static final String TAG = MainActivity.class.getSimpleName();
 
@@ -78,6 +87,8 @@ public class MainActivity extends BaseActivity implements Registrable {
     private PrimaryDrawerItem backupDrawerItem;
     private PrimaryDrawerItem restoreDrawerItem;
 
+    private GoogleApiClient googleApiClient;
+
     private FirebaseUser firebaseUser;
 
     @BindView(R.id.toolbar)
@@ -91,6 +102,14 @@ public class MainActivity extends BaseActivity implements Registrable {
         if (savedInstanceState == null) {
             FragmentUtils.addFragment(ColourMapFragment.newInstance(), R.id.layout_for_showing_fragment,
                     getSupportFragmentManager(), MAP_FRAGMENT_TAG);
+        }
+
+        if (googleApiClient == null) {
+            googleApiClient = new GoogleApiClient.Builder(this)
+                    .addConnectionCallbacks(this)
+                    .addOnConnectionFailedListener(this)
+                    .addApi(LocationServices.API)
+                    .build();
         }
     }
 
@@ -265,9 +284,47 @@ public class MainActivity extends BaseActivity implements Registrable {
     }
 
     @Override
+    protected void onStart() {
+        googleApiClient.connect();
+        super.onStart();
+    }
+
+    @Override
+    protected void onStop() {
+        googleApiClient.disconnect();
+        super.onStop();
+    }
+
+    @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putInt(CURRENT_ITEM_STATE_KEY, currentItemState);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_activity_main, menu);
+        return true;
+    }
+
+    @Override
+    public void onConnected(@Nullable Bundle bundle) {
+
+    }
+
+    @Override
+    public void onConnectionSuspended(int i) {
+        Snackbar.make(findViewById(R.id.layout_for_showing_fragment),
+                getString(R.string.google_connection_failed), Snackbar.LENGTH_LONG).show();
+        googleApiClient.connect();
+    }
+
+    @Override
+    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+
+        Snackbar.make(findViewById(R.id.layout_for_showing_fragment),
+                connectionResult.getErrorMessage() != null ? connectionResult.getErrorMessage() : getString(R.string.google_connection_failed),
+                Snackbar.LENGTH_LONG).show();
     }
 
 
