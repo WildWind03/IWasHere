@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
@@ -55,8 +56,11 @@ import java.sql.SQLException;
 import java.util.List;
 
 import butterknife.BindView;
+import rx.Observable;
 import rx.Subscriber;
 import rx.Subscription;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
 public class MainActivity extends BaseDatabaseActivity implements Registrable, GoogleApiClient.ConnectionCallbacks,
@@ -442,6 +446,13 @@ public class MainActivity extends BaseDatabaseActivity implements Registrable, G
         currentItemState = MAP_ID;
     }
 
+    private void forceMapItemSelected() {
+        toolbar.setTitle(R.string.map_string);
+        FragmentUtils.replaceFragment(ColourMapFragment.newInstance(), R.id.layout_for_showing_fragment,
+                    getSupportFragmentManager(), MAP_FRAGMENT_TAG);
+        currentItemState = MAP_ID;
+    }
+
     private void onRegionsItemSelected() {
         toolbar.setTitle(R.string.regions_string);
         RegionListFragment regionsFragment = (RegionListFragment) getSupportFragmentManager().findFragmentByTag(REGIONS_FRAGMENT_TAG);
@@ -449,6 +460,14 @@ public class MainActivity extends BaseDatabaseActivity implements Registrable, G
             FragmentUtils.replaceFragment(RegionListFragment.newInstance(), R.id.layout_for_showing_fragment,
                     getSupportFragmentManager(), REGIONS_FRAGMENT_TAG);
         }
+
+        currentItemState = LIST_REGIONS_ID;
+    }
+
+    private void forceRegionsItemSelected() {
+        toolbar.setTitle(R.string.regions_string);
+        FragmentUtils.replaceFragment(RegionListFragment.newInstance(), R.id.layout_for_showing_fragment,
+                    getSupportFragmentManager(), REGIONS_FRAGMENT_TAG);
 
         currentItemState = LIST_REGIONS_ID;
     }
@@ -648,6 +667,11 @@ public class MainActivity extends BaseDatabaseActivity implements Registrable, G
         snackbar.show();
     }
 
+    private void showSnackBar(String msg) {
+        final Snackbar snackbar = Snackbar.make(findViewById(R.id.layout_for_showing_fragment), msg, Snackbar.LENGTH_SHORT);
+        snackbar.show();
+    }
+
     private void submitCurrentRegion() {
         if (googleApiClient.isConnected()) {
             if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
@@ -657,19 +681,9 @@ public class MainActivity extends BaseDatabaseActivity implements Registrable, G
                     reverseGeoSubscription = service.getPlace(location.getLatitude(), location.getLongitude())
                             .subscribeOn(Schedulers.computation())
                             .observeOn(Schedulers.newThread())
-                            .subscribe(new Subscriber<Place>() {
+                            .flatMap(new Func1<Place, Observable<Place>>() {
                                 @Override
-                                public void onCompleted() {
-                                    Log.d(TAG, "Updated db based on geolocation");
-                                }
-
-                                @Override
-                                public void onError(Throwable e) {
-                                    Log.d(TAG, "Failed to update db based on geolocation", e);
-                                }
-
-                                @Override
-                                public void onNext(Place place) {
+                                public Observable<Place> call(Place place) {
                                     String state = place.getState();
                                     try {
                                         Dao<Region, Integer> dao = openHelper.getDao();
@@ -685,12 +699,30 @@ public class MainActivity extends BaseDatabaseActivity implements Registrable, G
                                         Log.d(TAG, "Failed accessing db after rev geocoding");
                                         e.printStackTrace();
                                     }
+                                    return Observable.just(place);
+                                }
+                            })
+                            .observeOn(AndroidSchedulers.mainThread())
+                            .subscribe(new Subscriber<Place>() {
+                                @Override
+                                public void onCompleted() {
+                                    Log.d(TAG, "Updated db based on geolocation");
+                                }
+
+                                @Override
+                                public void onError(Throwable e) {
+                                    Log.d(TAG, "Failed to update db based on geolocation", e);
+                                }
+
+                                @Override
+                                public void onNext(Place place) {
+                                    showSnackBar(getString(R.string.location_success) + place.getState());
+                                    forceMapItemSelected();
                                 }
                             });
                 } else {
                     showSnackBar(R.string.location_error);
                 }
-
             } else {
                 showSnackBar(R.string.missing_permission);
             }
