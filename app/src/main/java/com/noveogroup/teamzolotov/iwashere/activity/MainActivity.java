@@ -34,11 +34,10 @@ import com.noveogroup.teamzolotov.iwashere.fragment.LoginFragment;
 import com.noveogroup.teamzolotov.iwashere.fragment.RegionListFragment;
 import com.noveogroup.teamzolotov.iwashere.fragment.RegisterFragment;
 import com.noveogroup.teamzolotov.iwashere.model.Profile;
-import com.noveogroup.teamzolotov.iwashere.util.BackupUtils;
+import com.noveogroup.teamzolotov.iwashere.util.BackupRestoreUtils;
 import com.noveogroup.teamzolotov.iwashere.util.FragmentUtils;
 import com.noveogroup.teamzolotov.iwashere.util.InternetUtils;
 import com.noveogroup.teamzolotov.iwashere.util.LoginUtils;
-import com.noveogroup.teamzolotov.iwashere.util.RestoreUtils;
 
 import java.io.File;
 import java.util.logging.Logger;
@@ -480,13 +479,13 @@ public class MainActivity extends BaseActivity implements Registrable, GoogleApi
             File backupDB = new File(currentDBPath);
 
             if (backupDB.canRead()) {
-                BackupUtils.backup(backupDB, firebaseUser, new BackupUtils.OnBackupFailed() {
+                BackupRestoreUtils.backup(backupDB, firebaseUser, new BackupRestoreUtils.OnBackupFailed() {
                     @Override
                     public void handle(Exception e) {
                         snackbar.dismiss();
                         showSnackBar(R.string.backup_troubles_title);
                     }
-                }, new BackupUtils.OnBackupSuccess() {
+                }, new BackupRestoreUtils.OnBackupSuccess() {
                     @Override
                     public void handle() {
                         snackbar.dismiss();
@@ -515,13 +514,13 @@ public class MainActivity extends BaseActivity implements Registrable, GoogleApi
             File restoreDB = new File(currentDBPath);
 
             if (restoreDB.canWrite()) {
-                RestoreUtils.restore(firebaseUser, restoreDB, new RestoreUtils.OnRestoreSuccessfully() {
+                BackupRestoreUtils.restore(firebaseUser, restoreDB, new BackupRestoreUtils.OnRestoreSuccessfully() {
                     @Override
                     public void handle() {
                         snackbar.dismiss();
                         showSnackBar(R.string.successfully_restored);
                     }
-                }, new RestoreUtils.OnRestoreFailed() {
+                }, new BackupRestoreUtils.OnRestoreFailed() {
                     @Override
                     public void handle(Exception e) {
                         showSnackBar(R.string.restore_troubles_title);
