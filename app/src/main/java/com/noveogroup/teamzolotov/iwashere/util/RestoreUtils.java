@@ -27,7 +27,7 @@ public class RestoreUtils {
         imagesStorageReference.getFile(toFile).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
             @Override
             public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
-               onRestoreSuccessfully.handle();
+                onRestoreSuccessfully.handle();
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override

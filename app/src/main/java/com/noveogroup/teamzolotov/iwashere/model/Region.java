@@ -1,6 +1,5 @@
 package com.noveogroup.teamzolotov.iwashere.model;
 
-import com.j256.ormlite.field.DataType;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
 import com.noveogroup.teamzolotov.iwashere.database.ContentDescriptor;
@@ -21,7 +20,8 @@ public class Region {
     @DatabaseField(columnName = ContentDescriptor.Regions.Cols.VISITED)
     private boolean visited;
 
-    public Region() {}
+    public Region() {
+    }
 
     public Region(int osmId) {
         this.osmId = osmId;

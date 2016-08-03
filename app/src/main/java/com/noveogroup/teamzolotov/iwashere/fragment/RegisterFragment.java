@@ -19,7 +19,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.noveogroup.teamzolotov.iwashere.R;
 import com.noveogroup.teamzolotov.iwashere.activity.Registrable;
 import com.noveogroup.teamzolotov.iwashere.model.Profile;
-import com.noveogroup.teamzolotov.iwashere.util.EmailValidator;
+import com.noveogroup.teamzolotov.iwashere.util.EmailValidatorUtils;
 
 import java.util.logging.Logger;
 
@@ -171,7 +171,7 @@ public class RegisterFragment extends BaseFragment {
         String email = emailText.getText().toString();
         String password = passwordText.getText().toString();
 
-        if (EmailValidator.validate(email)) {
+        if (EmailValidatorUtils.validate(email)) {
             if (password.length() >= MIN_LENGTH_OF_PASSWORD) {
                 if (name.length() >= MIN_LENGTH_OF_USERNAME) {
                     return RegisterValidateResult.SUCCESS;

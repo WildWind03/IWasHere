@@ -101,24 +101,24 @@ public class ColourMapFragment extends SupportMapFragment implements OnMapReadyC
                 }
             }
         })
-            .subscribeOn(Schedulers.computation())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe(new Subscriber<GeoJsonLayer>() {
-                @Override
-                public void onCompleted() {
+                .subscribeOn(Schedulers.computation())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Subscriber<GeoJsonLayer>() {
+                    @Override
+                    public void onCompleted() {
 
-                }
+                    }
 
-                @Override
-                public void onError(Throwable e) {
-                    Log.d(TAG, "Error while parsing geojson/regions db", e);
-                }
+                    @Override
+                    public void onError(Throwable e) {
+                        Log.d(TAG, "Error while parsing geojson/regions db", e);
+                    }
 
-                @Override
-                public void onNext(GeoJsonLayer geoJsonLayer) {
-                    geoJsonLayer.addLayerToMap();
-                }
-            });
+                    @Override
+                    public void onNext(GeoJsonLayer geoJsonLayer) {
+                        geoJsonLayer.addLayerToMap();
+                    }
+                });
 
     }
 

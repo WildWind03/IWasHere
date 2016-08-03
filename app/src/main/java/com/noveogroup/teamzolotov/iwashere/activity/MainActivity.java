@@ -7,7 +7,6 @@ import android.support.design.widget.Snackbar;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
-import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseUser;
 import com.mikepenz.materialdrawer.AccountHeader;
@@ -32,7 +31,7 @@ import com.noveogroup.teamzolotov.iwashere.model.Profile;
 import com.noveogroup.teamzolotov.iwashere.util.BackupUtils;
 import com.noveogroup.teamzolotov.iwashere.util.FragmentUtils;
 import com.noveogroup.teamzolotov.iwashere.util.InternetUtils;
-import com.noveogroup.teamzolotov.iwashere.util.LoginUtil;
+import com.noveogroup.teamzolotov.iwashere.util.LoginUtils;
 import com.noveogroup.teamzolotov.iwashere.util.RestoreUtils;
 
 import java.io.File;
@@ -101,7 +100,6 @@ public class MainActivity extends BaseActivity implements Registrable {
         super.onPostCreate(savedInstanceState);
 
         sharedPreferences = getPreferences(MODE_PRIVATE);
-
         boolean isAuth = sharedPreferences.getBoolean(IS_AUTH_KEY, false);
 
         IProfile iProfile;
@@ -485,7 +483,7 @@ public class MainActivity extends BaseActivity implements Registrable {
         snackbar.show();
 
 
-        LoginUtil.login(profile.getEmail(), profile.getPassword(), this, false, new DoWithProfile() {
+        LoginUtils.login(profile.getEmail(), profile.getPassword(), this, false, new DoWithProfile() {
             @Override
             public void onSuccess(FirebaseUser firebaseUser, String password) {
                 MainActivity.this.firebaseUser = firebaseUser;

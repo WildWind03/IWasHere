@@ -12,9 +12,9 @@ import com.google.firebase.auth.FirebaseUser;
 import com.noveogroup.teamzolotov.iwashere.R;
 import com.noveogroup.teamzolotov.iwashere.fragment.DoWithProfile;
 
-public class LoginUtil {
+public class LoginUtils {
 
-    private LoginUtil() {
+    private LoginUtils() {
 
     }
 

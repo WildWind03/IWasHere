@@ -17,8 +17,8 @@ import com.google.firebase.database.ValueEventListener;
 import com.noveogroup.teamzolotov.iwashere.R;
 import com.noveogroup.teamzolotov.iwashere.activity.Registrable;
 import com.noveogroup.teamzolotov.iwashere.model.Profile;
-import com.noveogroup.teamzolotov.iwashere.util.EmailValidator;
-import com.noveogroup.teamzolotov.iwashere.util.LoginUtil;
+import com.noveogroup.teamzolotov.iwashere.util.EmailValidatorUtils;
+import com.noveogroup.teamzolotov.iwashere.util.LoginUtils;
 
 import java.util.logging.Logger;
 
@@ -77,7 +77,7 @@ public class LoginFragment extends BaseFragment {
                 String email = emailText.getText().toString();
                 String password = passwordText.getText().toString();
 
-                LoginUtil.login(email, password, getActivity(), true, new DoWithProfile() {
+                LoginUtils.login(email, password, getActivity(), true, new DoWithProfile() {
                     @Override
                     public void onSuccess(FirebaseUser firebaseUser, String password) {
                         onLoginSuccess(firebaseUser, password);
@@ -113,7 +113,7 @@ public class LoginFragment extends BaseFragment {
         String email = emailText.getText().toString();
         String password = passwordText.getText().toString();
 
-        if (EmailValidator.validate(email)) {
+        if (EmailValidatorUtils.validate(email)) {
             if (password.length() >= MIN_LENGTH_OF_PASSWORD) {
                 return LoginValidateResult.SUCCESS;
             } else {

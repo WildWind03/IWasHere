@@ -18,7 +18,7 @@ public abstract class BaseDatabaseFragment extends BaseFragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View v =  super.onCreateView(inflater, container, savedInstanceState);
+        View v = super.onCreateView(inflater, container, savedInstanceState);
         if (openHelper == null) {
             openHelper = OpenHelperManager.getHelper(getContext(), RegionOrmLiteOpenHelper.class);
         }
