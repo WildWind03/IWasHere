@@ -17,6 +17,7 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.firebase.auth.FirebaseUser;
+import com.marcoscg.easylicensesdialog.EasyLicensesDialog;
 import com.mikepenz.materialdrawer.AccountHeader;
 import com.mikepenz.materialdrawer.AccountHeaderBuilder;
 import com.mikepenz.materialdrawer.Drawer;
@@ -32,6 +33,7 @@ import com.noveogroup.teamzolotov.iwashere.database.RegionOrmLiteOpenHelper;
 import com.noveogroup.teamzolotov.iwashere.fragment.AccountFragment;
 import com.noveogroup.teamzolotov.iwashere.fragment.ColourMapFragment;
 import com.noveogroup.teamzolotov.iwashere.fragment.DoWithProfile;
+import com.noveogroup.teamzolotov.iwashere.fragment.HelpFragment;
 import com.noveogroup.teamzolotov.iwashere.fragment.LoginFragment;
 import com.noveogroup.teamzolotov.iwashere.fragment.RegionListFragment;
 import com.noveogroup.teamzolotov.iwashere.fragment.RegisterFragment;
@@ -54,6 +56,7 @@ public class MainActivity extends BaseActivity implements Registrable, GoogleApi
 
     private static final String MAP_FRAGMENT_TAG = "map";
     private static final String REGIONS_FRAGMENT_TAG = "regions";
+    private final static String HELP_FRAGMENT_TAG = "help";
 
     private final static int LOGIN_ID = 0;
     private final static int MAP_ID = 1;
@@ -432,6 +435,12 @@ public class MainActivity extends BaseActivity implements Registrable, GoogleApi
     private void onHelpItemSelected() {
         toolbar.setTitle(R.string.help_string);
         currentItemState = HELP_ID;
+
+        HelpFragment helpFragment = (HelpFragment) getSupportFragmentManager().findFragmentByTag(HELP_FRAGMENT_TAG);
+        if (helpFragment == null) {
+            FragmentUtils.replaceFragment(HelpFragment.newInstance(getString(R.string.default_license_title), getString(R.string.default_license_text)), R.id.layout_for_showing_fragment,
+                    getSupportFragmentManager(), HELP_FRAGMENT_TAG);
+        }
     }
 
     private void onRestoreItemSelected() {

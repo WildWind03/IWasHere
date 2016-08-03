@@ -55,6 +55,7 @@ dependencies {
     compile 'com.google.firebase:firebase-storage:9.2.1'
 
     compile 'com.android.support:design:24.1.0'
+    compile 'com.github.marcoscgdev.EasyLicensesDialog:appcompatversion:1.0.4'
 
 }
 
