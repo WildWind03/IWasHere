@@ -2,6 +2,7 @@ package com.noveogroup.teamzolotov.iwashere.fragment;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.widget.Button;
@@ -47,6 +48,16 @@ public class LoginFragment extends BaseFragment {
 
     public static LoginFragment newInstance() {
         return new LoginFragment();
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+
+        if (!(context instanceof Registrable)) {
+            logger.info("Error! Activity does not implement onRegisterLinkClicked interface");
+            throw new ClassCastException("Error! Activity does not implement onRegisterLinkClicked interface");
+        }
     }
 
     @Override
@@ -99,12 +110,8 @@ public class LoginFragment extends BaseFragment {
     @OnClick(R.id.link_signup)
     protected void onRegisterLinkClick() {
         Activity activity = getActivity();
-        if (activity instanceof Registrable) {
-            Registrable registrable = (Registrable) activity;
-            registrable.onRegisterLinkClicked();
-        } else {
-            logger.info("Error! Activity does not implement onRegisterLinkClicked interface");
-        }
+        Registrable registrable = (Registrable) activity;
+        registrable.onRegisterLinkClicked();
     }
 
 
@@ -138,12 +145,8 @@ public class LoginFragment extends BaseFragment {
                 Profile profile = new Profile(firebaseUser.getEmail(), username, password, firebaseUser.getUid());
 
                 Activity activity = getActivity();
-                if (activity instanceof Registrable) {
-                    Registrable onLoginSuccessfully = (Registrable) activity;
-                    onLoginSuccessfully.onLoginSuccessfully(profile, firebaseUser);
-                } else {
-                    logger.info("Error! Activity does not implement onLoginSuccessfully interface");
-                }
+                Registrable onLoginSuccessfully = (Registrable) activity;
+                onLoginSuccessfully.onLoginSuccessfully(profile, firebaseUser);
             }
 
             @Override

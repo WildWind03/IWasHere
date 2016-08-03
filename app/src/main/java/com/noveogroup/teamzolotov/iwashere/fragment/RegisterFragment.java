@@ -2,6 +2,7 @@ package com.noveogroup.teamzolotov.iwashere.fragment;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -52,6 +53,16 @@ public class RegisterFragment extends BaseFragment {
 
     public static RegisterFragment newInstance() {
         return new RegisterFragment();
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+
+        if (!(context instanceof Registrable)) {
+            logger.info("Error! Activity must implement registrable interface");
+            throw new ClassCastException("Error! Activity must implement registrable interface");
+        }
     }
 
     @Override
@@ -112,12 +123,8 @@ public class RegisterFragment extends BaseFragment {
 
         Activity activity = getActivity();
 
-        if (activity instanceof Registrable) {
-            Registrable registrable = (Registrable) activity;
-            registrable.onRegisteredSuccessfully(profile, firebaseUser);
-        } else {
-            logger.info("Error! Activity must implement registrable interface");
-        }
+        Registrable registrable = (Registrable) activity;
+        registrable.onRegisteredSuccessfully(profile, firebaseUser);
     }
 
     private void onRegisterFailed() {
@@ -128,12 +135,8 @@ public class RegisterFragment extends BaseFragment {
     protected void onLoginLinkClick() {
         Activity activity = getActivity();
 
-        if (activity instanceof Registrable) {
-            Registrable loginable = (Registrable) activity;
-            loginable.onLoginLinkClicked();
-        } else {
-            logger.info("Error! Activity must implement loginable interface");
-        }
+        Registrable registrable = (Registrable) activity;
+        registrable.onLoginLinkClicked();
     }
 
     @Override

@@ -1,6 +1,7 @@
 package com.noveogroup.teamzolotov.iwashere.fragment;
 
 import android.app.Activity;
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.widget.TextView;
@@ -34,6 +35,16 @@ public class AccountFragment extends BaseFragment {
     }
 
     @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+
+        if (!(context instanceof Registrable)) {
+            logger.info("Activity of account fragment must implement registrable interface");
+            throw new ClassCastException("Activity of account fragment must implement registrable interface");
+        }
+    }
+
+    @Override
     protected void onPostViewCrated(@Nullable Bundle savedInstanceState) {
         Profile profile = getArguments().getParcelable(PROFILE_KEY);
         if (null != profile) {
@@ -45,12 +56,7 @@ public class AccountFragment extends BaseFragment {
     @OnClick(R.id.sign_out_button)
     protected void onSignOutButtonClick() {
         Activity activity = getActivity();
-
-        if (activity instanceof Registrable) {
-            ((Registrable) activity).onSignOutClicked();
-        } else {
-            logger.info("Activity of account fragment must implement registrable interface");
-        }
+        ((Registrable) activity).onSignOutClicked();
     }
 
     @Override
