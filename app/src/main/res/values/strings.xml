@@ -152,4 +152,5 @@
 
     <string name="default_license_title">License</string>
     <string name="default_license_text">All rights reserved</string>
+    <string name="region_image_description">Region image</string>
 </resources>

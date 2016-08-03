@@ -22,7 +22,6 @@ import com.google.maps.android.geojson.GeoJsonLayer;
 import com.google.maps.android.geojson.GeoJsonPolygonStyle;
 import com.j256.ormlite.android.apptools.OpenHelperManager;
 import com.noveogroup.teamzolotov.iwashere.R;
-import com.noveogroup.teamzolotov.iwashere.activity.MainActivity;
 import com.noveogroup.teamzolotov.iwashere.database.RegionOrmLiteOpenHelper;
 import com.noveogroup.teamzolotov.iwashere.model.Region;
 

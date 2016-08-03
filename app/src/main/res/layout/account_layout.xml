@@ -2,7 +2,6 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:fitsSystemWindows="true">
 
     <LinearLayout
@@ -13,28 +12,31 @@
         android:paddingLeft="24dp"
         android:paddingRight="24dp">
 
-        <ImageView android:src="@drawable/logo_i_was_here_small"
+        <ImageView
+            android:src="@drawable/logo_i_was_here_small"
             android:layout_width="wrap_content"
             android:layout_height="72dp"
             android:layout_marginBottom="24dp"
             android:layout_gravity="center_horizontal"
             android:contentDescription="@string/app_logo_text" />
 
-        <TextView android:id="@+id/username_text_view"
+        <TextView
+            android:id="@+id/username_text_view"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="24dp"
             android:text="@string/name_text"
             android:gravity="center"
-            style="@style/TextAppearance.AppCompat.Large"/>
+            style="@style/TextAppearance.AppCompat.Large" />
 
-        <TextView android:id="@+id/email_text_view"
+        <TextView
+            android:id="@+id/email_text_view"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="24dp"
             android:text="@string/email_text"
             android:gravity="center"
-            style="@style/TextAppearance.AppCompat.Medium"/>
+            style="@style/TextAppearance.AppCompat.Medium" />
 
         <android.support.v7.widget.AppCompatButton
             android:id="@+id/sign_out_button"
@@ -43,6 +45,6 @@
             android:layout_marginTop="24dp"
             android:layout_marginBottom="24dp"
             android:padding="12dp"
-            android:text="@string/sign_out_text"/>
+            android:text="@string/sign_out_text" />
     </LinearLayout>
 </ScrollView>
