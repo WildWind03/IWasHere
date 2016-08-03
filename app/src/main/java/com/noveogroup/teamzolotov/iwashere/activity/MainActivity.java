@@ -1,20 +1,26 @@
 package com.noveogroup.teamzolotov.iwashere.activity;
 
+import android.Manifest;
 import android.app.ProgressDialog;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
+import android.location.Location;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.firebase.auth.FirebaseUser;
+import com.j256.ormlite.dao.Dao;
 import com.mikepenz.materialdrawer.AccountHeader;
 import com.mikepenz.materialdrawer.AccountHeaderBuilder;
 import com.mikepenz.materialdrawer.Drawer;
@@ -26,6 +32,8 @@ import com.mikepenz.materialdrawer.model.SecondaryDrawerItem;
 import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
 import com.mikepenz.materialdrawer.model.interfaces.IProfile;
 import com.noveogroup.teamzolotov.iwashere.R;
+import com.noveogroup.teamzolotov.iwashere.api.NominatimApi;
+import com.noveogroup.teamzolotov.iwashere.api.NominatimService;
 import com.noveogroup.teamzolotov.iwashere.database.RegionOrmLiteOpenHelper;
 import com.noveogroup.teamzolotov.iwashere.fragment.AccountFragment;
 import com.noveogroup.teamzolotov.iwashere.fragment.ColourMapFragment;
@@ -34,19 +42,28 @@ import com.noveogroup.teamzolotov.iwashere.fragment.HelpFragment;
 import com.noveogroup.teamzolotov.iwashere.fragment.LoginFragment;
 import com.noveogroup.teamzolotov.iwashere.fragment.RegionListFragment;
 import com.noveogroup.teamzolotov.iwashere.fragment.RegisterFragment;
+import com.noveogroup.teamzolotov.iwashere.model.Place;
 import com.noveogroup.teamzolotov.iwashere.model.Profile;
 import com.noveogroup.teamzolotov.iwashere.util.BackupRestoreUtils;
+import com.noveogroup.teamzolotov.iwashere.model.Region;
 import com.noveogroup.teamzolotov.iwashere.util.FragmentUtils;
 import com.noveogroup.teamzolotov.iwashere.util.InternetUtils;
 import com.noveogroup.teamzolotov.iwashere.util.LoginUtils;
+import com.noveogroup.teamzolotov.iwashere.util.RegionUtils;
 
 import java.io.File;
+import java.sql.SQLException;
+import java.util.List;
 import java.util.logging.Logger;
 
 import butterknife.BindView;
+import rx.Subscriber;
+import rx.Subscription;
+import rx.functions.Func1;
+import rx.schedulers.Schedulers;
 
-public class MainActivity extends BaseActivity implements Registrable, GoogleApiClient.ConnectionCallbacks,
-        GoogleApiClient.OnConnectionFailedListener {
+public class MainActivity extends BaseDatabaseActivity implements Registrable, GoogleApiClient.ConnectionCallbacks,
+        GoogleApiClient.OnConnectionFailedListener  {
 
     private static final String TAG = MainActivity.class.getSimpleName();
 
@@ -70,7 +87,6 @@ public class MainActivity extends BaseActivity implements Registrable, GoogleApi
 
     private final static String CURRENT_ITEM_STATE_KEY = "CURRENT_ITEM_STATE_KEY";
 
-    private final static Logger logger = Logger.getLogger(MainActivity.class.getName());
 
     private LoginState loginState = LoginState.LOGIN;
 
@@ -87,6 +103,7 @@ public class MainActivity extends BaseActivity implements Registrable, GoogleApi
     private PrimaryDrawerItem restoreDrawerItem;
 
     private GoogleApiClient googleApiClient;
+    private Subscription reverseGeoSubscription;
 
     private FirebaseUser firebaseUser;
 
@@ -289,6 +306,14 @@ public class MainActivity extends BaseActivity implements Registrable, GoogleApi
     }
 
     @Override
+    protected void onPause() {
+        if (reverseGeoSubscription != null) {
+            reverseGeoSubscription.unsubscribe();
+        }
+        super.onPause();
+    }
+
+    @Override
     protected void onStop() {
         googleApiClient.disconnect();
         super.onStop();
@@ -307,14 +332,23 @@ public class MainActivity extends BaseActivity implements Registrable, GoogleApi
     }
 
     @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.submit_current_region :
+                submitCurrentRegion();
+                return true;
+            default: return super.onOptionsItemSelected(item);
+        }
+    }
+
+    @Override
     public void onConnected(@Nullable Bundle bundle) {
 
     }
 
     @Override
     public void onConnectionSuspended(int i) {
-        Snackbar.make(findViewById(R.id.layout_for_showing_fragment),
-                getString(R.string.google_connection_failed), Snackbar.LENGTH_LONG).show();
+        showSnackBar(R.string.google_connection_failed);
         googleApiClient.connect();
     }
 
@@ -616,6 +650,57 @@ public class MainActivity extends BaseActivity implements Registrable, GoogleApi
     private void showSnackBar(int resId) {
         final Snackbar snackbar = Snackbar.make(findViewById(R.id.layout_for_showing_fragment), getText(resId), Snackbar.LENGTH_SHORT);
         snackbar.show();
+    }
+
+    private void submitCurrentRegion() {
+        if (googleApiClient.isConnected()) {
+            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+                Location location = LocationServices.FusedLocationApi.getLastLocation(googleApiClient);
+                NominatimService service = NominatimApi.getInstance();
+                if (location != null) {
+                    reverseGeoSubscription = service.getPlace(location.getLatitude(), location.getLongitude())
+                            .subscribeOn(Schedulers.computation())
+                            .observeOn(Schedulers.newThread())
+                            .subscribe(new Subscriber<Place>() {
+                                @Override
+                                public void onCompleted() {
+                                    Log.d(TAG, "Updated db based on geolocation");
+                                }
+
+                                @Override
+                                public void onError(Throwable e) {
+                                    Log.d(TAG, "Failed to update db based on geolocation", e);
+                                }
+
+                                @Override
+                                public void onNext(Place place) {
+                                    String state = place.getState();
+                                    try {
+                                        Dao<Region, Integer> dao = openHelper.getDao();
+                                        List<Region> result =  dao.queryForEq("osm_id", RegionUtils.getRegionOsm(state));
+                                        if (!result.isEmpty()) {
+                                            Region region = result.get(0);
+                                            if (!region.isVisited()) {
+                                                region.setVisited(true);
+                                                dao.update(region);
+                                            }
+                                        }
+                                    } catch (SQLException e) {
+                                        Log.d(TAG, "Failed accessing db after rev geocoding");
+                                        e.printStackTrace();
+                                    }
+                                }
+                            });
+                } else {
+                    showSnackBar(R.string.location_error);
+                }
+
+            } else {
+                showSnackBar(R.string.missing_permission);
+            }
+        } else {
+            showSnackBar(R.string.google_connection_failed);
+        }
     }
 
     enum LoginState {

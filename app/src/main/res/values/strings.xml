@@ -149,6 +149,9 @@
     <string name="connect_with_server">Connecting with server</string>
     <string name="google_connection_failed">Cannot connect to Google Services</string>
     <string name="menu_submit_current_region">Submit current region</string>
+    <string name="missing_permission">You\'re missing some permissions. Configure them in
+        Settings.
+    </string>
 
     <string name="default_license_title">License</string>
     <string name="default_license_text">All rights reserved</string>
@@ -157,4 +160,6 @@
     <string name="unexpected_error_message">Unexpected error</string>
     <string name="long_username_error_message">Too long username. Max length is 16 characters</string>
     <string name="long_password_error_message">Too long password. Max length is 16 characters</string>
+    <string name="geocode_error">Failed to get current region</string>
+    <string name="location_error">Could not get current location. Check your settings</string>
 </resources>
