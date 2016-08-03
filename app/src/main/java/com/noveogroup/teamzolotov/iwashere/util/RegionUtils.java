@@ -535,7 +535,7 @@ public final class RegionUtils {
             case "Республика Алтай" : return -145194;
             case "Республика Хакасия" : return -190911;
             case "Тыва" : return -145195;
-            default: return -140290;
+            default: return -1;
         }
     }
 }

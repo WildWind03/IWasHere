@@ -2,8 +2,11 @@ package com.noveogroup.teamzolotov.iwashere.fragment;
 
 
 import android.Manifest;
+import android.app.Activity;
+import android.content.Context;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.res.ResourcesCompat;
@@ -42,9 +45,21 @@ public class ColourMapFragment extends SupportMapFragment implements OnMapReadyC
     public final static String LOCATION_KEY = "LOCATION_KEY";
 
     private RegionOrmLiteOpenHelper openHelper;
+    private MapRecreateListener listener;
 
     public static ColourMapFragment newInstance() {
         return new ColourMapFragment();
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        if (context instanceof MapRecreateListener) {
+            listener = (MapRecreateListener) context;
+        } else {
+            throw new RuntimeException(context + " must implement MapRecreateListener!");
+        }
+
     }
 
     @Override
@@ -67,6 +82,14 @@ public class ColourMapFragment extends SupportMapFragment implements OnMapReadyC
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         boolean granted = grantResults[0] == PackageManager.PERMISSION_GRANTED;
         getActivity().getPreferences(0).edit().putBoolean(LOCATION_KEY, granted).commit();
+        if (listener != null) {
+            new Handler().post(new Runnable() {
+                @Override
+                public void run() {
+                    listener.onRecreate();
+                }
+            });
+        }
     }
 
     @Override
@@ -150,5 +173,15 @@ public class ColourMapFragment extends SupportMapFragment implements OnMapReadyC
             openHelper = null;
         }
         super.onDestroy();
+    }
+
+    @Override
+    public void onDetach() {
+        listener = null;
+        super.onDetach();
+    }
+
+    public interface MapRecreateListener {
+        void onRecreate();
     }
 }

@@ -16,6 +16,7 @@ import android.view.MenuItem;
 import android.view.View;
 
 import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.firebase.auth.FirebaseUser;
@@ -63,7 +64,7 @@ import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
 public class MainActivity extends BaseDatabaseActivity implements Registrable, GoogleApiClient.ConnectionCallbacks,
-        GoogleApiClient.OnConnectionFailedListener  {
+        GoogleApiClient.OnConnectionFailedListener, ColourMapFragment.MapRecreateListener {
 
     private static final String TAG = MainActivity.class.getSimpleName();
 
@@ -452,6 +453,11 @@ public class MainActivity extends BaseDatabaseActivity implements Registrable, G
         currentItemState = MAP_ID;
     }
 
+    @Override
+    public void onRecreate() {
+        forceMapItemSelected();
+    }
+
     private void onRegionsItemSelected() {
         toolbar.setTitle(R.string.regions_string);
         RegionListFragment regionsFragment = (RegionListFragment) getSupportFragmentManager().findFragmentByTag(REGIONS_FRAGMENT_TAG);
@@ -482,7 +488,9 @@ public class MainActivity extends BaseDatabaseActivity implements Registrable, G
 
         HelpFragment helpFragment = (HelpFragment) getSupportFragmentManager().findFragmentByTag(HELP_FRAGMENT_TAG);
         if (helpFragment == null) {
-            FragmentUtils.replaceFragment(HelpFragment.newInstance(getString(R.string.default_license_title), getString(R.string.default_license_text)), R.id.layout_for_showing_fragment,
+            FragmentUtils.replaceFragment(HelpFragment.newInstance(getString(R.string.default_license_title),
+                    GoogleApiAvailability.getInstance().getOpenSourceSoftwareLicenseInfo(this)),
+                    R.id.layout_for_showing_fragment,
                     getSupportFragmentManager(), HELP_FRAGMENT_TAG);
         }
     }
@@ -715,7 +723,7 @@ public class MainActivity extends BaseDatabaseActivity implements Registrable, G
 
                                 @Override
                                 public void onNext(Place place) {
-                                    showSnackBar(getString(R.string.location_success) + place.getState());
+                                    showSnackBar(getString(R.string.location_success) + " " + place.getState());
                                     forceMapItemSelected();
                                 }
                             });
