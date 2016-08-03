@@ -18,29 +18,15 @@ public final class LoginUtils {
         throw new UnsupportedOperationException("Trying to create instance of utility class");
     }
 
-    public static void login(final String email, final String password, final Activity activity, final boolean isProgressDialog,
+    public static void login(final String email, final String password, final Activity activity,
                              final DoWithProfile doWithProfile) {
 
-        final ProgressDialog progressDialog = new ProgressDialog(activity);
-
         final FirebaseAuth mAuth = FirebaseAuth.getInstance();
-
-        if (isProgressDialog) {
-            progressDialog.setIndeterminate(true);
-            progressDialog.setMessage(activity.getResources().getString(R.string.auth_text));
-            progressDialog.setCancelable(false);
-            progressDialog.show();
-        }
 
         mAuth.signInWithEmailAndPassword(email, password)
                 .addOnCompleteListener(activity, new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
-
-                        if (isProgressDialog) {
-                            progressDialog.dismiss();
-                        }
-
                         if (!task.isSuccessful()) {
                             Exception exception = task.getException();
                             doWithProfile.onError(exception);

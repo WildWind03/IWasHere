@@ -1,5 +1,6 @@
 package com.noveogroup.teamzolotov.iwashere.activity;
 
+import android.app.ProgressDialog;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -544,7 +545,7 @@ public class MainActivity extends BaseActivity implements Registrable, GoogleApi
         snackbar.show();
 
 
-        LoginUtils.login(profile.getEmail(), profile.getPassword(), this, false, new DoWithProfile() {
+        LoginUtils.login(profile.getEmail(), profile.getPassword(), this, new DoWithProfile() {
             @Override
             public void onSuccess(FirebaseUser firebaseUser, String password) {
                 MainActivity.this.firebaseUser = firebaseUser;

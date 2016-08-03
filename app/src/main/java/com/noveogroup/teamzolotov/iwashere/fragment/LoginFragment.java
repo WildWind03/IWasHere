@@ -77,14 +77,29 @@ public class LoginFragment extends BaseFragment {
                 String email = emailText.getText().toString();
                 String password = passwordText.getText().toString();
 
-                LoginUtils.login(email, password, getActivity(), true, new DoWithProfile() {
+                final ProgressDialog progressDialog = new ProgressDialog(getContext());
+
+                progressDialog.setIndeterminate(true);
+                progressDialog.setMessage(getResources().getString(R.string.auth_text));
+                progressDialog.setCancelable(false);
+                progressDialog.show();
+
+                LoginUtils.login(email, password, getActivity(), new DoWithProfile() {
                     @Override
                     public void onSuccess(FirebaseUser firebaseUser, String password) {
+                        if (progressDialog.isShowing()) {
+                            progressDialog.dismiss();
+                        }
+
                         onLoginSuccess(firebaseUser, password);
                     }
 
                     @Override
                     public void onError(Exception e) {
+                        if (progressDialog.isShowing()) {
+                            progressDialog.dismiss();
+                        }
+
                         onLoginFailed(e);
                     }
                 });
