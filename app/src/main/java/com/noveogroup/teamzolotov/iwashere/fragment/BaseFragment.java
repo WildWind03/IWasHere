@@ -11,6 +11,8 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.noveogroup.teamzolotov.iwashere.R;
+import com.noveogroup.teamzolotov.iwashere.util.ValidatorUtils;
+import com.noveogroup.teamzolotov.iwashere.validation.ValidationResult;
 
 import butterknife.ButterKnife;
 
@@ -60,5 +62,16 @@ public abstract class BaseFragment extends Fragment {
     protected abstract void onPostViewCrated(@Nullable final Bundle savedInstanceState);
 
     protected abstract int getLayout();
+
+    protected void showErrorMessage(ValidationResult validationResult) {
+        StringBuilder resultMessage = new StringBuilder();
+
+        for (ValidationResult.ValidationProblem validationProblem : validationResult.getValidationProblems()) {
+            resultMessage.append(ValidatorUtils.getMessage(getContext(), validationProblem));
+            resultMessage.append("\n");
+        }
+
+        showMessage(R.string.invalid_data, resultMessage.toString().trim());
+    }
 
 }

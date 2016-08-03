@@ -113,13 +113,13 @@
     <!-- strings for program messages to user -->
     <string name="auth_text">Authenticating…</string>
     <string name="getting_data_from_server_text">Loading data from server…</string>
-    <string name="invalid_email_message">Invalid email</string>
-    <string name="short_password_message">Short password. It must has 6 characters at least!</string>
+    <string name="invalid_email_error_message">Invalid email</string>
+    <string name="short_password_error_message">Short password. It must has 6 characters at least!</string>
     <string name="short_password_invalid_email">Invalid email and short password. A password must has 6 characters at least!</string>
     <string name="auth_failed_message">Unfortunately, it\'s impossible to authorize</string>
     <string name="invalid_username_email_short_password">Invalid email, too short username (it must has 2 characters at least) and too short password(min length is 6 characters)</string>
     <string name="invalid_email_invalid_username">Invalid email and too short username (min length is 2 characters</string>
-    <string name="invalid_username">Invalid username. Min length is 2 characters</string>
+    <string name="short_username_error_message">Invalid username. Min length is 2 characters</string>
     <string name="short_password_invalid_username">Too short password (min length is 6 characters) and too short username(min length is 2 characters)</string>
     <string name="registration_failed_message">The account hasn\'t been created!</string>
     <string name="ok_message">OK</string>
@@ -153,4 +153,8 @@
     <string name="default_license_title">License</string>
     <string name="default_license_text">All rights reserved</string>
     <string name="region_image_description">Region image</string>
+
+    <string name="unexpected_error_message">Unexpected error</string>
+    <string name="long_username_error_message">Too long username. Max length is 16 characters</string>
+    <string name="long_password_error_message">Too long password. Max length is 16 characters</string>
 </resources>

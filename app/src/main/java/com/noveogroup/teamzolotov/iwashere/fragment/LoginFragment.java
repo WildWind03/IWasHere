@@ -17,8 +17,9 @@ import com.google.firebase.database.ValueEventListener;
 import com.noveogroup.teamzolotov.iwashere.R;
 import com.noveogroup.teamzolotov.iwashere.activity.Registrable;
 import com.noveogroup.teamzolotov.iwashere.model.Profile;
-import com.noveogroup.teamzolotov.iwashere.util.EmailValidatorUtils;
+import com.noveogroup.teamzolotov.iwashere.util.ValidatorUtils;
 import com.noveogroup.teamzolotov.iwashere.util.LoginUtils;
+import com.noveogroup.teamzolotov.iwashere.validation.ValidationResult;
 
 import java.util.logging.Logger;
 
@@ -27,8 +28,6 @@ import butterknife.OnClick;
 
 
 public class LoginFragment extends BaseFragment {
-
-    private static final int MIN_LENGTH_OF_PASSWORD = 6;
     private final static Logger logger = Logger.getLogger(LoginFragment.class.getName());
     public static final String USERNAME_DATABASE_KEY = "username";
     public static final String USERS_DATABASE_TAG = "users";
@@ -57,53 +56,43 @@ public class LoginFragment extends BaseFragment {
 
     @OnClick(R.id.btn_login)
     protected void onButtonLoginClick() {
+        ValidationResult validationResult = new ValidationResult();
 
-        LoginValidateResult loginValidateResult = validateLogin();
+        String email = emailText.getText().toString();
+        String password = passwordText.getText().toString();
 
-        switch (loginValidateResult) {
-            case INVALID_EMAIL:
-                showMessage(R.string.invalid_data, R.string.invalid_email_message);
-                return;
+        ValidatorUtils.validateEmail(email, validationResult);
+        ValidatorUtils.validatePassword(password, validationResult);
 
-            case SHORT_PASSWORD:
-                showMessage(R.string.invalid_data, R.string.short_password_message);
-                return;
+        if (validationResult.isNoProblems()) {
+            final ProgressDialog progressDialog = new ProgressDialog(getContext());
 
-            case SHORT_PASSWORD_INVALID_EMAIL:
-                showMessage(R.string.invalid_data, R.string.short_password_invalid_email);
-                return;
+            progressDialog.setIndeterminate(true);
+            progressDialog.setMessage(getResources().getString(R.string.auth_text));
+            progressDialog.setCancelable(false);
+            progressDialog.show();
 
-            case SUCCESS:
-                String email = emailText.getText().toString();
-                String password = passwordText.getText().toString();
-
-                final ProgressDialog progressDialog = new ProgressDialog(getContext());
-
-                progressDialog.setIndeterminate(true);
-                progressDialog.setMessage(getResources().getString(R.string.auth_text));
-                progressDialog.setCancelable(false);
-                progressDialog.show();
-
-                LoginUtils.login(email, password, getActivity(), new DoWithProfile() {
-                    @Override
-                    public void onSuccess(FirebaseUser firebaseUser, String password) {
-                        if (progressDialog.isShowing()) {
-                            progressDialog.dismiss();
-                        }
-
-                        onLoginSuccess(firebaseUser, password);
+            LoginUtils.login(email, password, getActivity(), new DoWithProfile() {
+                @Override
+                public void onSuccess(FirebaseUser firebaseUser, String password) {
+                    if (progressDialog.isShowing()) {
+                        progressDialog.dismiss();
                     }
 
-                    @Override
-                    public void onError(Exception e) {
-                        if (progressDialog.isShowing()) {
-                            progressDialog.dismiss();
-                        }
+                    onLoginSuccess(firebaseUser, password);
+                }
 
-                        onLoginFailed(e);
+                @Override
+                public void onError(Exception e) {
+                    if (progressDialog.isShowing()) {
+                        progressDialog.dismiss();
                     }
-                });
-                break;
+
+                    onLoginFailed(e);
+                }
+            });
+        } else {
+            showErrorMessage(validationResult);
         }
     }
 
@@ -122,25 +111,6 @@ public class LoginFragment extends BaseFragment {
     @Override
     protected int getLayout() {
         return R.layout.login_view;
-    }
-
-    private LoginValidateResult validateLogin() {
-        String email = emailText.getText().toString();
-        String password = passwordText.getText().toString();
-
-        if (EmailValidatorUtils.validate(email)) {
-            if (password.length() >= MIN_LENGTH_OF_PASSWORD) {
-                return LoginValidateResult.SUCCESS;
-            } else {
-                return LoginValidateResult.SHORT_PASSWORD;
-            }
-        } else {
-            if (password.length() >= MIN_LENGTH_OF_PASSWORD) {
-                return LoginValidateResult.INVALID_EMAIL;
-            } else {
-                return LoginValidateResult.SHORT_PASSWORD_INVALID_EMAIL;
-            }
-        }
     }
 
     private void onLoginFailed(Exception e) {
@@ -182,9 +152,4 @@ public class LoginFragment extends BaseFragment {
             }
         });
     }
-
-    private enum LoginValidateResult {
-        SHORT_PASSWORD, INVALID_EMAIL, SUCCESS, SHORT_PASSWORD_INVALID_EMAIL
-    }
-
 }

@@ -19,7 +19,8 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.noveogroup.teamzolotov.iwashere.R;
 import com.noveogroup.teamzolotov.iwashere.activity.Registrable;
 import com.noveogroup.teamzolotov.iwashere.model.Profile;
-import com.noveogroup.teamzolotov.iwashere.util.EmailValidatorUtils;
+import com.noveogroup.teamzolotov.iwashere.util.ValidatorUtils;
+import com.noveogroup.teamzolotov.iwashere.validation.ValidationResult;
 
 import java.util.logging.Logger;
 
@@ -28,8 +29,6 @@ import butterknife.OnClick;
 
 public class RegisterFragment extends BaseFragment {
 
-    private static final int MIN_LENGTH_OF_PASSWORD = 6;
-    private static final int MIN_LENGTH_OF_USERNAME = 2;
     private static final Logger logger = Logger.getLogger(RegisterFragment.class.getName());
     public static final String USERS_DATABASE_TAG = "users";
     public static final String USERNAME_DATABASE_TAG = "username";
@@ -62,62 +61,38 @@ public class RegisterFragment extends BaseFragment {
 
     @OnClick(R.id.btn_signup)
     void onSignUpButton() {
-        RegisterValidateResult registerValidateResult = validateLogin();
+        ValidationResult validationResult = new ValidationResult();
 
-        switch (registerValidateResult) {
-            case SHORT_PASSWORD:
-                showMessage(R.string.invalid_data, R.string.short_password_message);
-                break;
+        String name = nameText.getText().toString();
+        String email = emailText.getText().toString();
+        String password = passwordText.getText().toString();
 
-            case SHORT_PASSWORD_INVALID_EMAIL:
-                showMessage(R.string.invalid_data, R.string.short_password_invalid_email);
-                break;
+        ValidatorUtils.validateEmail(email, validationResult);
+        ValidatorUtils.validateUsername(name, validationResult);
+        ValidatorUtils.validatePassword(password, validationResult);
 
-            case SHORT_PASSWORD_INVALID_EMAIL_INVALID_USERNAME:
-                showMessage(R.string.invalid_data, R.string.invalid_username_email_short_password);
-                break;
+        if (!validationResult.isNoProblems()) {
+            showErrorMessage(validationResult);
+        } else {
+            final ProgressDialog progressDialog = new ProgressDialog(getActivity());
+            progressDialog.setIndeterminate(true);
+            progressDialog.setMessage(getResources().getString(R.string.sign_up_text));
+            progressDialog.setCancelable(false);
+            progressDialog.show();
 
-            case INVALID_EMAIL:
-                showMessage(R.string.invalid_data, R.string.invalid_email_message);
-                break;
+            mAuth.createUserWithEmailAndPassword(email, password)
+                    .addOnCompleteListener(getActivity(), new OnCompleteListener<AuthResult>() {
+                        @Override
+                        public void onComplete(@NonNull Task<AuthResult> task) {
+                            progressDialog.dismiss();
 
-            case INVALID_EMAIL_INVALID_USERNAME:
-                showMessage(R.string.invalid_data, R.string.invalid_email_invalid_username);
-                break;
-
-            case INVALID_USERNAME:
-                showMessage(R.string.invalid_data, R.string.invalid_username);
-                break;
-
-            case SHORT_PASSWORD_INVALID_USERNAME:
-                showMessage(R.string.invalid_data, R.string.short_password_invalid_username);
-                break;
-
-            case SUCCESS:
-
-                String email = emailText.getText().toString();
-                String password = passwordText.getText().toString();
-
-                final ProgressDialog progressDialog = new ProgressDialog(getActivity());
-                progressDialog.setIndeterminate(true);
-                progressDialog.setMessage(getResources().getString(R.string.sign_up_text));
-                progressDialog.setCancelable(false);
-                progressDialog.show();
-
-                mAuth.createUserWithEmailAndPassword(email, password)
-                        .addOnCompleteListener(getActivity(), new OnCompleteListener<AuthResult>() {
-                            @Override
-                            public void onComplete(@NonNull Task<AuthResult> task) {
-                                progressDialog.dismiss();
-
-                                if (!task.isSuccessful()) {
-                                    onRegisterFailed();
-                                } else {
-                                    onRegisterSuccess(task.getResult().getUser());
-                                }
+                            if (!task.isSuccessful()) {
+                                onRegisterFailed();
+                            } else {
+                                onRegisterSuccess(task.getResult().getUser());
                             }
-                        });
-                break;
+                        }
+                    });
         }
     }
 
@@ -164,46 +139,5 @@ public class RegisterFragment extends BaseFragment {
     @Override
     protected int getLayout() {
         return R.layout.register_layout;
-    }
-
-    private RegisterValidateResult validateLogin() {
-        String name = nameText.getText().toString();
-        String email = emailText.getText().toString();
-        String password = passwordText.getText().toString();
-
-        if (EmailValidatorUtils.validate(email)) {
-            if (password.length() >= MIN_LENGTH_OF_PASSWORD) {
-                if (name.length() >= MIN_LENGTH_OF_USERNAME) {
-                    return RegisterValidateResult.SUCCESS;
-                } else {
-                    return RegisterValidateResult.INVALID_USERNAME;
-                }
-            } else {
-                if (name.length() >= MIN_LENGTH_OF_USERNAME) {
-                    return RegisterValidateResult.SHORT_PASSWORD;
-                } else {
-                    return RegisterValidateResult.SHORT_PASSWORD_INVALID_USERNAME;
-                }
-            }
-        } else {
-            if (password.length() >= MIN_LENGTH_OF_PASSWORD) {
-                if (name.length() >= MIN_LENGTH_OF_USERNAME) {
-                    return RegisterValidateResult.INVALID_EMAIL;
-                } else {
-                    return RegisterValidateResult.INVALID_EMAIL_INVALID_USERNAME;
-                }
-            } else {
-                if (name.length() >= MIN_LENGTH_OF_USERNAME) {
-                    return RegisterValidateResult.SHORT_PASSWORD_INVALID_EMAIL;
-                } else {
-                    return RegisterValidateResult.SHORT_PASSWORD_INVALID_EMAIL_INVALID_USERNAME;
-                }
-            }
-        }
-    }
-
-    private enum RegisterValidateResult {
-        SHORT_PASSWORD, INVALID_EMAIL, SUCCESS, SHORT_PASSWORD_INVALID_EMAIL, INVALID_USERNAME,
-        SHORT_PASSWORD_INVALID_USERNAME, INVALID_EMAIL_INVALID_USERNAME, SHORT_PASSWORD_INVALID_EMAIL_INVALID_USERNAME
     }
 }
