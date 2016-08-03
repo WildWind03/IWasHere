@@ -6,6 +6,7 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
@@ -665,6 +666,12 @@ public class MainActivity extends BaseDatabaseActivity implements Registrable, G
                                 @Override
                                 public void onCompleted() {
                                     Log.d(TAG, "Updated db based on geolocation");
+                                    runOnUiThread(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            showSnackBar(R.string.location_success);
+                                        }
+                                    });
                                 }
 
                                 @Override
