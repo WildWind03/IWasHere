@@ -98,7 +98,7 @@ public class RegisterFragment extends BaseFragment {
                             progressDialog.dismiss();
 
                             if (!task.isSuccessful()) {
-                                onRegisterFailed();
+                                onRegisterFailed(task.getException());
                             } else {
                                 onRegisterSuccess(task.getResult().getUser());
                             }
@@ -127,8 +127,8 @@ public class RegisterFragment extends BaseFragment {
         registrable.onRegisteredSuccessfully(profile, firebaseUser);
     }
 
-    private void onRegisterFailed() {
-        showMessage(R.string.registration_problems_title, R.string.registration_failed_message);
+    private void onRegisterFailed(Exception e) {
+        showMessage(R.string.registration_problems_title, e.getMessage());
     }
 
     @OnClick(R.id.link_login)
