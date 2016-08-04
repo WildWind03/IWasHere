@@ -20,4 +20,13 @@ public final class FragmentUtils {
         transaction.add(resId, fragment, tag);
         transaction.commit();
     }
+
+    public static void forceAddFragment(Fragment fragment, int resId, FragmentManager manager, String tag) {
+        FragmentTransaction transaction = manager.beginTransaction();
+        transaction.add(resId, fragment, tag);
+        transaction.commit();
+
+        manager.executePendingTransactions();
+    }
+
 }
