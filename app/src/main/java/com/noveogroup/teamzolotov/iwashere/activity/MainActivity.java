@@ -727,6 +727,7 @@ public class MainActivity extends BaseDatabaseActivity implements Registrable, G
 
                                 @Override
                                 public void onError(Throwable e) {
+                                    showSnackBar(R.string.location_error);
                                     Log.d(TAG, "Failed to update db based on geolocation", e);
                                 }
 
