@@ -114,16 +114,16 @@
     <string name="auth_text">Authenticating…</string>
     <string name="getting_data_from_server_text">Loading data from server…</string>
     <string name="invalid_email_error_message">Invalid email</string>
-    <string name="short_password_error_message">Short password. It must has 6 characters at least!
+    <string name="short_password_error_message">The password should have at least 6 characters
     </string>
     <string name="short_username_error_message">Invalid username. Min length is 2 characters
     </string>
-    <string name="registration_failed_message">The account hasn\'t been created!</string>
+    <string name="registration_failed_message">The account wasn\'t created!</string>
     <string name="ok_message">OK</string>
 
     <string name="invalid_data">Invalid data</string>
-    <string name="auth_troubles_title">Authorization problems</string>
-    <string name="registration_problems_title">Registration problems</string>
+    <string name="auth_troubles_title">Authorization problem</string>
+    <string name="registration_problems_title">Registration problem</string>
 
     <string name="default_email">No e-mail address</string>
     <string name="default_username">Anonymous</string>
@@ -132,18 +132,18 @@
 
     <string name="restore_troubles_title">Unable to restore</string>
 
-    <string name="no_internet_message">No internet connection. Please, try later</string>
-    <string name="backup_in_progress_message">Backing up the map</string>
+    <string name="no_internet_message">No internet connection. Please try again later</string>
+    <string name="backup_in_progress_message">Backing up the map…</string>
     <string name="backup_successfully">The map was successfully backed up</string>
 
-    <string name="restore_in_progress_message">Restoring the map</string>
+    <string name="restore_in_progress_message">Restoring the map…</string>
     <string name="successfully_restored">The map was successfully restored</string>
 
     <string name="connect_with_server">Connecting with server</string>
     <string name="google_connection_failed">Cannot connect to Google Services</string>
     <string name="menu_submit_current_region">Submit current region</string>
     <string name="missing_permission">You\'re missing some permissions. Configure them in
-        Settings.
+        Settings
     </string>
 
     <string name="default_license_title">License</string>
@@ -151,13 +151,11 @@
     <string name="region_image_description">Region image</string>
 
     <string name="unexpected_error_message">Unexpected error</string>
-    <string name="long_username_error_message">Too long username. Max length is 16 characters
+    <string name="long_username_error_message">Username is too long. Max length is 16 characters
     </string>
-    <string name="long_password_error_message">Too long password. Max length is 16 characters
+    <string name="long_password_error_message">Password is too long. Max length is 16 characters
     </string>
     <string name="location_error">Could not get current location. Check your settings</string>
     <string name="location_success">Successful update:</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
