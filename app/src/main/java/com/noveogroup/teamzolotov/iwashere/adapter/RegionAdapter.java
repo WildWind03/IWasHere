@@ -73,13 +73,13 @@ public class RegionAdapter extends RecyclerView.Adapter<RegionAdapter.ViewHolder
 
         private RegionUpdateListener listener;
 
-        @BindView(R.id.regionImage)
+        @BindView(R.id.region_image)
         protected ImageView regionImage;
 
-        @BindView(R.id.regionName)
+        @BindView(R.id.region_name)
         protected TextView regionName;
 
-        @BindView(R.id.regionCheckbox)
+        @BindView(R.id.region_checkbox)
         protected CheckBox regionVisited;
 
         public ViewHolder(View itemView, RegionUpdateListener listener) {
@@ -88,11 +88,21 @@ public class RegionAdapter extends RecyclerView.Adapter<RegionAdapter.ViewHolder
             this.listener = listener;
         }
 
-        @OnClick(R.id.regionCheckbox)
+        @OnClick(R.id.region_checkbox)
         public void onClick(CheckBox checkBox) {
             if (listener != null) {
                 Region region = regions.get(getAdapterPosition());
                 region.setVisited(checkBox.isChecked());
+                listener.onUpdate(region);
+            }
+        }
+
+        @OnClick({R.id.region_name, R.id.region_image})
+        public void onClick() {
+            if (listener != null) {
+                regionVisited.toggle();
+                Region region = regions.get(getAdapterPosition());
+                region.setVisited(regionVisited.isChecked());
                 listener.onUpdate(region);
             }
         }
