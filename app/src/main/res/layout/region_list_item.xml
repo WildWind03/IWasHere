@@ -9,7 +9,7 @@
 
 
     <ImageView
-        android:id="@+id/regionImage"
+        android:id="@+id/region_image"
         android:layout_width="@dimen/region_image_size"
         android:layout_height="@dimen/region_image_size"
         android:layout_alignParentLeft="true"
@@ -19,7 +19,7 @@
         android:contentDescription="@string/region_image_description" />
 
     <CheckBox
-        android:id="@+id/regionCheckbox"
+        android:id="@+id/region_checkbox"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
@@ -28,14 +28,14 @@
         android:layout_centerVertical="true" />
 
     <TextView
-        android:id="@+id/regionName"
+        android:id="@+id/region_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
-        android:layout_toEndOf="@+id/regionImage"
-        android:layout_toLeftOf="@id/regionCheckbox"
-        android:layout_toRightOf="@+id/regionImage"
-        android:layout_toStartOf="@id/regionCheckbox"
+        android:layout_toEndOf="@+id/region_image"
+        android:layout_toLeftOf="@id/region_checkbox"
+        android:layout_toRightOf="@+id/region_image"
+        android:layout_toStartOf="@id/region_checkbox"
         android:paddingLeft="10dp"
         android:paddingRight="10dp"
         android:paddingStart="10dp"
