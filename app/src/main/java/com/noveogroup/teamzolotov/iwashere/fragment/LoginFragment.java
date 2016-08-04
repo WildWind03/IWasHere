@@ -18,8 +18,8 @@ import com.google.firebase.database.ValueEventListener;
 import com.noveogroup.teamzolotov.iwashere.R;
 import com.noveogroup.teamzolotov.iwashere.activity.Registrable;
 import com.noveogroup.teamzolotov.iwashere.model.Profile;
-import com.noveogroup.teamzolotov.iwashere.util.ValidatorUtils;
 import com.noveogroup.teamzolotov.iwashere.util.LoginUtils;
+import com.noveogroup.teamzolotov.iwashere.util.ValidatorUtils;
 import com.noveogroup.teamzolotov.iwashere.validation.ValidationResult;
 
 import java.util.logging.Logger;
@@ -133,26 +133,34 @@ public class LoginFragment extends BaseFragment {
 
         DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference();
 
-        mDatabase.child(USERS_DATABASE_TAG).child(firebaseUser.getUid()).child(USERNAME_DATABASE_KEY).addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                String username = (String) dataSnapshot.getValue();
+        mDatabase.child(USERS_DATABASE_TAG)
+                .child(firebaseUser.getUid())
+                .child(USERNAME_DATABASE_KEY)
+                .addValueEventListener(new ValueEventListener() {
 
-                if (progressDialog.isShowing()) {
-                    progressDialog.dismiss();
-                }
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        String username = (String) dataSnapshot.getValue();
 
-                Profile profile = new Profile(firebaseUser.getEmail(), username, password, firebaseUser.getUid());
+                        if (progressDialog.isShowing()) {
+                            progressDialog.dismiss();
+                        }
 
-                Activity activity = getActivity();
-                Registrable onLoginSuccessfully = (Registrable) activity;
-                onLoginSuccessfully.onLoginSuccessfully(profile, firebaseUser);
-            }
+                        Profile profile = new Profile(firebaseUser.getEmail(), username, password, firebaseUser.getUid());
 
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
+                        Activity activity = getActivity();
+                        Registrable onLoginSuccessfully = (Registrable) activity;
+                        onLoginSuccessfully.onLoginSuccessfully(profile, firebaseUser);
+                    }
 
-            }
-        });
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+                        if (progressDialog.isShowing()) {
+                            progressDialog.dismiss();
+                        }
+
+                        onLoginFailed(databaseError.toException());
+                    }
+                });
     }
 }

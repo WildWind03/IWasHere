@@ -67,7 +67,7 @@ public final class ValidatorUtils {
     public static String getMessage(Context context, ValidationResult.ValidationProblem validationProblem) {
         String message = null;
 
-        switch(validationProblem) {
+        switch (validationProblem) {
             case NULL_REFERENCE:
                 message = context.getString(R.string.unexpected_error_message);
                 break;

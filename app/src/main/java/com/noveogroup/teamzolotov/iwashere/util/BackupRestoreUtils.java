@@ -48,17 +48,20 @@ public final class BackupRestoreUtils {
         StorageReference storageReference = storage.getReferenceFromUrl(STORAGE_URL);
         StorageReference imagesStorageReference = storageReference.child(firebaseUser.getUid()).child(IMAGES_CHILD_KEY);
 
-        imagesStorageReference.getFile(toFile).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
-            @Override
-            public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
-                onRestoreSuccessfully.handle();
-            }
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception exception) {
-                onRestoreFailed.handle(exception);
-            }
-        });
+        imagesStorageReference
+                .getFile(toFile)
+                .addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
+                    @Override
+                    public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
+                        onRestoreSuccessfully.handle();
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception exception) {
+                        onRestoreFailed.handle(exception);
+                    }
+                });
     }
 
     public interface OnRestoreFailed {

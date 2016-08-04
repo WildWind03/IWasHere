@@ -10,7 +10,8 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class NominatimApi {
     private static NominatimService ourInstance;
 
-    private NominatimApi() {}
+    private NominatimApi() {
+    }
 
     public static NominatimService getInstance() {
         if (ourInstance == null) {

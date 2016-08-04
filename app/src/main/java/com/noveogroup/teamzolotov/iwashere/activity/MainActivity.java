@@ -44,8 +44,8 @@ import com.noveogroup.teamzolotov.iwashere.fragment.RegionListFragment;
 import com.noveogroup.teamzolotov.iwashere.fragment.RegisterFragment;
 import com.noveogroup.teamzolotov.iwashere.model.Place;
 import com.noveogroup.teamzolotov.iwashere.model.Profile;
-import com.noveogroup.teamzolotov.iwashere.util.BackupRestoreUtils;
 import com.noveogroup.teamzolotov.iwashere.model.Region;
+import com.noveogroup.teamzolotov.iwashere.util.BackupRestoreUtils;
 import com.noveogroup.teamzolotov.iwashere.util.FragmentUtils;
 import com.noveogroup.teamzolotov.iwashere.util.InternetUtils;
 import com.noveogroup.teamzolotov.iwashere.util.LoginUtils;
@@ -334,10 +334,11 @@ public class MainActivity extends BaseDatabaseActivity implements Registrable, G
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.submit_current_region :
+            case R.id.submit_current_region:
                 submitCurrentRegion();
                 return true;
-            default: return super.onOptionsItemSelected(item);
+            default:
+                return super.onOptionsItemSelected(item);
         }
     }
 
@@ -449,7 +450,7 @@ public class MainActivity extends BaseDatabaseActivity implements Registrable, G
     private void forceMapItemSelected() {
         toolbar.setTitle(R.string.map_string);
         FragmentUtils.replaceFragment(ColourMapFragment.newInstance(), R.id.layout_for_showing_fragment,
-                    getSupportFragmentManager(), MAP_FRAGMENT_TAG);
+                getSupportFragmentManager(), MAP_FRAGMENT_TAG);
         currentItemState = MAP_ID;
     }
 
@@ -472,7 +473,7 @@ public class MainActivity extends BaseDatabaseActivity implements Registrable, G
     private void forceRegionsItemSelected() {
         toolbar.setTitle(R.string.regions_string);
         FragmentUtils.replaceFragment(RegionListFragment.newInstance(), R.id.layout_for_showing_fragment,
-                    getSupportFragmentManager(), REGIONS_FRAGMENT_TAG);
+                getSupportFragmentManager(), REGIONS_FRAGMENT_TAG);
 
         currentItemState = LIST_REGIONS_ID;
     }
@@ -576,10 +577,18 @@ public class MainActivity extends BaseDatabaseActivity implements Registrable, G
                     public void handle() {
                         snackbar.dismiss();
                         showSnackBar(R.string.successfully_restored);
+                        if (currentItemState == MAP_ID) {
+                            forceMapItemSelected();
+                        }
+
+                        if (currentItemState == LIST_REGIONS_ID) {
+                            forceRegionsItemSelected();
+                        }
                     }
                 }, new BackupRestoreUtils.OnRestoreFailed() {
                     @Override
                     public void handle(Exception e) {
+                        snackbar.dismiss();
                         showSnackBar(R.string.restore_troubles_title);
                     }
                 });
@@ -694,7 +703,7 @@ public class MainActivity extends BaseDatabaseActivity implements Registrable, G
                                     String state = place.getState();
                                     try {
                                         Dao<Region, Integer> dao = openHelper.getDao();
-                                        List<Region> result =  dao.queryForEq("osm_id", RegionUtils.getRegionOsm(state));
+                                        List<Region> result = dao.queryForEq("osm_id", RegionUtils.getRegionOsm(state));
                                         if (!result.isEmpty()) {
                                             Region region = result.get(0);
                                             if (!region.isVisited()) {
